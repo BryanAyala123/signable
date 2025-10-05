@@ -1,0 +1,7 @@
+{
+  "name": "signable",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "react-vite"
+}

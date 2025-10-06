@@ -13,9 +13,12 @@ const Home: React.FC = () => {
       <IonContent fullscreen>
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Blank</IonTitle>
+            <IonTitle size="large">Hello World!</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <IonContent fullscreen className='ion-padding'>
+          <h1>Hello World!</h1>
+        </IonContent>
         <ExploreContainer />
       </IonContent>
     </IonPage>

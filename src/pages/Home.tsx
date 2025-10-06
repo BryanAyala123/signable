@@ -16,6 +16,9 @@ const Home: React.FC = () => {
             <IonTitle size="large">Hello World!</IonTitle>
           </IonToolbar>
         </IonHeader>
+        <IonContent fullscreen className='ion-padding'>
+          <h1>Hello World!</h1>
+        </IonContent>
         <ExploreContainer />
       </IonContent>
     </IonPage>

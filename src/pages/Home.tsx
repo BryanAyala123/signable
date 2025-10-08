@@ -30,6 +30,18 @@ const Home: React.FC = () => {
             Start Practicing
           </IonButton>
         </div>
+        
+        <div className="home-content">
+          <h1>Sign Your Way to Victory!</h1>
+          <p>Practice ASL the Fun Way — One Game at a Time!</p>
+          
+          <IonButton 
+            expand="block" 
+            onClick={() => history.push('/games')}
+          >
+            Start Playing
+          </IonButton>
+        </div>
       </IonContent>
     </IonPage>
   );

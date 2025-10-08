@@ -1,25 +1,35 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
-import ExploreContainer from '../components/ExploreContainer';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import './Home.css';
 
 const Home: React.FC = () => {
+  const history = useHistory();
+
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
+        <IonToolbar color="primary">
           <IonTitle>Signable</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent fullscreen>
+      <IonContent fullscreen className="ion-padding">
         <IonHeader collapse="condense">
           <IonToolbar>
-            <IonTitle size="large">Hello World!</IonTitle>
+            <IonTitle size="large">Welcome to Signable!</IonTitle>
           </IonToolbar>
         </IonHeader>
-        <IonContent fullscreen className='ion-padding'>
-          <h1>Hello World!</h1>
-        </IonContent>
-        <ExploreContainer />
+        
+        <div className="home-content">
+          <h1>Practice ASL with Flash Cards</h1>
+          <p>Practice American Sign Language with interactive flash cards</p>
+          
+          <IonButton 
+            expand="block" 
+            onClick={() => history.push('/flashcards/alphabet')}
+          >
+            Start Practicing
+          </IonButton>
+        </div>
       </IonContent>
     </IonPage>
   );

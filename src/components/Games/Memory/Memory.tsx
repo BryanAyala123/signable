@@ -2,6 +2,8 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonBackButton, Io
 import './Memory.css';
 import React, { useState } from 'react';
 
+
+
 // Function to shuffle array randomly
 const shuffleArray = (array: any[]) => {
     const shuffled = [...array];
@@ -37,6 +39,8 @@ const Memory: React.FC = () => {
     const [disableAll, setDisableAll] = useState(false);
     const [gameKey, setGameKey] = useState(0); // Key to force re-render with new letters
     const [currentCardsData, setCurrentCardsData] = useState(() => createCardsData());
+    const [started, setStarted] = useState(false);
+    const [elapsedTime, setElapsedTime] = useState<number>(0);
     
     // Only create new cards data when gameKey changes (new game)
     React.useEffect(() => {
@@ -45,11 +49,20 @@ const Memory: React.FC = () => {
     
     // Function to start a new game with different letters
     const startNewGame = () => {
+        if (started) return; // Prevent starting a new game if one is already in progress
         setFlipped([]);
         setMatched([]);
         setDisableAll(false);
         setGameKey(prev => prev + 1); // This will trigger new random letters
+        setElapsedTime(0);
+        setStarted(true);
     };
+
+    const stopWatch = () => {
+        const time = elapsedTime + 100;
+        setElapsedTime(time);
+        return time;
+    }
 
     // Check if game is complete
     const isGameComplete = matched.length === currentCardsData.length;
@@ -57,13 +70,28 @@ const Memory: React.FC = () => {
     // Auto-start new game when complete
     React.useEffect(() => {
         if (isGameComplete) {
+            setStarted(false);
             setTimeout(() => {
-                startNewGame();
-            }, 10000); // Wait 2 seconds before starting new game
+                if (!started) {
+                    startNewGame();
+                }
+            }, 10000); // Wait 10 seconds before starting new game
         }
-    }, [isGameComplete]);
+    }, [isGameComplete, started]);
+
+    React.useEffect(() => {
+        if (!started) return;
+        const interval = setInterval(() => {
+            stopWatch();
+        }, 100);
+        return () => clearInterval(interval);
+    }, [started, elapsedTime]);
 
     const handleCardClick = (id: number) => {
+        if (!started) {
+            setElapsedTime(0);
+            setStarted(true);
+        }
         if (flipped.includes(id) || matched.includes(id) || disableAll) return;
 
         const newFlipped = [...flipped, id];
@@ -108,6 +136,20 @@ const Memory: React.FC = () => {
                 </IonHeader>
                 <IonContent fullscreen className='ion-padding'>
                     <h1>Memory Game!</h1>
+                    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1rem', marginBottom: '1rem' }}>
+                        <div style={{
+                            padding: '1rem',
+                            fontSize: '1.2rem',
+                            color: '#333',
+                            background: '#fff',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            textAlign: 'center',
+                            minWidth: '120px'
+                        }}>
+                            <span>Time: {(elapsedTime / 1000).toFixed(1)}s</span>
+                        </div>
+                    </div>
                     
                     {isGameComplete && (
                         <div style={{ 
@@ -137,6 +179,7 @@ const Memory: React.FC = () => {
                             </button>
                         </div>
                     )}
+                    
                     <div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap', marginTop: '2rem', justifyContent: 'center' }}>
                         {currentCardsData.map((card) => {
                             const isFlipped = flipped.includes(card.id) || matched.includes(card.id);
@@ -162,8 +205,7 @@ const Memory: React.FC = () => {
                                         pointerEvents: isFlipped || disableAll ? 'none' : 'auto',
                                         padding: '10px',
                                         textAlign: 'center',
-                                    }}
-                                >
+                                    }}>
                                     {isFlipped ? (
                                         <>
                                             {card.type === 'sign' && card.image && (
@@ -191,6 +233,7 @@ const Memory: React.FC = () => {
                             );
                         })}
                     </div>
+                    
                 </IonContent>
             </IonContent>
         </IonPage>

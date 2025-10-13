@@ -1,0 +1,64 @@
+.IonHeader{
+    --box-shadow: none; 
+    border-bottom: none;
+}
+
+.mainToolbar {
+    --background: #E8E4D8;
+    --box-shadow: none;
+    --border-style: none;
+}
+
+.mainLayoutDiv{
+    display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    padding: 0 16px;
+    gap: 16px; 
+}
+
+.mainToolBarFooter{
+    --background: #E8E4D8; 
+    --min-height: 10px
+}
+
+.headerSearch{
+    border-radius: 20px;
+    padding-left: 15px;
+    height: min-content;
+    border-width: 0;
+    width: 325px;
+    height: 30px;
+    color:#E8E4D8
+}
+
+.tabsContainer {
+    display: flex;
+    align-items: center;
+}
+
+.tabsContainer .tabText {
+    color: #3D3D3D;
+    font-weight: 500;
+    line-height: 1; 
+}
+
+.tabsContainer span:not(:last-child)::after {
+    content: '|';
+    margin-left: 8px;
+    color: #000;
+}
+
+.profilePicture{
+    height: 40px;
+    width: 40px;
+}
+
+.profileIcon {
+    --padding-start: 0;
+    --padding-end: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+}

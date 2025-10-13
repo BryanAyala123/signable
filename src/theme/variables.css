@@ -1,2 +1,12 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
+@font-face {
+    font-family: 'AzoSans';
+    src: url('../assets/fonts/AzoSans-Regular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+:root {
+    --ion-font-family: 'AzoSans', AzoSans;
+}

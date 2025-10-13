@@ -1,13 +1,20 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonBackButton, IonButtons, IonButton, IonIcon 
+import { IonContent, IonHeader, IonPage, IonButton 
 } from '@ionic/react';
-import { arrowBack, arrowForward } from 'ionicons/icons';
 import Flashcard from '../components/FlashCard/FlashCard';
 import './Flashcards.css';
 import { useParams } from 'react-router-dom';
 import { useState, useEffect, useCallback } from 'react';
 import alphaImgs from '../data/alphaImgs.json';
 import alphaTranslations from '../data/alphaTranslations.json';
-
+import AppHeader from '../components/layout/AppHeader';
+import AppFooter from '../components/layout/AppFooter';
+import prev from '/public/assets/prevIcon.png';
+import next from '/public/assets/nextIcon.png'
+import flip from '/public/assets/Buttons/flipButton.png';
+import correct from '/public/assets/Buttons/correctButton.png';
+import wrong from '/public/assets/Buttons/wrongButton.png';
+import ProgressPanel from '../components/ProgressPanel/ProgressPanel';
+import SetPanel from '../components/SetSelection/SetSelection';
 /**
  * Deck configs
  */
@@ -51,6 +58,28 @@ const Flashcards: React.FC = () => {
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [shuffledCards, setShuffledCards] = useState<Card[]>([]);
+
+  const [flipped, setFlipped] = useState(false);
+  const [showProgress, setShowProgress] = useState(false);
+  const [showUserSet, setUserSet] = useState(false);
+
+  const handleFlip = () => {
+    setFlipped(!flipped);
+  };
+
+  const toggleSetsPanel = () => {
+    setUserSet(prev => {
+      if (!prev) setShowProgress(false); 
+      return !prev;
+    });
+  };
+  
+  const toggleProgressPanel = () => {
+    setShowProgress(prev => {
+      if (!prev) setUserSet(false); 
+      return !prev;
+    });
+  };
 
   /**
    * Move to the next card, wrapping to the beginning if at the end
@@ -117,45 +146,79 @@ const Flashcards: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="primary">
-          <IonButtons slot="start">
-            <IonBackButton defaultHref="/home" />
-          </IonButtons>
-          <IonTitle>ASL Flash Cards</IonTitle>
-        </IonToolbar>
+        <AppHeader />
       </IonHeader>
-      <IonContent fullscreen>
-        <div className="flashcard-container">
-          <Flashcard
-            key={currentIndex}
-            front={
-              <div className="card-content">
-                <img 
-                  src={currentCard.image}
-                  alt={`ASL sign for ${currentCard.translation}`}
-                />
-              </div>
-            }
-            back={
-              <div className="card-content">
-                <h1>{currentCard.translation}</h1>
-              </div>
-            }
-          />
-          
-          <div className="flashcard-navigation">
-            <IonButton onClick={goToPrevious} aria-label="Previous card">
-              <IonIcon icon={arrowBack} />
+      <SetPanel
+              isOpen={showUserSet}
+              onClose={() => setUserSet(false)}
+            />
+        <button className={`mySetToggleButton ${showUserSet ? 'open' : ''}`} onClick={toggleSetsPanel}>
+          {showUserSet ? <img src={prev}/> : <img src={next}/> }
+        </button>
+      <IonContent fullscreen className='fullscreenBody'>
+        <div className={`mainContentWrapper ${showUserSet ? 'leftOpen' : ''} ${showProgress ? 'rightOpen' : ''}`}>
+          <div className='outerFlashcard'>
+            <div className='innerFlashcard'>
+            <IonButton fill="clear" onClick={goToPrevious} aria-label="Previous card" className="iconButton">
+              <img src={prev} />
             </IonButton>
-            <span className="card-counter">
-              {currentIndex + 1} / {shuffledCards.length}
-            </span>
-            <IonButton onClick={goToNext} aria-label="Next card">
-              <IonIcon icon={arrowForward} />
-            </IonButton>
+            <div className="flashcard-container">
+              <Flashcard
+                key={currentIndex}
+                front={
+                  <div className="card-content">
+                    <img 
+                      src={currentCard.image}
+                      alt={`ASL sign for ${currentCard.translation}`}
+                    />
+                  </div>
+                }
+                back={
+                  <div className="card-content">
+                    <img 
+                      src={currentCard.translation}
+                    />
+                  </div>
+                }
+                flipped={flipped}
+                onFlip={handleFlip}
+              />
+              <div className="flashcard-navigation">
+                <span className="card-counter">
+                  {currentIndex + 1} / {shuffledCards.length}
+                </span>
+              </div>
+            </div>
+                <IonButton fill="clear" onClick={goToNext} aria-label="Next card" className="iconButton">
+                  <img src={next}/>
+                </IonButton>
+                </div>
           </div>
-        </div>
+          <div className='bottomCard'>
+            <div className='bottomButtons'>
+              <IonButton fill="clear" className='bottomIonButton' onClick={handleFlip}>
+                <img src={flip} />
+              </IonButton>
+              <div className="dividerLine"></div>
+              <IonButton fill="clear" className='bottomIonButton'>
+              <img src={correct}/>
+              </IonButton>
+              <IonButton fill="clear" className='bottomIonButton'>
+              <img src={wrong} />
+              </IonButton>
+            </div>
+            </div>
+          </div>
+          
       </IonContent>
+      <ProgressPanel
+              isOpen={showProgress}
+              onClose={() => setShowProgress(false)}
+            />
+        <button className={`panelToggleButton ${showProgress ? 'open' : ''}`} onClick={toggleProgressPanel}>
+          {showProgress ? <img src={next}/> : <img src={prev}/> }
+        </button>
+      <AppFooter />
     </IonPage>
   );
 };

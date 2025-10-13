@@ -1,3 +1,65 @@
+.mySetToggleButton{
+  position: fixed;
+  top: 50%; 
+  left: 0; 
+  transform: translateY(-50%); 
+  background-color: #2f2f2f;
+  z-index: 1100; 
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  width: 100px;
+  height: 100px;
+  z-index: 1100;
+}
+
+.mySetToggleButton.open{
+  left:320px
+}
+
+.fullscreenBody{
+  --background: #2f2f2f;
+}
+
+.mainContentWrapper {
+  transition: transform 0.15s ease, max-width 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  position: relative;
+  z-index: 1200;
+}
+
+.mainContentWrapper.leftOpen {
+  transform: translateX(160px);
+}
+
+.mainContentWrapper.rightOpen {
+  transform: translateX(-160px); 
+}
+
+.outerFlashcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px; 
+}
+
+.innerFlashcard {
+  display: flex;
+  align-items: center;     
+  justify-content: center;
+  gap: 16px;               
+  background-color: #E8E4D8;
+  border-radius: 16px;
+  padding: 24px 20px;
+  max-width: 900px;         
+  width: 95%;
+  box-sizing: border-box;
+}
+
 .flashcard-container {
   padding: 20px;
   display: flex;
@@ -8,15 +70,135 @@
   align-items: center;
 }
 
+.iconButton {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --ripple-color: transparent;
+  --color-activated: inherit;
+  --color-focused: inherit;
+  --color-hover: inherit;
+  box-shadow: none;       
+  width: 150px;  
+  height: 150px;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden; 
+  border-radius: 50%; 
+}
+
+.iconButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+
+.flashcard-navigation{
+  color: #2f2f2f;
+}
+
 .card-content {
   text-align: center;
   font-size: 18px;
   line-height: 1.6;
-  
 }
 
 .card-content img {
   max-width: 100%;
   height: auto; 
   display: block;
+}
+
+.bottomCard {
+  width: 800px;
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.bottomButtons {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  width: 50;
+  height: 50;
+  object-fit: contain;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 8px 0;
+}
+
+.bottomIonButton {
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --ripple-color: transparent;
+  --color-activated: inherit;
+  --color-focused: inherit;
+  --color-hover: inherit;
+  box-shadow: none;
+  min-width: unset;
+  min-height: unset;
+  width: 150px;
+  height: 150px;
+  overflow: hidden; 
+  border-radius: 50%; 
+  --background: transparent;
+}
+
+.bottomIonButton img {
+  object-fit: contain;
+  padding: 0;
+  margin: 0;
+  display: block;
+}
+
+.dividerLine {
+  flex-grow: 1;
+  height: 5px;
+  background-color: #E8E4D8;
+  margin: 0 -60px; 
+  z-index: 0; 
+  border-radius: 1px;
+}
+
+.panelToggleButton {
+  position: fixed;
+  top: 50%; 
+  right: 0; 
+  transform: translateY(-50%); 
+  background-color: #2f2f2f;
+  z-index: 1100; 
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out;
+  width: 100px;
+  height: 100px;
+  z-index: 1100;
+  --background: transparent;   
+  --ripple-color: transparent;
+  --box-shadow: none;          
+  --border-style: none;   
+}
+
+.panelToggleButton.open {
+  right: 320px; 
 }

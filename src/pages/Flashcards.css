@@ -66,6 +66,11 @@
   font-weight: 600;
 }
 
+.card-content {
+  text-align: center;
+  font-size: 18px;
+  line-height: 1.6;
+}
 
 .card-content img {
   max-width: 100%;

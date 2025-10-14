@@ -3,6 +3,8 @@ import { IonApp, IonRouterOutlet, setupIonicReact } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Flashcards from './pages/Flashcards';
+import Games from './pages/Games';
+import Memory from './components/Games/Memory/Memory';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -33,6 +35,7 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
+import MemoryContainer from './components/Games/Memory/MemoryContainer';
 
 setupIonicReact();
 
@@ -48,6 +51,12 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/">
           <Redirect to="/home" />
+        </Route>
+        <Route exact path="/games">
+          <Games />
+        </Route>
+        <Route exact path="/games/memory">
+          <Memory />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

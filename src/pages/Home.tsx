@@ -1,5 +1,7 @@
 import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
+import AppHeader from '../components/layout/AppHeader';
+import AppFooter from '../components/layout/AppFooter';
 import './Home.css';
 
 const Home: React.FC = () => {
@@ -8,17 +10,9 @@ const Home: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar color="primary">
-          <IonTitle>Signable</IonTitle>
-        </IonToolbar>
+        <AppHeader />
       </IonHeader>
       <IonContent fullscreen className="ion-padding">
-        <IonHeader collapse="condense">
-          <IonToolbar>
-            <IonTitle size="large">Welcome to Signable!</IonTitle>
-          </IonToolbar>
-        </IonHeader>
-        
         <div className="home-content">
           <h1>Practice ASL with Flash Cards</h1>
           <p>Practice American Sign Language with interactive flash cards</p>
@@ -43,6 +37,7 @@ const Home: React.FC = () => {
           </IonButton>
         </div>
       </IonContent>
+      <AppFooter />
     </IonPage>
   );
 };

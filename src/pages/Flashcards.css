@@ -1,12 +1,69 @@
-.flashcard-container {
-  padding: 20px;
+.fullscreenBody {
+  --background: #2f2f2f;
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
   align-items: center;
+  justify-content: center;
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-top: env(safe-area-inset-top);
+}
+
+.mainContentWrapper {
+  transition: transform 0.15s ease, max-width 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
+  position: relative;
+  z-index: 1200;
+  padding: 1rem;
+  box-sizing: border-box;
+}
+
+.mainContentWrapper.leftOpen {
+  transform: translateX(15vw);
+}
+
+.mainContentWrapper.rightOpen {
+  transform: translateX(-15vw);
+}
+
+.outerFlashcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 100%;
+  max-width: 700px;
+}
+
+.innerFlashcard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: #E8E4D8;
+  border-radius: 16px;
+  padding: 2rem;
+  width: 100%;
+  max-width: 900px;
+  box-sizing: border-box;
+}
+
+.flashcard-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+.flashcard-navigation {
+  color: #2f2f2f;
+  font-weight: 600;
 }
 
 .card-content {
@@ -19,9 +76,130 @@
   max-width: 100%;
   height: auto;
   display: block;
+  border-radius: 8px;
 }
 
-.flashcard-navigation {
-  color: #2f2f2f;
-  font-weight: 600;
+.iconButton,
+.bottomIonButton {
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: transparent;
+  --background-hover: transparent;
+  --background-activated: transparent;
+  --ripple-color: transparent;
+  --box-shadow: none;
+  width: clamp(60px, 10vw, 120px);
+  height: clamp(60px, 10vw, 120px);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconButton img,
+.bottomIonButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+
+.bottomCard {
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.bottomButtons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 90%;
+  max-width: 700px;
+  margin: 0 auto;
+  padding: 0.5rem 0;
+}
+
+.dividerLine {
+  flex-grow: 1;
+  height: 4px;
+  background-color: #E8E4D8;
+  margin: 0 -2rem;
+  border-radius: 2px;
+}
+
+.mySetToggleButton,
+.panelToggleButton {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  z-index: 2000;
+  padding: 0;
+  width: clamp(50px, 8vw, 80px);
+  height: clamp(50px, 8vw, 80px);
+  transition: all 0.25s ease-in-out;
+}
+
+.mySetToggleButton {
+  left: 0.5rem;
+}
+
+.mySetToggleButton.open {
+  left: min(320px, 50vw);
+}
+
+.panelToggleButton {
+  right: 0.5rem;
+}
+
+.panelToggleButton.open {
+  right: min(320px, 50vw);
+}
+
+.mySetToggleButton img,
+.panelToggleButton img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+
+@media (max-width: 768px) {
+  .innerFlashcard {
+    flex-direction: column;
+    padding: 1.5rem;
+  }
+
+  .mainContentWrapper.leftOpen,
+  .mainContentWrapper.rightOpen {
+    transform: none;
+  }
+
+  .bottomCard {
+    max-width: 95%;
+  }
+
+  .dividerLine {
+    margin: 0 -1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .outerFlashcard {
+    padding: 1rem;
+  }
+
+  .flashcard-navigation {
+    font-size: 0.9rem;
+  }
+
+  .bottomButtons {
+    gap: 0.5rem;
+  }
 }

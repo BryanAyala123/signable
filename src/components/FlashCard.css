@@ -1,0 +1,69 @@
+/* FlashCard CSS */
+.flip-container {
+    perspective: 1000px;
+    width: 120px;
+    height: 150px;
+    cursor: pointer;
+}
+
+.flip-container.disabled {
+    cursor: default;
+    pointer-events: none;
+}
+
+.flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.flip-container.flipped .flipper {
+    transform: rotateY(180deg);
+}
+
+.front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.front {
+    background-color: #ccc;
+    color: #333;
+}
+
+.back {
+    background-color: #fff;
+    color: #333;
+    transform: rotateY(180deg);
+}
+
+/* Card content styling */
+.card-content {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.card-image {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+.card-letter {
+    font-size: 1rem;
+    font-weight: bold;
+    margin-top: 4px;
+}

@@ -190,7 +190,7 @@ const Memory: React.FC = () => {
                                     style={{
                                         width: '120px',
                                         height: '150px',
-                                        background: '#eee',
+                                        background: '#eeeeeeff',
                                         borderRadius: '8px',
                                         display: 'flex',
                                         flexDirection: 'column',
@@ -201,33 +201,43 @@ const Memory: React.FC = () => {
                                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                                         transition: 'transform 0.5s',
                                         transform: isFlipped ? 'rotateY(180deg)' : 'none',
-                                        backgroundColor: isFlipped ? '#fff' : '#ccc',
+                                        backgroundColor: isFlipped ? '#f3d593' : '#ccc',
                                         pointerEvents: isFlipped || disableAll ? 'none' : 'auto',
                                         padding: '10px',
                                         textAlign: 'center',
                                     }}>
                                     {isFlipped ? (
-                                        <>
-                                            {card.type === 'sign' && card.image && (
-                                                <img 
-                                                    src={card.image} 
-                                                    style={{
-                                                        width: '60px',
-                                                        height: '60px',
-                                                        objectFit: 'contain',
-                                                        marginBottom: '8px'
-                                                    }}
-                                                    onError={(e) => {
-                                                        e.currentTarget.style.display = 'none';
-                                                    }}
-                                                />
-                                            )}
-                                            <div style={{ fontSize: '2rem', fontWeight: 'bold', color: card.type === 'letter' ? '#2c3e50' : '#e74c3c', transform: 'rotateY(180deg)' }}>
-                                                {card.value}
-                                            </div>
-                                        </>
+                                    <>
+                                        {card.type === 'sign' && card.image && (
+                                        <img
+                                            src={card.image}
+                                            style={{
+                                            width: '60px',
+                                            height: '60px',
+                                            objectFit: 'contain',
+                                            marginBottom: '8px'
+                                            }}
+                                            onError={(e) => {
+                                            e.currentTarget.style.display = 'none';
+                                            }}
+                                        />
+                                        )}
+
+                                        {card.type === 'letter' && (
+                                        <div
+                                            style={{
+                                            fontSize: '2rem',
+                                            fontWeight: 'bold',
+                                            color: '#2c3e50',
+                                            transform: 'rotateY(180deg)'
+                                            }}
+                                        >
+                                            {card.value}
+                                        </div>
+                                        )}
+                                    </>
                                     ) : (
-                                        <div style={{ fontSize: '2rem' }}>❓</div>
+                                    <div style={{ fontSize: '2rem' }}>❓</div>
                                     )}
                                 </div>
                             );

@@ -28,7 +28,7 @@ const createCardsData = () => {
     return shuffleArray([
         ...randomLetters.map((letter, i) => [
             { id: i * 2 + 1, type: 'letter', value: letter, word: letter, image: null },
-            { id: i * 2 + 2, type: 'sign', value: letter, word: letter, image: `/assets/alphaSigns/${letter.toLowerCase()}.png` }
+            { id: i * 2 + 2, type: 'sign', value: letter, word: letter, image: `/assets/alphaSigns/frontCardAlphabet/handsigns_${letter.toUpperCase()}.png` }
         ]).flat()
     ]);
 };

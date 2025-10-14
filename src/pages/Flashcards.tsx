@@ -145,9 +145,8 @@ const Flashcards: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
-        <AppHeader />
-      </IonHeader>
+      <AppHeader />
+      <IonContent fullscreen className='fullscreenBody'>
       <SetPanel
               isOpen={showUserSet}
               onClose={() => setUserSet(false)}
@@ -155,7 +154,6 @@ const Flashcards: React.FC = () => {
         <button className={`mySetToggleButton ${showUserSet ? 'open' : ''}`} onClick={toggleSetsPanel}>
           {showUserSet ? <img src={prev}/> : <img src={next}/> }
         </button>
-      <IonContent fullscreen className='fullscreenBody'>
         <div className={`mainContentWrapper ${showUserSet ? 'leftOpen' : ''} ${showProgress ? 'rightOpen' : ''}`}>
           <div className='outerFlashcard'>
             <div className='innerFlashcard'>
@@ -209,15 +207,14 @@ const Flashcards: React.FC = () => {
             </div>
             </div>
           </div>
-          
-      </IonContent>
-      <ProgressPanel
+          <ProgressPanel
               isOpen={showProgress}
               onClose={() => setShowProgress(false)}
             />
         <button className={`panelToggleButton ${showProgress ? 'open' : ''}`} onClick={toggleProgressPanel}>
           {showProgress ? <img src={next}/> : <img src={prev}/> }
         </button>
+      </IonContent>
       <AppFooter />
     </IonPage>
   );

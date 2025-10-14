@@ -1,0 +1,99 @@
+.SetsPanelOverlay {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    justify-content: flex-start;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.SetsPanel {
+    position: fixed; 
+    top: 80px; 
+    left: 0;
+    width: 320px;
+    height: calc(100% - 80px - 44px);
+    background: #2f2f2f;
+    display: flex;
+    flex-direction: column;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    padding: 16px;
+    animation: slideInLeft 0.3s ease forwards;
+    z-index: 1001;
+}
+
+.panelContent{
+    --background: #2f2f2f;
+    --padding-top: 0;
+    --padding-bottom: 0;
+}
+
+.mainPanelDiv{
+    display: flex;
+    flex-direction: column; 
+    align-items: stretch;   
+    padding: 16px;
+    gap: 12px;  
+}
+
+@keyframes slideInLeft {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+}
+
+.InnerPanel{
+    background-color: #dcc78f;
+    height: 100%;
+    width: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 30px;
+    color: #E8E4D8;
+    overflow-y: auto;
+    justify-content: relative;
+}
+
+.SetspanelHeader{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #2f2f2f;
+    font-size: x-large;
+    margin-top: 20px;
+}
+
+.classNameSet{
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: larger;
+    border-radius: 10px;
+    letter-spacing: 1px;  
+    word-spacing: 3px; 
+    margin: 20px;
+}
+
+.bottomSection{
+    position: absolute;
+    bottom: 20px;
+    width: 100%;
+    align-items: center;
+}
+
+.divider{
+    background-color: #2f2f2f;
+    width: 100%;
+    height: 5px;
+}
+
+.addNewSets{
+    color: #2f2f2f;
+    font-size: larger;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}

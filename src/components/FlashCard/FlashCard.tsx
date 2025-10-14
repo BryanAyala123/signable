@@ -10,6 +10,8 @@ import './FlashCard.css';
 interface FlashCardProp {
     front: React.ReactNode;
     back: React.ReactNode;
+    flipped: boolean;            
+    onFlip: () => void;          
 }
 
 /**
@@ -18,19 +20,11 @@ interface FlashCardProp {
  * Displays a card that can be flipped by clicking on it.
  * @returns the rendered flipable card.
  */
-const Flashcard: React.FC<FlashCardProp> = ({ front, back }) => {
+const Flashcard: React.FC<FlashCardProp> = ({ front, back, flipped, onFlip }) => {
     /**
      * State of the card, if its flipped, frowing the back, or not 
      * flipped, showing the front. 
      */
-    const [flipped, setFlipped] = useState(false);
-
-    /**
-     * Handles chnanging the flip state when the card is clicked. 
-     */
-    const handleFlip = () => {
-        setFlipped(!flipped);
-    };
 
     /**
      * Renders the actual flashcard.
@@ -38,7 +32,7 @@ const Flashcard: React.FC<FlashCardProp> = ({ front, back }) => {
     return (
         <div 
             className={`flip-container ${flipped ? 'flipped' : ''}`} 
-            onClick={handleFlip} 
+            onClick={onFlip}
         >
             <div className='flipper'>
                 <div className='front'>

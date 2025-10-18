@@ -1,0 +1,10 @@
+keras
+tensorflow
+gTTS
+playsound==1.2.2
+numpy
+scikit-learn
+matplotlib
+alt-model-checkpoint
+opencv-python
+jupyter

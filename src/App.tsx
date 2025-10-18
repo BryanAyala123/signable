@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Flashcards from './pages/Flashcards';
 import Games from './pages/Games';
 import Memory from './components/Games/Memory/Memory';
+import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -57,6 +58,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/games/memory">
           <Memory />
+        </Route>
+        <Route exact path="/slr">
+            <SignLanguageRecognition />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

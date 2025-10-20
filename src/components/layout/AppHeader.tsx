@@ -20,15 +20,17 @@ const AppHeader: React.FC = () => {
                     <img src={logo} alt="Logo" style={{ height: '80px', width: '170px', marginRight: '10px' }} />
                     <input type='text' placeholder='Enter Words Here' className='headerSearch'/>
                     <div className="tabsContainer">
-                    <IonButton fill="clear"><span className='tabText' onClick={() => history.push('/home')} >Home</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/home')}><span className='tabText'>Home</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill="clear"><span className='tabText'>Flashcards</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/flashcards/0')}><span className='tabText'>Flashcards</span></IonButton>
                     <span className="separator"></span>
                     <IonButton fill="clear"><span className='tabText'>Social</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill='clear'><span className='tabText'>Games</span></IonButton>
+                    <IonButton fill='clear' onClick={() => history.push('/games')}><span className='tabText'>Games</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill='clear'><span className='tabText'>Setting</span></IonButton>
+                    <IonButton fill='clear' onClick={() => history.push('/settings')}><span className='tabText'>Setting</span></IonButton>
+                    <span className="separator"></span>
+                    <IonButton fill='clear' onClick={() => history.push('/resources')}><span className='tabText'>Resources</span></IonButton>
                     <IonAvatar className="profileIcon">
                         <img src={personCircle} alt="Profile" className='profilePicture'/>
                     </IonAvatar>

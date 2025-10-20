@@ -1,5 +1,6 @@
 import React from 'react';
 import { IonFooter, IonToolbar, IonButton } from '@ionic/react';
+import { useHistory } from 'react-router-dom';
 import './Layout.css';
 
 /**
@@ -9,18 +10,19 @@ import './Layout.css';
  * A footer that has the navigation logo
  */
 const AppHeader: React.FC = () => {
+    const history = useHistory();
     return (
         <IonFooter>
             <IonToolbar className='mainToolBarFooter'>
                 <div className='mainLayoutDiv'>
                     <div className="tabsContainer">
-                    <IonButton fill="clear"><span className='tabText'>About</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/about')}><span className='tabText'>About</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill="clear"><span className='tabText'>Join Us</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/join')}><span className='tabText'>Join Us</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill="clear"><span className='tabText'>Langauges</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/languages')}><span className='tabText'>Langauges</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill='clear'><span className='tabText'>Resources</span></IonButton>
+                    <IonButton fill='clear' onClick={() => history.push('/resources')}><span className='tabText'>Resources</span></IonButton>
                     </div>
                 </div>
         </IonToolbar>

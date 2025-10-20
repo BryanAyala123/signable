@@ -37,6 +37,9 @@ import '@ionic/react/css/palettes/dark.system.css';
 /* Theme variables */
 import './theme/variables.css';
 import MemoryContainer from './components/Games/Memory/MemoryContainer';
+import LandingPage from './pages/LandingPage/LandingPage';
+import RegisterPage from './pages/RegisterPage/RegisterPage';
+import LoginPage from './pages/RegisterPage/LoginPage';
 
 setupIonicReact();
 
@@ -51,7 +54,7 @@ const App: React.FC = () => (
           <Flashcards />
         </Route>
         <Route exact path="/">
-          <Redirect to="/home" />
+          <Redirect to="/welcome" />
         </Route>
         <Route exact path="/games">
           <Games />
@@ -61,6 +64,14 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/slr">
             <SignLanguageRecognition />
+        <Route exact path="/welcome">
+          <LandingPage />
+        </Route>
+        <Route exact path="/register">
+          <RegisterPage />
+        </Route>
+        <Route exact path="/login">
+          <LoginPage />
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

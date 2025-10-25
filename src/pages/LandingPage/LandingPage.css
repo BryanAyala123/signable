@@ -54,6 +54,18 @@
     background-color: #F1D493;
     color: #343434;
     font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.FirstBlockLeftSideButton:hover {
+    background-color: #e0c285; 
+    transform: scale(1.05); 
+}
+
+.FirstBlockLeftSideButton:active {
+    background-color: #d4b470; 
+    transform: scale(0.95); 
 }
 
 .FirstBlockRightSideImage{

@@ -2,6 +2,21 @@
     --background: #E8E4D8; 
 }
 
+.back-button {
+    position: absolute;   
+    top: 16px;           
+    left: 16px;           
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    z-index: 9999;        
+    transition: transform 0.2s ease;
+}
+
+.back-button:hover {
+    transform: scale(1.1);
+}
+
 .RegisterPageMainDiv{
     display: flex;
     justify-content: center;
@@ -121,8 +136,25 @@
     margin-bottom: 25px;
 }
 
-.signup{
+.signup {
     color: #F05248;
+    text-decoration: none; 
+    transition: all 0.2s ease; 
+}
+
+.signup:hover {
+    text-decoration: underline; 
+    cursor: pointer; 
+}
+
+.forgotLink{
+    text-decoration: none; 
+    transition: all 0.2s ease; 
+}
+
+.forgotLink:hover {
+    text-decoration: underline; 
+    cursor: pointer; 
 }
 
 .LeftSideDivTextWelcome{

@@ -1,7 +1,7 @@
 import { IonContent, IonPage} from '@ionic/react';
 import AppHeader from '../../components/layout/AppHeader';
 import AppFooter from '../../components/layout/AppFooter';
-import { Redirect } from "react-router-dom";
+import { Redirect, useHistory } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword} from '../../firebase/auth';
 import { useAuth } from '../../contexts/authContext';
 import { useState } from 'react';
@@ -26,6 +26,7 @@ const RegisterPage: React.FC = () => {
     const [isRegistering, setIsRegistering] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const router = useIonRouter();
+    const history = useHistory();
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -42,12 +43,16 @@ const RegisterPage: React.FC = () => {
                 await updateProfile(userCredential.user, { displayName: username });
                 await userCredential.user.reload();
             }
-            router.push('/login', 'forward', 'replace');
+            history.push('/home');
         } catch (err: any) {
             console.error(err);
             setErrorMessage(err.message || "Failed to register");
             setIsRegistering(false);
         }
+    };
+
+    const handleBack = () => {
+        router.push('/', 'back', 'replace'); 
     };
     
 return (
@@ -56,6 +61,12 @@ return (
             <IonContent className="MainLandingContent">
                 {userLoggedIn && <Redirect to="/home" />}
                 <div className="RegisterPageMainDiv">
+                <img
+                        src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-arrow-back-512.png'
+                        alt="Back"
+                        className="back-button"
+                        onClick={handleBack}
+                        />
                 <div className="LeftSideDiv">
                     <div className="LeftSideDivText">
                     <p className="LeftSideDivTextWelcome">Welcome to</p>

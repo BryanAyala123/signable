@@ -6,7 +6,7 @@ import emailIcon from '/public/assets/emailIcon.png';
 import unlockIcon from '/public/assets/unlockIcon.png';
 import { Redirect } from "react-router-dom";
 import { useIonRouter } from '@ionic/react';
-import { doSignInWithEmailAndPassword, doSignInWithGoogle} from '../../firebase/auth';
+import { doPasswordReset, doSignInWithEmailAndPassword, doSignInWithGoogle} from '../../firebase/auth';
 import { useAuth } from '../../contexts/authContext';
 import './RegisterPage.css';
 import { useState } from 'react';
@@ -25,6 +25,7 @@ const LoginPage: React.FC = () => {
     const [password, setPassword] = useState('')
     const [isSigninIn, setIsSigningIn] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const [resetMessage, setResetMessage] = useState("");
     const router = useIonRouter();
     const history = useHistory();
 
@@ -35,7 +36,7 @@ const LoginPage: React.FC = () => {
         setErrorMessage("");
         try {
             await doSignInWithEmailAndPassword(email, password);
-            router.push('/home', 'forward', 'replace'); 
+            history.push('/home');
         } catch (err: any) {
             console.error(err);
             setErrorMessage("Failed to sign in");
@@ -53,12 +54,37 @@ const LoginPage: React.FC = () => {
         }
     }
 
+    const handlePasswordReset = async () => {
+        if (!email) {
+            setResetMessage("Please enter your email first");
+            return;
+            }
+        
+            try {
+            await doPasswordReset(email);
+            setResetMessage("Reset email sent! Please check your inbox.");
+            } catch (err: any) {
+            console.error(err);
+            setResetMessage("Failed to send reset email");
+            }
+        };
+
+    const handleBack = () => {
+        router.push('/', 'back', 'replace'); 
+    };
+
     return (
         <IonPage>
             <AppHeader />
                 <IonContent className="MainLandingContent">
                 {userLoggedIn && <Redirect to="/home" />}
                     <div className="RegisterPageMainDiv">
+                    <img
+                        src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-arrow-back-512.png'
+                        alt="Back"
+                        className="back-button"
+                        onClick={handleBack}
+                        />
                         <div className="LeftSideDiv">
                             <div className="LeftSideDivText">
                             <p className="LeftSideDivTextWelcome">Welcome Back!</p>
@@ -97,8 +123,9 @@ const LoginPage: React.FC = () => {
                                 <input type="checkbox" id="rememberMe" className="RightSideDivBottomInfoCheck" />
                                 <label htmlFor="rememberMe">Remember me</label>
                             </div>
-                            <p className="RightSideDivBottomInfoForgot">Forgot Password?</p>
+                            <p className="RightSideDivBottomInfoForgot"> <span className="forgotLink" onClick={handlePasswordReset}>Forgot Password? </span></p>
                             </div>
+                            {resetMessage && (<p className="resetMessage">{resetMessage}</p>)}
                             <button
                             className="RightSideDivSignInButton"
                             onClick={onSubmit}

@@ -143,3 +143,8 @@
     height: 5px;
     background: url('/public/assets/signableUnderline.png') center;
 }
+
+.googleSignIn{
+    color: #E8E4D8;
+    background-color: transparent;
+}

@@ -6,7 +6,6 @@ import Flashcards from './pages/Flashcards';
 import Games from './pages/Games';
 import Memory from './components/Games/Memory/Memory';
 import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
-import VideoContainer from './components/VideoNotetaking/VideoContainer';
 import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
 
 /* Core CSS required for Ionic components to work properly */

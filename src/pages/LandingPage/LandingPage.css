@@ -1,0 +1,296 @@
+.MainLandingContent {
+    --background: #E8E4D8; 
+}
+
+.MainLandingDiv{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 70px; 
+    margin-top: 20px;
+}
+
+.FirstBlockDiv{
+    display: flex;
+    color: #EBE5DA;
+    flex-direction: row;
+    align-items: center;
+    width: 100%; 
+    max-width: 1400px; 
+    padding: 0 4vw;
+    height: auto;
+    min-height: 821px;
+    margin: 0 auto; 
+    background-color: #343434;
+    border-radius: 40px;
+    justify-content: center;
+    gap: 80px;
+
+}
+
+.FirstBlockLeftSideHeader{
+    font-size: 40px;
+    text-align: left;
+}
+
+.FirstBlockText{
+    margin: 0;
+}
+
+.FirstBlockLeftSideDisc{
+    text-align: left;
+    font-size: 20px;
+}
+
+.FirstBlockLeftSideButtons{
+    display: flex;
+    gap: 18px;
+}
+
+.FirstBlockLeftSideButton{
+    width: 160px;
+    height: 62px;
+    border-radius: 31px;
+    background-color: #F1D493;
+    color: #343434;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.FirstBlockLeftSideButton:hover {
+    background-color: #e0c285; 
+    transform: scale(1.05); 
+}
+
+.FirstBlockLeftSideButton:active {
+    background-color: #d4b470; 
+    transform: scale(0.95); 
+}
+
+.FirstBlockRightSideImage{
+    height: 724px;
+    width: 690px;
+    border-radius: 40px;
+    aspect-ratio: 345/362;
+}
+
+.SecondBlockDiv{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    height: 793px;
+    flex-shrink: 0;
+    background-color: #F1D493;
+    color: #343434;
+    text-align: left;
+}
+
+.SecondBlockDiv::before,
+.SecondBlockDiv::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 2px; 
+    height: 100%;
+    background-color: #343434; 
+}
+
+
+.SecondBlockDiv::before {
+    left: 57px;
+}
+
+
+.SecondBlockDiv::after {
+    right: 57px; 
+}
+
+.SecondBlockDivLargerHeader{
+    width: 944px;
+    height: 95px;
+    flex-shrink: 0;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
+
+.SecondBlockDivLargerHeaderText{
+    color: #343434;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.6px;
+}
+
+.SecondBlockDivLargeHeader{
+    display: flex;
+    flex-direction: column;
+    width: 940px;
+    height: 53px;
+    font-size: 40px;
+    letter-spacing: 1.6px;
+    margin-bottom: 50px;
+    font-weight: 600;
+    padding-bottom: 12px;
+}
+
+.SecondBlockDivLargeHeaderSignable{
+    position: relative;
+    color: #D84141; 
+    font-weight: 500;
+    font-size: 40px;
+    display: inline-block; 
+    line-height: 1.2; 
+}
+
+.SecondBlockDivLargeHeaderSignable::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 162px;
+    height: 3.51px;
+    background: url('/public/assets/signableUnderline.png') center;
+}
+
+.SecondBlockDivDisc{
+    display: flex;
+    flex-direction: column;
+    gap:30px;
+}
+
+.SecondBlockDivDiscContainer{
+    display: flex;
+    flex-direction: row;
+    width: max-content;
+    gap: 70px;
+}
+
+.SecondBlockDivDiscContainerImg{
+    display: flex;
+    width: 94px;
+    height: 94px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+    background-color: #F05248;
+}
+
+.SecondBlockDivDiscContainerImgIcon{
+    width: 57px;
+    height: 57px;
+    flex-shrink: 0;
+}
+
+.SecondBlockDivDiscContainerText{
+    display: flex;
+    color: #E8E4D8;
+    font-size: 20px;
+    letter-spacing: 0.8px;
+    align-items: center;
+    justify-content: center;
+    text-align: left;
+    padding-left: 38px;
+    padding-right: 38px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-shrink: 0;
+    background-color: #343434;
+    border-radius: 46px;
+}
+
+.ThirdBlockDiv{
+    display: flex;
+    flex-direction: column;
+    width: 100%; 
+    max-width: 1500px; 
+    height: auto; 
+    background-color: #343434;
+    color: #E8E4D8;
+    position: relative;
+    text-align: left;
+    align-items: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    gap: 50px;
+}
+
+.ThirdBlockDiv::before,
+.ThirdBlockDiv::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 2px; 
+    height: 100%;
+    background-color: #E8E4D8; 
+}
+
+
+.ThirdBlockDiv::before {
+    left: 57px;
+}
+
+
+.ThirdBlockDiv::after {
+    right: 57px; 
+}
+
+.ThirdBlockDivTitle{
+    width: 80vw;
+    height: 53;
+    font-size: 40px;
+    letter-spacing: 1.6px;
+}
+
+.ThirdBlockDivContent{
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+    align-items: center;
+}
+
+.ThirdBlockDivContentBlock{
+    display: flex;
+    flex-direction: column;
+    width: 513px;
+    height: 567px;
+    border-radius: 40px;
+    background-color: #E8E4D8;
+    justify-content: center;
+    align-items: center;
+}
+
+.ThirdBlockDivContentBlockHeader{
+    font-size: 20px;
+    letter-spacing: 0.8px;
+    color: #343434;
+    margin-bottom: 50px;
+}
+
+.ThirdBlockDivContentBlockImg{
+    width: 444px;
+    height: 296px;
+    aspect-ratio: 3/2;
+    border-radius: 40px;
+}
+
+.ThirdBlockDivContentBlockText{
+    color: #343434;
+    font-size: 20px;
+    letter-spacing: 0.8px;
+}
+
+.ThirdBlockDivContentPlusSignImg{
+    width: 46px;
+    height: 46px;
+}
+
+.ThirdBlockDivContentBlockText{
+    width: 413px;
+}
+
+

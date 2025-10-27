@@ -1,11 +1,22 @@
 .chatbotContainer{
-  max-width:800px;
-  margin:16px auto;
-  border:1px solid #ddd;
-  border-radius:8px;
+  /* Fullscreen-ish container but positioned below the app header.
+     --app-header-height can be provided by the app (px). Falls back to 96px. */
+  --app-header-height: 40px;
+  position:fixed;
+  left:0;
+  right:0;
+  top:var(--app-header-height);
+  width:100%;
+  height:calc(100vh - var(--app-header-height));
+  margin:0;
+  border:0;
+  border-radius:0;
   display:flex;
   flex-direction:column;
   background:#fff;
+  /* keep header above the chat */
+  z-index:9000;
+  box-shadow:0 4px 18px rgba(0,0,0,0.06);
 }
 .chatHeader{
   padding:12px 16px;
@@ -13,17 +24,52 @@
   font-weight:600;
 }
 .messages{
-  min-height:160px;
-  max-height:420px;
+  flex:1; /* fill remaining vertical space */
+  min-height:0; /* allow flex children to shrink properly */
   overflow:auto;
-  padding:12px;
+  padding:16px;
+  background:linear-gradient(180deg, #fff, #fafafa);
+  position:relative;
 }
 .message{ margin:8px 0; display:flex; }
 .message.user{ justify-content:flex-end }
 .message.bot{ justify-content:flex-start }
 .bubble{ max-width:70%; padding:8px 12px; border-radius:16px; background:#636262 }
 .message.user .bubble{ background:#0f6ccf }
-.chatControls{ display:flex; gap:8px; padding:12px; border-top:1px solid #eee }
-.chatInput{ flex:1; padding:8px 12px; border-radius:8px; border:1px solid #ccc }
-.chatSend{ padding:8px 12px; border-radius:8px; border:none; background:#1976d2; color:white }
-.empty{ color:#666 }
+.bubble p{ margin:0 0 6px 0; line-height:1.4; font-size:0.95rem; }
+.bubble a{ color:inherit; text-decoration:underline; }
+.chatControls{ display:flex; gap:8px; padding:12px; border-top:1px solid #eee; align-items:center; background:rgba(255,255,255,0.9) }
+.chatInput{ flex:1; padding:10px 14px; border-radius:8px; border:1px solid #ccc }
+.chatSend{ padding:10px 14px; border-radius:8px; border:none; background:#1976d2; color:white; cursor:pointer }
+.empty{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  color:#9aa0a6;
+  font-size:1rem;
+  text-align:center;
+  pointer-events:none;
+}
+
+/* Typing indicator (three dots) */
+.typingMessage { pointer-events: none; }
+.typingBubble { background: #f1f1f1; color: #333; padding: 8px 12px; border-radius: 16px; }
+.typingDots { display:inline-flex; gap:6px; align-items:center; }
+.typingDots .dot { width:8px; height:8px; background:#999; border-radius:50%; display:inline-block; opacity:0.25; transform:translateY(0); }
+.typingDots .dot:nth-child(1){ animation:dotBounce 1s infinite 0s; }
+.typingDots .dot:nth-child(2){ animation:dotBounce 1s infinite 0.12s; }
+.typingDots .dot:nth-child(3){ animation:dotBounce 1s infinite 0.24s; }
+@keyframes dotBounce {
+  0% { transform: translateY(0); opacity:0.25 }
+  30% { transform: translateY(-6px); opacity:1 }
+  60% { transform: translateY(0); opacity:0.5 }
+  100% { transform: translateY(0); opacity:0.25 }
+}
+
+/* Small responsive tweaks */
+@media (max-width:640px){
+  .bubble{ max-width:85%; }
+  .chatHeader{ padding:10px 12px }
+  .chatControls{ padding:10px }
+}

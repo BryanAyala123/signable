@@ -1,0 +1,13 @@
+# Core Firebase SDK
+firebase-functions
+firebase-admin
+
+# Machine Learning & Data Processing
+numpy
+Pillow
+keras
+h5py
+tensorflow
+
+# TTS Generation
+gTTS

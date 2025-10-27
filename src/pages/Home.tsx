@@ -2,10 +2,22 @@ import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonButton } from 
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../components/layout/AppHeader';
 import AppFooter from '../components/layout/AppFooter';
+import { useAuth } from '../contexts/authContext';
+import { doSignOut } from '../firebase/auth';
+import { useIonRouter } from '@ionic/react';
 import './Home.css';
 
 const Home: React.FC = () => {
   const history = useHistory();
+  const { currentUser, loading } = useAuth();
+  const router = useIonRouter();
+
+  const handleLogout = async () => {
+    await doSignOut();
+    router.push('/', 'forward', 'replace'); // send back to login
+  };
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <IonPage>
@@ -14,6 +26,7 @@ const Home: React.FC = () => {
       </IonHeader>
       <IonContent fullscreen className="ion-padding">
         <div className="home-content">
+          <h1>Welcome to Signable: {currentUser?.displayName}!</h1>
           <h1>Practice ASL with Flash Cards</h1>
           <p>Practice American Sign Language with interactive flash cards</p>
           
@@ -60,6 +73,9 @@ const Home: React.FC = () => {
             Start Notetaking
           </IonButton>
         </div>
+        <IonButton expand="block" onClick={handleLogout}>
+            Log Out
+          </IonButton>
       </IonContent>
       <AppFooter />
     </IonPage>

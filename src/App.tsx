@@ -41,6 +41,7 @@ import MemoryContainer from './components/Games/Memory/MemoryContainer';
 import LandingPage from './pages/LandingPage/LandingPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import LoginPage from './pages/RegisterPage/LoginPage';
+import PrivateRoute from './components/routes/ProtectedRoute';
 
 setupIonicReact();
 
@@ -48,9 +49,7 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
+        <PrivateRoute exact path="/home" component={Home} />
         <Route exact path="/flashcards/:deckID">
           <Flashcards />
         </Route>

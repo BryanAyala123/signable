@@ -15,6 +15,7 @@ import correct from '/public/assets/Buttons/correctButton.png';
 import wrong from '/public/assets/Buttons/wrongButton.png';
 import ProgressPanel from '../components/ProgressPanel/ProgressPanel';
 import SetPanel from '../components/SetSelection/SetSelection';
+import { useAuth } from '../contexts/authContext';
 /**
  * Deck configs
  */
@@ -30,6 +31,12 @@ const DEFAULT_DECK_ID = DECK_IDS.ALPHABET;
 interface Card {
   image: string;
   translation: string;
+  weight: number;
+}
+
+interface CardProgress {
+  mastered: boolean;
+  learning: boolean;
 }
 
 /**
@@ -42,6 +49,29 @@ const shuffleArray = <T,>(array: T[]): T[] => {
     [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
   }
   return shuffled;
+};
+
+const calculateWeights = (cards: Card[], progress: Record<number, CardProgress>) => {
+  return cards.map((card, index) => {
+    const cardProg = progress[index] || { mastered: false, learning: false };
+
+    if (cardProg.mastered) return { ...card, weight: 1 };  
+    if (cardProg.learning) return { ...card, weight: 10 }; 
+    return { ...card, weight: 5 };  
+  });
+};
+
+const getWeightedRandomIndex = (cards: Card[]): number => {
+  const totalWeight = cards.reduce((sum, card) => sum + card.weight, 0);
+  const rand = Math.random() * totalWeight;
+  let runningSum = 0;
+
+  for (let i = 0; i < cards.length; i++) {
+    runningSum += cards[i].weight;
+    if (rand < runningSum) return i;
+  }
+
+  return 0; 
 };
 
 /**
@@ -62,6 +92,54 @@ const Flashcards: React.FC = () => {
   const [flipped, setFlipped] = useState(false);
   const [showProgress, setShowProgress] = useState(false);
   const [showUserSet, setUserSet] = useState(false);
+
+  const [cardProgress, setCardProgress] = useState<Record<string, CardProgress>>({});
+  const [masteredTotal, setMasteredTotal] = useState(0);
+  const [learningTotal, setLearningTotal] = useState(0);
+  const { loading } = useAuth();
+
+  const markMastered = () => {
+    setCardProgress(prev => {
+      const current = prev[currentIndex] || { mastered: false, learning: false };
+      let newMastered = masteredTotal;
+      let newLearning = learningTotal;
+  
+      if (!current.mastered) {
+        newMastered += 1;
+        if (current.learning) newLearning -= 1; 
+      }
+  
+      setMasteredTotal(newMastered);
+      setLearningTotal(newLearning);
+  
+      return {
+        ...prev,
+        [currentIndex]: { mastered: true, learning: false }
+      };
+    });
+  };
+
+  const markLearning = () => {
+    setCardProgress(prev => {
+      const current = prev[currentIndex] || { mastered: false, learning: false };
+      let newMastered = masteredTotal;
+      let newLearning = learningTotal;
+  
+      if (!current.learning) {
+        newLearning += 1;
+        if (current.mastered) newMastered -= 1; 
+      }
+  
+      setMasteredTotal(newMastered);
+      setLearningTotal(newLearning);
+  
+      return {
+        ...prev,
+        [currentIndex]: { mastered: false, learning: true }
+      };
+    });
+  };
+
 
   const handleFlip = () => {
     setFlipped(!flipped);
@@ -85,8 +163,10 @@ const Flashcards: React.FC = () => {
    * Move to the next card, wrapping to the beginning if at the end
    */
   const goToNext = useCallback(() => {
-    setCurrentIndex((prev) => (prev + 1) % shuffledCards.length);
-  }, [shuffledCards.length]);
+    const weightedCards = calculateWeights(shuffledCards, cardProgress);
+    const nextIndex = getWeightedRandomIndex(weightedCards);
+    setCurrentIndex(nextIndex);
+  }, [shuffledCards, cardProgress]);
 
   /**
    * Move to the previous card, wrapping to the end if at the beginning
@@ -104,7 +184,8 @@ const Flashcards: React.FC = () => {
      */
     const alphabetCards: Card[] = alphaImgs.map((imagePath, index) => ({
       image: imagePath,
-      translation: alphaTranslations[index]
+      translation: alphaTranslations[index],
+      weight: 5
     }));
 
     /**
@@ -142,6 +223,8 @@ const Flashcards: React.FC = () => {
   }
 
   const currentCard = shuffledCards[currentIndex];
+
+  if (loading) return <p>Loading...</p>;
 
   return (
     <IonPage>
@@ -181,11 +264,6 @@ const Flashcards: React.FC = () => {
                 flipped={flipped}
                 onFlip={handleFlip}
               />
-              <div className="flashcard-navigation">
-                <span className="card-counter">
-                  {currentIndex + 1} / {shuffledCards.length}
-                </span>
-              </div>
             </div>
                 <IonButton fill="clear" onClick={goToNext} aria-label="Next card" className="iconButton">
                   <img src={next}/>
@@ -198,10 +276,10 @@ const Flashcards: React.FC = () => {
                 <img src={flip} />
               </IonButton>
               <div className="dividerLine"></div>
-              <IonButton fill="clear" className='bottomIonButton'>
+              <IonButton fill="clear" className='bottomIonButton' onClick={markMastered}>
               <img src={correct}/>
               </IonButton>
-              <IonButton fill="clear" className='bottomIonButton'>
+              <IonButton fill="clear" className='bottomIonButton' onClick={markLearning}>
               <img src={wrong} />
               </IonButton>
             </div>
@@ -210,6 +288,9 @@ const Flashcards: React.FC = () => {
           <ProgressPanel
               isOpen={showProgress}
               onClose={() => setShowProgress(false)}
+              masteredTotal={masteredTotal}
+              learningTotal={learningTotal}
+              total={shuffledCards.length}
             />
         <button className={`panelToggleButton ${showProgress ? 'open' : ''}`} onClick={toggleProgressPanel}>
           {showProgress ? <img src={next}/> : <img src={prev}/> }

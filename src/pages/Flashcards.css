@@ -69,7 +69,12 @@
 .card-content {
   text-align: center;
   font-size: 18px;
+<<<<<<< Updated upstream
   line-height: 1.6;
+=======
+  line-height: 1.6px;
+  
+>>>>>>> Stashed changes
 }
 
 .card-content img {

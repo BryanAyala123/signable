@@ -36,7 +36,6 @@ const LoginPage: React.FC = () => {
         setErrorMessage("");
         try {
             await doSignInWithEmailAndPassword(email, password);
-            history.push('/home');
         } catch (err: any) {
             console.error(err);
             setErrorMessage("Failed to sign in");

@@ -14,7 +14,7 @@ const Home: React.FC = () => {
 
   const handleLogout = async () => {
     await doSignOut();
-    router.push('/', 'forward', 'replace'); // send back to login
+    router.push('/login', 'forward', 'replace'); 
   };
 
   if (loading) return <p>Loading...</p>;

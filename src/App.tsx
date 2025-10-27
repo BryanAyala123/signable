@@ -4,6 +4,7 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Flashcards from './pages/Flashcards';
 import Games from './pages/Games';
+import Resources from './pages/Resources';
 import Memory from './components/Games/Memory/Memory';
 import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
 import './theme/variables.css';
@@ -57,6 +58,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/games">
           <Games />
+        </Route>
+        <Route exact path="/resources">
+          <Resources />
         </Route>
         <Route exact path="/games/memory">
           <Memory />

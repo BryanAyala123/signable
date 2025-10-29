@@ -17,7 +17,7 @@ import {
 import axios from "axios";
 
 const MODEL_URL = "https://recognize-sign-ft6ax3huaq-uc.a.run.app";
-const ROI_SIZE = 226;
+const ROI_SIZE = 250;
 const ROI_OFFSET = 24;
 
 const SignLanguageRecognition: React.FC = () => {
@@ -78,15 +78,34 @@ const SignLanguageRecognition: React.FC = () => {
   };
 
   const extractRoiPngBase64 = (ctx: CanvasRenderingContext2D): string | null => {
-    const roiCanvas = document.createElement("canvas");
-    roiCanvas.width = ROI_SIZE;
-    roiCanvas.height = ROI_SIZE;
-    const roiCtx = roiCanvas.getContext("2d", { willReadFrequently: true });
-    if (!roiCtx) return null;
+    // 1) Grab the ROI pixels from the main canvas
     const roiData = ctx.getImageData(ROI_OFFSET, ROI_OFFSET, ROI_SIZE, ROI_SIZE);
-    roiCtx.putImageData(roiData, 0, 0);
-    return roiCanvas.toDataURL("image/png", 0.9).split(",")[1];
-  };
+
+    // 2) Put those pixels onto a source offscreen canvas
+    const src = document.createElement("canvas");
+    src.width = ROI_SIZE;
+    src.height = ROI_SIZE;
+    const sctx = src.getContext("2d", { willReadFrequently: true });
+    if (!sctx) return null;
+    sctx.putImageData(roiData, 0, 0);
+
+    // 3) Draw the source onto a destination canvas with a horizontal flip
+    const dest = document.createElement("canvas");
+    dest.width = ROI_SIZE;
+    dest.height = ROI_SIZE;
+    const dctx = dest.getContext("2d", { willReadFrequently: true });
+    if (!dctx) return null;
+
+    dctx.save();
+    dctx.translate(ROI_SIZE, 0); // move origin to right edge
+    dctx.scale(-1, 1);           // flip horizontally
+    dctx.drawImage(src, 0, 0);   // draw the ROI
+    dctx.restore();
+
+    // 4) Return base64 PNG (strip prefix)
+    return dest.toDataURL("image/png", 0.9).split(",")[1];
+};
+
 
   const recognizeSignOnServer = async (base64Image: string) => {
     try {
@@ -142,7 +161,7 @@ const SignLanguageRecognition: React.FC = () => {
           recognizeSignOnServer(base64Image).then((prediction) => {
             const letter = prediction === "0" ? " " : prediction;
             setPrevLetter(letter);
-            setRecognizedText((prev) => prev + letter);
+            setRecognizedText(letter);
             presentToast({ message: `Detected: ${letter}`, duration: 1000 });
           });
         }
@@ -160,6 +179,25 @@ const SignLanguageRecognition: React.FC = () => {
       startContinuousLoop(); // start auto recognition
     }
   };
+
+  const handleProcessedImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+        // strip the data URL prefix
+        const base64 = (reader.result as string).split(",")[1];
+        const prediction = await recognizeSignOnServer(base64);
+
+        const letter = prediction === "0" ? " " : prediction;
+        setPrevLetter(letter);
+        setRecognizedText(letter);
+        presentToast({ message: `Detected: ${letter}`, duration: 2000 });
+    };
+    reader.readAsDataURL(file);
+  };
+
 
   return (
     <IonPage>
@@ -304,6 +342,20 @@ const SignLanguageRecognition: React.FC = () => {
                   </IonButton>
                 )}
               </div>
+
+              <IonButton>
+            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                Upload Processed Image
+            </label>
+            <input
+                id="fileInput"
+                type="file"
+                accept="image/*"
+                style={{ display: "none" }}
+                onChange={handleProcessedImageUpload}
+            />
+            </IonButton>
+
             </IonCol>
 
             <IonCol size="12" sizeMd="5">

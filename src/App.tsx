@@ -68,7 +68,6 @@ const App: React.FC = () => (
         <Route exact path="/slr">
             <SignLanguageRecognition />
         </Route>
-            </Route>
         <Route exact path="/notes">
             <VideoNotetaking />
             </Route>

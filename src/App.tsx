@@ -4,8 +4,11 @@ import { IonReactRouter } from '@ionic/react-router';
 import Home from './pages/Home';
 import Flashcards from './pages/Flashcards';
 import Games from './pages/Games';
+import Resources from './pages/Resources';
 import Memory from './components/Games/Memory/Memory';
 import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
+import './theme/variables.css';
+import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -40,6 +43,7 @@ import MemoryContainer from './components/Games/Memory/MemoryContainer';
 import LandingPage from './pages/LandingPage/LandingPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import LoginPage from './pages/RegisterPage/LoginPage';
+import PrivateRoute from './components/routes/ProtectedRoute';
 
 setupIonicReact();
 
@@ -47,17 +51,16 @@ const App: React.FC = () => (
   <IonApp>
     <IonReactRouter>
       <IonRouterOutlet>
-        <Route exact path="/home">
-          <Home />
-        </Route>
-        <Route exact path="/flashcards/:deckID">
-          <Flashcards />
-        </Route>
+        <PrivateRoute exact path="/home" component={Home} />
+        <PrivateRoute exact path="/flashcards/:deckID" component={Flashcards} />
         <Route exact path="/">
           <Redirect to="/welcome" />
         </Route>
         <Route exact path="/games">
           <Games />
+        </Route>
+        <Route exact path="/resources">
+          <Resources />
         </Route>
         <Route exact path="/games/memory">
           <Memory />
@@ -65,6 +68,10 @@ const App: React.FC = () => (
         <Route exact path="/slr">
             <SignLanguageRecognition />
         </Route>
+            </Route>
+        <Route exact path="/notes">
+            <VideoNotetaking />
+            </Route>
         <Route exact path="/welcome">
           <LandingPage />
         </Route>

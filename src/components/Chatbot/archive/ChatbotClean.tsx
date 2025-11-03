@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef, useLayoutEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Chatbot.css';
-import { runSearch } from '../../services/semanticSearch';
 
 type Message = {
   id: number;
@@ -10,37 +9,21 @@ type Message = {
 
 type ChatbotProps = {
   model?: any;
-  placeholder?: string;
 };
-
 
 const SENTENCES_PER_PARAGRAPH = 2;
 
-const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
+const ChatbotClean: React.FC<ChatbotProps> = ({ model }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const [localModel, setLocalModel] = useState<any | undefined>(model);
-  const messagesEndRef = useRef<HTMLDivElement | null>(null);
-  const messagesContainerRef = useRef<HTMLDivElement | null>(null);
-  const firstScrollDoneRef = useRef(false);
-  const typingTimersRef = useRef<number[]>([]);
 
   useEffect(() => {
     if (model) setLocalModel(model);
   }, [model]);
 
-  // cleanup any pending typing timers when component unmounts
-  useEffect(() => {
-    return () => {
-      typingTimersRef.current.forEach((t) => clearTimeout(t));
-      typingTimersRef.current = [];
-    };
-  }, []);
 
-  // (No initial greeting) -- start with an empty conversation; messages will be
-  // added when the user sends input or AI responds.
 
   const splitIntoParagraphs = (text: string): string[] => {
     if (!text) return [];
@@ -67,7 +50,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
       links.push({ label: m[1], url: m[2] });
       consumedRanges.push([m.index, m.index + m[0].length]);
     }
-    const urlRegex = /https?:\/\/[^\s)]+/g;
+      const urlRegex = /https?:\/\/[^\s)]+/g;
     while ((m = urlRegex.exec(text)) !== null) {
       const start = m.index;
       const end = m.index + m[0].length;
@@ -80,7 +63,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
   const renderParagraph = (paragraph: string, idx: number) => {
     const links = extractLinks(paragraph);
     const cleaned = paragraph.replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '$1');
-    const cleanedFinal = cleaned.replace(/https?:\/\/[^\s)]+/g, '').trim();
+      const cleanedFinal = cleaned.replace(/https?:\/\/[^\s)]+/g, '').trim();
     return (
       <div key={idx} className="paragraphBlock">
         {cleanedFinal ? <p className="chatParagraph">{cleanedFinal}</p> : null}
@@ -98,70 +81,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
     return <div className="bubbleContent">{paragraphs.map((p, i) => renderParagraph(p, i))}</div>;
   };
 
-  // Animate bot responses with a typewriter effect so text appears to be typed.
-  const animateBotMessage = (fullText: string) => {
-    const id = Date.now() + Math.floor(Math.random() * 1000);
-    // when typing animation starts, hide the loading indicator (isSending)
-    // but mark that we're in the typing phase so inputs remain disabled until
-    // typing finishes.
-    setIsSending(false);
-    setIsTyping(true);
-
-    // clear any existing typing timers (avoid overlapping animations)
-    typingTimersRef.current.forEach((t) => clearTimeout(t));
-    typingTimersRef.current = [];
-
-    // add an empty bot message first
-    setMessages((m) => [...m, { id, from: 'bot', text: '' }]);
-    // faster fixed speed per character (ms). Lower = faster typing.
-    const speedPerChar = 3;
-
-    for (let i = 1; i <= fullText.length; i++) {
-      const t = window.setTimeout(() => {
-        setMessages((m) => m.map((msg) => (msg.id === id ? { ...msg, text: fullText.slice(0, i) } : msg)));
-        if (i === fullText.length) {
-          // finished typing
-          setIsTyping(false);
-        }
-      }, i * speedPerChar);
-      typingTimersRef.current.push(t);
-    }
-  };
-
-  // Scroll conversation to bottom whenever messages change (start at bottom on mount)
-  // Only auto-scroll if the user is already near the bottom (so reading older messages
-  // isn't interrupted). On the first render we always jump to bottom.
-  useLayoutEffect(() => {
-    const container = messagesContainerRef.current;
-    if (!container) return;
-
-    const THRESHOLD_PX = 120; // how close to the bottom we'll auto-scroll
-
-    const isAtBottom = () => {
-      // distance from bottom
-      const distance = container.scrollHeight - (container.scrollTop + container.clientHeight);
-      return distance <= THRESHOLD_PX;
-    };
-
-    const shouldAuto = firstScrollDoneRef.current ? isAtBottom() : true;
-    if (!shouldAuto) {
-      // user has scrolled up; don't force-scroll them to bottom
-      return;
-    }
-
-    const behavior: ScrollBehavior = firstScrollDoneRef.current ? 'smooth' : 'auto';
-    try {
-      container.scrollTo({ top: container.scrollHeight, behavior });
-    } catch (e) {
-      container.scrollTop = container.scrollHeight;
-    }
-    firstScrollDoneRef.current = true;
-  }, [messages, isSending]);
-
-  // No special per-message exit animation; keep all messages in DOM so the
-  // user can scroll up to see older messages. We rely on container scrolling
-  // to bring the newest message into view.
-
   const send = async () => {
     if (!input.trim() || isSending) return;
     const text = input.trim();
@@ -169,19 +88,6 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
     setMessages((m) => [...m, userMsg]);
     setInput('');
     setIsSending(true);
-
-    // run semantic search to fetch related documents and show them as a quick bot message
-    try {
-      const docs = await runSearch(text);
-      if (docs && docs.length) {
-        const list = docs.slice(0, 5).map((d) => `- ${d.title ?? d.name ?? d.id}`).join('\n');
-        const botMsg: Message = { id: Date.now() + 5, from: 'bot', text: `I found these resources:\n\n${list}` };
-        // add the quick resources message immediately (non-animated)
-        setMessages((m) => [...m, botMsg]);
-      }
-    } catch (err) {
-      console.warn('semantic search failed', err);
-    }
 
     let usedModel = localModel ?? model;
     if (!usedModel) {
@@ -212,7 +118,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
           throw new Error('Model does not expose generate/generateContent');
         }
 
-  let botText = 'Sorry, no response from the model.';
+        let botText = 'Sorry, no response from the model.';
         if (res) {
           if (res.response && typeof res.response.text === 'function') {
             botText = res.response.text();
@@ -229,19 +135,20 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
           }
         }
 
-        // animate the bot response so it types out
-        animateBotMessage(botText);
+        const botMsg: Message = { id: Date.now() + 1, from: 'bot', text: botText };
+        setMessages((m) => [...m, botMsg]);
       } catch (err) {
         console.error('AI error', err);
-        // animate the error message as well
-        animateBotMessage('Sorry — the AI failed to respond.');
+        const botMsg: Message = { id: Date.now() + 2, from: 'bot', text: 'Sorry — the AI failed to respond.' };
+        setMessages((m) => [...m, botMsg]);
       } finally {
-        // isSending will be cleared once typing animation completes
+        setIsSending(false);
       }
     } else {
       setTimeout(() => {
-        // simulate an AI reply and animate it
-        animateBotMessage('This is a placeholder response from the AI assistant.');
+        const botMsg: Message = { id: Date.now() + 1, from: 'bot', text: 'This is a placeholder response from the AI assistant.' };
+        setMessages((m) => [...m, botMsg]);
+        setIsSending(false);
       }, 700);
     }
   };
@@ -249,30 +156,13 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
   return (
     <div className="chatbotContainer">
       <div className="chatHeader">AI Assistant</div>
-  <div className="messages" ref={messagesContainerRef}>
-        {messages.length === 0 && !input.trim() && (
-          <div className="empty">{placeholder ?? 'Ask me anything about signing or the site.'}</div>
-        )}
-
+      <div className="messages">
+        {messages.length === 0 && <div className="empty">Ask me anything about signing or the site.</div>}
         {messages.map((msg) => (
           <div key={msg.id} className={`message ${msg.from}`}>
             <div className="bubble">{msg.from === 'bot' ? renderBubbleContent(msg.text) : <span>{msg.text}</span>}</div>
           </div>
         ))}
-
-        {isSending && (
-          <div className={`message bot typingMessage`}>
-            <div className="bubble typingBubble">
-              <span className="typingDots" aria-hidden>
-                <span className="dot" />
-                <span className="dot" />
-                <span className="dot" />
-              </span>
-            </div>
-          </div>
-        )}
-        {/* anchor to keep scroll at bottom */}
-        <div ref={messagesEndRef} />
       </div>
       <div className="chatControls">
         <input
@@ -281,12 +171,12 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
           onKeyDown={(e) => { if (e.key === 'Enter') send(); }}
-          disabled={isSending || isTyping}
+          disabled={isSending}
         />
-        <button className="chatSend" onClick={send} disabled={isSending || isTyping}>{isSending || isTyping ? '...' : 'Send'}</button>
+        <button className="chatSend" onClick={send} disabled={isSending}>{isSending ? '...' : 'Send'}</button>
       </div>
     </div>
   );
 };
 
-export default Chatbot;
+export default ChatbotClean;

@@ -10,12 +10,13 @@ type Message = {
 type ChatbotProps = {
   model?: any;
   placeholder?: string;
+  miniMode?: boolean;
 };
 
 
 const SENTENCES_PER_PARAGRAPH = 2;
 
-const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
+const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder, miniMode }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isSending, setIsSending] = useState(false);
@@ -233,9 +234,9 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
   };
 
   return (
-    <div className="chatbotContainer">
-      <div className="chatHeader">AI Assistant</div>
-  <div className="messages" ref={messagesContainerRef}>
+    <div className={`chatbotContainer ${miniMode ? 'mini' : ''}`}>
+      {!miniMode && <div className="chatHeader">AI Assistant</div>}
+  <div className={`messages ${miniMode ? 'mini' : ''}`} ref={messagesContainerRef}>
         {messages.length === 0 && !input.trim() && (
           <div className="empty">{placeholder ?? 'Ask me anything about signing or the site.'}</div>
         )}
@@ -262,14 +263,14 @@ const Chatbot: React.FC<ChatbotProps> = ({ model, placeholder }) => {
       </div>
       <div className="chatControls">
         <input
-          className="chatInput"
+          className={`chatInput ${miniMode ? 'mini' : ''}`}
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Type a message..."
           onKeyDown={(e) => { if (e.key === 'Enter') send(); }}
           disabled={isSending || isTyping}
         />
-        <button className="chatSend" onClick={send} disabled={isSending || isTyping}>{isSending || isTyping ? '...' : 'Send'}</button>
+        <button className={`chatSend ${miniMode ? 'mini' : ''}`} onClick={send} disabled={isSending || isTyping}>{isSending || isTyping ? '...' : 'Send'}</button>
       </div>
     </div>
   );

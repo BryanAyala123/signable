@@ -24,7 +24,7 @@ const AppHeader: React.FC = () => {
                     <span className="separator"></span>
                     <IonButton fill="clear" onClick={() => history.push('/flashcards/0')}><span className='tabText'>Flashcards</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill="clear"><span className='tabText'>Social</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/add-event')}><span className='tabText'>Social</span></IonButton>
                     <span className="separator"></span>
                     <IonButton fill='clear' onClick={() => history.push('/games')}><span className='tabText'>Games</span></IonButton>
                     <span className="separator"></span>

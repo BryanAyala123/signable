@@ -14,6 +14,17 @@ window.matchMedia = window.matchMedia || function() {
   };
 };
 
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  disconnect() {}
+  observe() {}
+  takeRecords() {
+    return [];
+  }
+  unobserve() {}
+} as any;
+
 // Mock Firebase Analytics to prevent "window is not defined" errors
 vi.mock('firebase/analytics', () => ({
   getAnalytics: vi.fn(),

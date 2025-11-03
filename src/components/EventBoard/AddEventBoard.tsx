@@ -14,7 +14,7 @@ import {
     IonList,
 } from '@ionic/react';
 // Import Admin SDK
-import { getDatabase, ref, set } from "firebase/database";
+import { getDatabase, push, ref, set } from "firebase/database";
 
 
 interface EventFormData {
@@ -46,7 +46,7 @@ const AddEventBoard: React.FC = () => {
         setForm(initialFormState);
         console.log('Event Data:', form);
         const db = getDatabase();
-        set(ref(db, 'events/' + 1), {
+        push(ref(db, 'events'), {
             title: form.title,
             date: form.date,
             location: form.location,

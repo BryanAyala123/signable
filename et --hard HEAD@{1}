@@ -1,0 +1,31 @@
+[33m91f811c[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mAlphabetSLR[m[33m, [m[1;31morigin/AlphabetSLR[m[33m)[m HEAD@{0}: pull: Fast-forward
+[33m89437ca[m HEAD@{1}: commit: mirrored captured images
+[33m2884396[m HEAD@{2}: commit: fixed typo in App.tsx
+[33mdcabe5f[m HEAD@{3}: pull: Merge made by the 'ort' strategy.
+[33m3bea758[m HEAD@{4}: commit: continuing development on slr, increase accuracry through better image processing and continous feed
+[33m793125b[m HEAD@{5}: commit: made the recognize_sign cloud funciton, updated signlanguagerecognition.tsx to capture a frame and send that to the cloud funciton for processsing, added a button to home.tsx to be directed to the sign recognition page.
+[33m0b39a98[m HEAD@{6}: reset: moving to HEAD
+[33m0b39a98[m HEAD@{7}: reset: moving to HEAD
+[33m0b39a98[m HEAD@{8}: reset: moving to HEAD
+[33m0b39a98[m HEAD@{9}: commit: made it so timer works properly, as well as the capture and so it only captures one letter at a time
+[33m17fa195[m HEAD@{10}: reset: moving to HEAD~1
+[33m68b3a14[m HEAD@{11}: checkout: moving from AlphabetSLR to AlphabetSLR
+[33m68b3a14[m HEAD@{12}: commit: trying to implement slr
+[33m17fa195[m HEAD@{13}: checkout: moving from main to AlphabetSLR
+[33m6e2a617[m[33m ([m[1;32mmain[m[33m)[m HEAD@{14}: pull: Fast-forward
+[33m649df65[m HEAD@{15}: checkout: moving from adrian/featureFlashCard-73 to main
+[33m842cecd[m[33m ([m[1;31morigin/adrian/featureFlashCard-73[m[33m, [m[1;32madrian/featureFlashCard-73[m[33m)[m HEAD@{16}: commit: Feat. Flashcard implementation done
+[33m649df65[m HEAD@{17}: checkout: moving from main to adrian/featureFlashCard-73
+[33m649df65[m HEAD@{18}: pull: Fast-forward
+[33mde982e5[m HEAD@{19}: pull: Fast-forward
+[33m99379cd[m HEAD@{20}: checkout: moving from test-feature to main
+[33m6ef4a3f[m[33m ([m[1;31morigin/test-feature[m[33m)[m HEAD@{21}: commit: added a personal touch
+[33mb503978[m HEAD@{22}: commit: added a testable test feature
+[33md4cf5cf[m HEAD@{23}: commit: added a test feature
+[33m99379cd[m HEAD@{24}: checkout: moving from main to test-feature
+[33m99379cd[m HEAD@{25}: pull: Fast-forward
+[33md7c53c7[m HEAD@{26}: commit: added a line in merge to test
+[33m3a1ad48[m HEAD@{27}: commit: Implemented firebase hosting and github actions for ci/cd
+[33m2292526[m HEAD@{28}: commit: Updated package.json, vite dependencies, should lead to no issues
+[33md1b3584[m HEAD@{29}: pull: Fast-forward
+[33mf99f99b[m HEAD@{30}: clone: from https://github.com/BryanAyala123/signable.git

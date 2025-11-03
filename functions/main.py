@@ -42,7 +42,7 @@ def load_model_if_needed():
         try:
             print("🧠 Loading ASL classifier model...")
             import keras
-            model_path = os.path.join(os.path.dirname(__file__), "asl_classifier.h5")
+            model_path = os.path.join(os.path.dirname(__file__), "asl_classified.h5")
             MODEL = keras.models.load_model(model_path)
             print("✅ ASL classifier model loaded successfully.")
         except Exception as exc:
@@ -99,15 +99,17 @@ def _otsu_threshold(image: np.ndarray) -> float:
     return threshold
 
 def _preprocess_with_cv2(gray: np.ndarray) -> np.ndarray:
+    """Match the preprocessing used during ASL model training."""
     blur = cv2.GaussianBlur(gray, (5, 5), 2)
-    adaptive = cv2.adaptiveThreshold(
+    th3 = cv2.adaptiveThreshold(
         blur, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
         cv2.THRESH_BINARY_INV, 11, 2
     )
-    _, thresholded = cv2.threshold(
-        adaptive, 70, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
+    _, res = cv2.threshold(
+        th3, 70, 255, cv2.THRESH_BINARY_INV + cv2.THRESH_OTSU
     )
-    return thresholded
+    return res
+
 
 def _preprocess_without_cv2(gray: np.ndarray) -> np.ndarray:
     kernel = _gaussian_kernel(5, 2.0)

@@ -29,6 +29,7 @@ const SignLanguageRecognition: React.FC = () => {
   const isCapturingRef = useRef<boolean>(false);
 
   const [cameraReady, setCameraReady] = useState(false);
+  const [capturing, setCapturing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [recognizedText, setRecognizedText] = useState<string>(" ");
   const [prevLetter, setPrevLetter] = useState<string>(" ");
@@ -73,39 +74,21 @@ const SignLanguageRecognition: React.FC = () => {
     }
     frameCountRef.current = 0;
     setCameraReady(false);
+    setCapturing(false);
     setRecognizedText(" ");
     setPrevLetter(" ");
   };
 
   const extractRoiPngBase64 = (ctx: CanvasRenderingContext2D): string | null => {
-    // 1) Grab the ROI pixels from the main canvas
+    const roiCanvas = document.createElement("canvas");
+    roiCanvas.width = ROI_SIZE;
+    roiCanvas.height = ROI_SIZE;
+    const roiCtx = roiCanvas.getContext("2d", { willReadFrequently: true });
+    if (!roiCtx) return null;
     const roiData = ctx.getImageData(ROI_OFFSET, ROI_OFFSET, ROI_SIZE, ROI_SIZE);
-
-    // 2) Put those pixels onto a source offscreen canvas
-    const src = document.createElement("canvas");
-    src.width = ROI_SIZE;
-    src.height = ROI_SIZE;
-    const sctx = src.getContext("2d", { willReadFrequently: true });
-    if (!sctx) return null;
-    sctx.putImageData(roiData, 0, 0);
-
-    // 3) Draw the source onto a destination canvas with a horizontal flip
-    const dest = document.createElement("canvas");
-    dest.width = ROI_SIZE;
-    dest.height = ROI_SIZE;
-    const dctx = dest.getContext("2d", { willReadFrequently: true });
-    if (!dctx) return null;
-
-    dctx.save();
-    dctx.translate(ROI_SIZE, 0); // move origin to right edge
-    dctx.scale(-1, 1);           // flip horizontally
-    dctx.drawImage(src, 0, 0);   // draw the ROI
-    dctx.restore();
-
-    // 4) Return base64 PNG (strip prefix)
-    return dest.toDataURL("image/png", 0.9).split(",")[1];
-};
-
+    roiCtx.putImageData(roiData, 0, 0);
+    return roiCanvas.toDataURL("image/png", 0.9).split(",")[1];
+  };
 
   const recognizeSignOnServer = async (base64Image: string) => {
     try {
@@ -140,6 +123,7 @@ const SignLanguageRecognition: React.FC = () => {
     if (!videoRef.current || !roiCanvasRef.current) return;
 
     isCapturingRef.current = true;
+    setCapturing(true);
     const videoEl = videoRef.current;
     const ctx = roiCanvasRef.current.getContext("2d", { willReadFrequently: true });
     if (!ctx) return;
@@ -173,10 +157,9 @@ const SignLanguageRecognition: React.FC = () => {
     animationFrameRef.current = requestAnimationFrame(loop);
   };
 
-  const handleStartCamera = async () => {
-    if (!cameraReady) {
-      await startCamera();
-      startContinuousLoop(); // start auto recognition
+  const handleStartCapture = () => {
+    if (cameraReady && !capturing) {
+      startContinuousLoop();
     }
   };
 
@@ -186,18 +169,16 @@ const SignLanguageRecognition: React.FC = () => {
 
     const reader = new FileReader();
     reader.onloadend = async () => {
-        // strip the data URL prefix
-        const base64 = (reader.result as string).split(",")[1];
-        const prediction = await recognizeSignOnServer(base64);
+      const base64 = (reader.result as string).split(",")[1];
+      const prediction = await recognizeSignOnServer(base64);
 
-        const letter = prediction === "0" ? " " : prediction;
-        setPrevLetter(letter);
-        setRecognizedText(letter);
-        presentToast({ message: `Detected: ${letter}`, duration: 2000 });
+      const letter = prediction === "0" ? " " : prediction;
+      setPrevLetter(letter);
+      setRecognizedText(letter);
+      presentToast({ message: `Detected: ${letter}`, duration: 2000 });
     };
     reader.readAsDataURL(file);
   };
-
 
   return (
     <IonPage>
@@ -230,6 +211,7 @@ const SignLanguageRecognition: React.FC = () => {
                         width: "100%",
                         height: "100%",
                         objectFit: "cover",
+                        transform: "scaleX(-1)",
                       }}
                       autoPlay
                       muted
@@ -243,18 +225,16 @@ const SignLanguageRecognition: React.FC = () => {
                           pointerEvents: "none",
                         }}
                       >
-                        {/* ROI rectangle */}
                         <div
                           style={{
                             position: "absolute",
                             top: ROI_OFFSET,
-                            left: ROI_OFFSET,
+                            right: ROI_OFFSET,
                             width: ROI_SIZE,
                             height: ROI_SIZE,
                             border: "2px solid #00ff00",
                           }}
                         />
-                        {/* Prev letter */}
                         <div
                           style={{
                             position: "absolute",
@@ -268,7 +248,6 @@ const SignLanguageRecognition: React.FC = () => {
                         >
                           {prevLetter}
                         </div>
-                        {/* Running text */}
                         <div
                           style={{
                             position: "absolute",
@@ -281,7 +260,6 @@ const SignLanguageRecognition: React.FC = () => {
                         >
                           {recognizedText}
                         </div>
-                        {/* Timer tens display */}
                         <div
                           style={{
                             position: "absolute",
@@ -297,16 +275,10 @@ const SignLanguageRecognition: React.FC = () => {
                       </div>
                     )}
                   </div>
-                  <canvas
-                    ref={roiCanvasRef}
-                    width={640}
-                    height={480}
-                    style={{ display: "none" }}
-                  />
+                  <canvas ref={roiCanvasRef} width={640} height={480} style={{ display: "none" }} />
                 </IonCardContent>
               </IonCard>
 
-              {/* Processed ROI Preview */}
               <IonCard style={{ marginTop: "12px" }}>
                 <IonCardContent>
                   <IonText>
@@ -335,7 +307,9 @@ const SignLanguageRecognition: React.FC = () => {
 
               <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
                 {!cameraReady ? (
-                  <IonButton onClick={handleStartCamera}>Start Camera</IonButton>
+                  <IonButton onClick={startCamera}>Start Camera</IonButton>
+                ) : !capturing ? (
+                  <IonButton onClick={handleStartCapture}>Start Capturing</IonButton>
                 ) : (
                   <IonButton color="medium" onClick={stopCamera}>
                     Stop Camera
@@ -344,18 +318,17 @@ const SignLanguageRecognition: React.FC = () => {
               </div>
 
               <IonButton>
-            <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                Upload Processed Image
-            </label>
-            <input
-                id="fileInput"
-                type="file"
-                accept="image/*"
-                style={{ display: "none" }}
-                onChange={handleProcessedImageUpload}
-            />
-            </IonButton>
-
+                <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
+                  Upload Processed Image
+                </label>
+                <input
+                  id="fileInput"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: "none" }}
+                  onChange={handleProcessedImageUpload}
+                />
+              </IonButton>
             </IonCol>
 
             <IonCol size="12" sizeMd="5">
@@ -370,6 +343,7 @@ const SignLanguageRecognition: React.FC = () => {
                     <strong>How it works:</strong>
                     <ul style={{ fontSize: "14px", marginTop: "8px" }}>
                       <li>Click "Start Camera" to enable webcam</li>
+                      <li>Then click "Start Capturing" to begin recognition</li>
                       <li>ROI outlined in green is processed continuously</li>
                       <li>Every 300 frames, a prediction is sent to the server</li>
                       <li>Recognized letters appear live</li>

@@ -83,7 +83,14 @@ const Home: React.FC = () => {
           >
             Start Adding Events
           </IonButton>
+          <IonButton
+            expand="block"
+            onClick={() => history.push('/events')}
+          >
+            View Events
+          </IonButton>
         </div>
+        <br /><br />
         <IonButton expand="block" onClick={handleLogout}>
             Log Out
           </IonButton>

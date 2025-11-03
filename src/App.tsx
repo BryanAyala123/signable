@@ -10,6 +10,7 @@ import SignLanguageRecognition from './components/SignLanguageRecognition/SignLa
 import './theme/variables.css';
 import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
 import AddEventBoard from './components/EventBoard/addEventBoard';
+import EventBoard from './components/EventBoard/EventBoard';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -74,6 +75,9 @@ const App: React.FC = () => (
             </Route>
         <Route exact path="/add-event">
             <AddEventBoard />
+            </Route>
+        <Route exact path="/events">
+            <EventBoard />
             </Route>
         <Route exact path="/welcome">
           <LandingPage />

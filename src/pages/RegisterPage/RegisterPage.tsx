@@ -78,8 +78,6 @@ const RegisterPage: React.FC = () => {
                     <div className="LeftSideDivText">
                         <p className="LeftSideDivTextWelcome">Welcome to</p>
                         <p className="LeftSideDivTextSignable">
-                            <span className="dash-third-register"></span>
-                            <span className="dash-fourth-register"></span>
                             Signable
                         </p>
                         <p className="LeftSideDivTextOther">It's a pleasure</p>

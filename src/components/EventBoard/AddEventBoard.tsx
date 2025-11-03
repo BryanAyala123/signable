@@ -12,6 +12,8 @@ import {
     IonButton,
     IonAlert,
     IonList,
+    IonButtons,
+    IonBackButton
 } from '@ionic/react';
 // Import Admin SDK
 import { getDatabase, push, ref, set } from "firebase/database";
@@ -59,7 +61,10 @@ const AddEventBoard: React.FC = () => {
     return (
         <IonPage>
             <IonHeader>
-                <IonToolbar>
+                <IonToolbar color="primary">
+                    <IonButtons slot="start">
+                        <IonBackButton defaultHref="/home" />
+                    </IonButtons>
                     <IonTitle>Add ASL Event</IonTitle>
                 </IonToolbar>
             </IonHeader>
@@ -124,6 +129,14 @@ const AddEventBoard: React.FC = () => {
                     routerLink="/edit-events"
                 >
                     Edit Existing Events
+                </IonButton>
+                <IonButton
+                    expand="block"
+                    color="tertiary"
+                    style={{ marginTop: 16 }}
+                    routerLink="/events"
+                >
+                    View All Events
                 </IonButton>
             </IonContent>
         </IonPage>

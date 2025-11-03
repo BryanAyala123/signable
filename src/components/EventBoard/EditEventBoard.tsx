@@ -15,6 +15,8 @@ IonTextarea,
 IonDatetime,
 IonModal,
 IonFooter,
+IonButtons,
+IonBackButton
 } from '@ionic/react';
 
 interface Event {
@@ -67,7 +69,10 @@ const handleUpdate = async () => {
 return (
     <IonPage>
         <IonHeader>
-            <IonToolbar>
+            <IonToolbar color="primary">
+                <IonButtons slot="start">
+                    <IonBackButton defaultHref="/home" />
+                </IonButtons>
                 <IonTitle>Edit Event Board</IonTitle>
             </IonToolbar>
         </IonHeader>
@@ -92,7 +97,10 @@ return (
             </IonList>
             <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
                 <IonHeader>
-                    <IonToolbar>
+                    <IonToolbar color="primary">
+                        <IonButtons slot="start">
+                            <IonBackButton defaultHref="/home" />
+                        </IonButtons>
                         <IonTitle>Edit Event</IonTitle>
                     </IonToolbar>
                 </IonHeader>

@@ -1,3 +1,540 @@
 .ion-padding{
-    --background: #E8E4D8;
+    --background: #EBE7DB;
+}
+
+.home-content{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding: 20px;
+}
+
+.homeContentLeftSide{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.homeContentLeftSideStudy{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 140px;
+}
+
+.homeContentLeftSideStudyContent{
+    display: flex;
+    flex-direction: column;
+    align-items: center; 
+    width: 260px;
+    color: #353534;
+    gap: 12px;
+}
+
+.homeContentLeftSideStudyContentSLR, 
+.homeContentLeftSideStudyContentMemory, 
+.homeContentLeftSideStudyContentFlashcard{
+    display: flex;
+    flex-direction: column;
+    width: 219px;
+    height: 190px;
+    border-radius: 39px;
+    border: 2px solid #EBE5DA;
+    background: #353534;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; 
+    transition: transform 0.2s;
+}
+
+.homeContentLeftSideStudyContentSLR:hover,
+.homeContentLeftSideStudyContentMemory:hover,
+.homeContentLeftSideStudyContentFlashcard:hover {
+    transform: scale(1.05);
+}
+
+.homeContentLeftSideStudyContentSLRText,
+.homeContentLeftSideStudyContentMemText,
+.homeContentLeftSideStudyContentFlashText{
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    color: #EBE5DA;
+    margin: 10px 0;
+}
+
+.homeContentLeftSideStudyHeader,
+.homeContentNotebookHeader,
+.homeContentChatBotHeader{
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.2px;
+    color: #353534;
+    align-items: center;
+    text-align: center;
+}
+
+.homeContentNotebookHeader,
+.homeContentChatBotHeader{
+    margin-top: 30px;
+}
+
+.eyeballImg{
+    width: 35px;
+    height: 23px;
+    margin-bottom: 10px;
+}
+
+.computerImg{
+    width: 44px;
+    height: 36px;
+}
+
+.homeContentLeftSideStudyContentFlashcardInnerDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.homeContentLeftSideStudyContentFlashcardInnerDivImg{
+    width: 8px;
+    height: 12px;
+}
+
+.homeContentLeftSideStudyContentFlashcardInnerDivImgPhone{
+    width: 27px;
+    height: 39px;
+}
+
+.homeContentLeftSideStudyContentFlashcardChecker{
+    width: 55px;
+    height: 23px;
+    margin-top: 12px;
+}
+
+button{
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.homeContentRightSide{
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+}
+
+.homeRightSideTopDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.homeContentRightSideNameDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+    min-width: 300px;
+}
+
+.MainHeaderTextName{
+    position: relative;
+    color: #353534;
+    font-size: 96px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 3.84px;
+    margin: 0;
+}
+
+.MainHeaderTextName::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -24px;
+    width: 100%;
+    max-width: 450px;
+    height: 9px;
+    background: url('/public/assets/homePageUnderline.svg') center no-repeat;
+    background-size: contain;
+}
+
+.MainHeaderStreak{
+    margin-top: 40px;
+    color: #353534;
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.2px;
+    padding-bottom: 0;
+}
+
+.ViewGoals{
+    padding-top: 0;
+    margin-top: 10px;
+    color: #353534;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.MainHeaderStreak span{
+    color: #F05248;
+}
+
+.MessageBoard{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.AmountMessages{
+    color: #EBE7DB;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+    margin: 0;
+}
+
+.MessageBoardOuterDiv{
+    width: 180px;
+    height: 180px;
+    flex-shrink: 0;
+    border: 2px solid #353534;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.MessageBoardOuterDiv:hover {
+    transform: scale(1.05);
+}
+
+.MessageBoardInnerDiv{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background-color: #F05248;
+}
+
+.MessagesLink{
+    color: #353534;
+    text-align: center;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    margin: 0;
+}
+
+.homeContentNotebook{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.homeContentChatbot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.SignableContent {
+    width: 100%;
+    max-width: 601px;
+    height: 404px;
+    border-radius: 39px;
+    background-color: #353534;
+    overflow: hidden;
+    color: #EBE7DB;
+}
+
+.homeRightSideBottomDiv{
+    display: flex;
+    flex-direction: row;
+    gap: 27px;
+    flex-wrap: wrap;
+}
+
+.ion-padding {
+    padding-top: 0;  
+}
+
+
+@media (max-width: 1439px) {
+    .MainHeaderTextName {
+        font-size: 72px;
+        letter-spacing: 2.88px;
+    }
+    
+    .MainHeaderTextName::after {
+        max-width: 350px;
+    }
+    
+    .MainHeaderStreak {
+        font-size: 24px;
+        margin-top: 30px;
+    }
+    
+    .homeContentLeftSideStudy {
+        margin-top: 100px;
+    }
+    
+    .homeRightSideTopDiv {
+        gap: 30px;
+    }
+}
+
+@media (max-width: 1023px) {
+    .home-content {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .homeContentLeftSide {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    
+    .homeContentLeftSideStudy {
+        margin-top: 40px;
+    }
+    
+    .homeContentLeftSideStudyContent {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        width: 100%;
+        max-width: 700px;
+    }
+    
+    .MainHeaderTextName {
+        font-size: 56px;
+        letter-spacing: 2.24px;
+    }
+    
+    .MainHeaderTextName::after {
+        max-width: 280px;
+    }
+    
+    .MainHeaderStreak {
+        font-size: 20px;
+        text-align: center;
+    }
+    
+    .homeRightSideTopDiv {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .homeContentRightSideNameDiv {
+        min-width: unset;
+        width: 100%;
+    }
+    
+    .homeRightSideBottomDiv {
+        justify-content: center;
+    }
+    
+    .MessageBoardOuterDiv {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .AmountMessages {
+        font-size: 32px;
+    }
+    
+    .MessagesLink {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 767px) {
+    .home-content {
+        padding: 10px;
+    }
+    
+    .homeContentLeftSideStudyContent {
+        max-width: 500px;
+        gap: 15px;
+    }
+    
+    .homeContentLeftSideStudyContentSLR, 
+    .homeContentLeftSideStudyContentMemory, 
+    .homeContentLeftSideStudyContentFlashcard {
+        width: 180px;
+        height: 160px;
+        border-radius: 30px;
+    }
+    
+    .MainHeaderTextName {
+        font-size: 42px;
+        letter-spacing: 1.68px;
+        text-align: center;
+    }
+    
+    .MainHeaderTextName::after {
+        max-width: 220px;
+        bottom: -18px;
+    }
+    
+    .MainHeaderStreak {
+        font-size: 18px;
+        margin-top: 25px;
+    }
+    
+    .ViewGoals {
+        font-size: 16px;
+    }
+    
+    .homeContentLeftSideStudyHeader,
+    .homeContentNotebookHeader,
+    .homeContentChatBotHeader {
+        font-size: 24px;
+    }
+    
+    .homeRightSideBottomDiv {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    
+    .SignableContent {
+        height: 350px;
+    }
+    
+    .MessageBoardOuterDiv {
+        width: 130px;
+        height: 130px;
+    }
+    
+    .MessageBoardInnerDiv {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .AmountMessages {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .homeContentLeftSideStudyContent {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+        max-width: 240px;
+    }
+    
+    .homeContentLeftSideStudyContentSLR, 
+    .homeContentLeftSideStudyContentMemory, 
+    .homeContentLeftSideStudyContentFlashcard {
+        width: 200px;
+        height: 170px;
+    }
+    
+    .MainHeaderTextName {
+        font-size: 32px;
+        letter-spacing: 1.28px;
+    }
+    
+    .MainHeaderTextName::after {
+        max-width: 180px;
+        bottom: -15px;
+        height: 7px;
+    }
+    
+    .MainHeaderStreak {
+        font-size: 16px;
+        margin-top: 20px;
+    }
+    
+    .ViewGoals {
+        font-size: 14px;
+    }
+    
+    .homeContentLeftSideStudyHeader,
+    .homeContentNotebookHeader,
+    .homeContentChatBotHeader {
+        font-size: 20px;
+    }
+    
+    .homeContentLeftSideStudyContentSLRText,
+    .homeContentLeftSideStudyContentMemText,
+    .homeContentLeftSideStudyContentFlashText {
+        font-size: 18px;
+    }
+    
+    .SignableContent {
+        height: 300px;
+        border-radius: 30px;
+    }
+    
+    .MessageBoardOuterDiv {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .MessageBoardInnerDiv {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .AmountMessages {
+        font-size: 24px;
+    }
+    
+    .MessagesLink {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    .MainHeaderTextName {
+        font-size: 28px;
+        letter-spacing: 1.12px;
+    }
+    
+    .MainHeaderTextName::after {
+        max-width: 160px;
+    }
+    
+    .homeContentLeftSideStudyContentSLR, 
+    .homeContentLeftSideStudyContentMemory, 
+    .homeContentLeftSideStudyContentFlashcard {
+        width: 180px;
+        height: 160px;
+    }
+    
+    .SignableContent {
+        height: 280px;
+    }
 }

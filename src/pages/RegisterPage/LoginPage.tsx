@@ -9,7 +9,7 @@ import { useIonRouter } from '@ionic/react';
 import { doPasswordReset, doSignInWithEmailAndPassword, doSignInWithGoogle} from '../../firebase/auth';
 import { useAuth } from '../../contexts/authContext';
 import './RegisterPage.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 /**
  * Login Page
@@ -26,8 +26,20 @@ const LoginPage: React.FC = () => {
     const [isSigninIn, setIsSigningIn] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [resetMessage, setResetMessage] = useState("");
+    const [showWelcome, setShowWelcome] = useState(false);
+    const [showSubtext, setShowSubtext] = useState(false);
     const router = useIonRouter();
     const history = useHistory();
+
+    useEffect(() => {
+        const timer1 = setTimeout(() => setShowWelcome(true), 100);
+        const timer2 = setTimeout(() => setShowSubtext(true), 800);
+        
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
+    }, []);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -86,7 +98,8 @@ const LoginPage: React.FC = () => {
                         />
                         <div className="LeftSideDiv">
                             <div className="LeftSideDivText">
-                            <p className="LeftSideDivTextWelcome">Welcome Back!</p>
+                            <p className={`LeftSideDivTextWelcome`}>
+                                <span className="dash-third"></span>Welcome Back!</p>
                             <p className="LeftSideDivTextOther">We're happy to</p>
                             <p className="LeftSideDivTextOther">see you again.</p>
                             </div>

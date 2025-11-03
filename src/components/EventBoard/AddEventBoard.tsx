@@ -117,6 +117,14 @@ const AddEventBoard: React.FC = () => {
                     message="Event added successfully!"
                     buttons={['OK']}
                 />
+                <IonButton
+                    expand="block"
+                    color="secondary"
+                    style={{ marginTop: 32 }}
+                    routerLink="/edit-events"
+                >
+                    Edit Existing Events
+                </IonButton>
             </IonContent>
         </IonPage>
     );

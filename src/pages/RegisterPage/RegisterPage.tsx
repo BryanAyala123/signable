@@ -6,7 +6,7 @@ import { Redirect, useHistory } from "react-router-dom";
 import { doCreateUserWithEmailAndPassword} from '../../firebase/auth';
 import { updateProfile } from 'firebase/auth';
 import { useAuth } from '../../contexts/authContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useIonRouter } from '@ionic/react';
 import React from 'react';
 
@@ -19,8 +19,20 @@ const RegisterPage: React.FC = () => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [isRegistering, setIsRegistering] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+    const [showWelcome, setShowWelcome] = useState(false);
+    const [showSubtext, setShowSubtext] = useState(false);
     const router = useIonRouter();
     const history = useHistory();
+
+    useEffect(() => {
+        const timer1 = setTimeout(() => setShowWelcome(true), 100);
+        const timer2 = setTimeout(() => setShowSubtext(true), 800);
+        
+        return () => {
+            clearTimeout(timer1);
+            clearTimeout(timer2);
+        };
+    }, []);
 
     const onSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -63,12 +75,14 @@ const RegisterPage: React.FC = () => {
                     />
 
                     <div className="LeftSideDiv">
-                        <div className="LeftSideDivText">
-                            <p className="LeftSideDivTextWelcome">Welcome to</p>
-                            <p className="LeftSideDivTextSignable">Signable</p>
-                            <p className="LeftSideDivTextOther">It's a pleasure</p>
-                            <p className="LeftSideDivTextOther">to meet you.</p>
-                        </div>
+                    <div className="LeftSideDivText">
+                        <p className="LeftSideDivTextWelcome">Welcome to</p>
+                        <p className="LeftSideDivTextSignable">
+                            Signable
+                        </p>
+                        <p className="LeftSideDivTextOther">It's a pleasure</p>
+                        <p className="LeftSideDivTextOther">to meet you.</p>
+                    </div>
                     </div>
 
                     <div className="RightSideDiv">

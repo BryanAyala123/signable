@@ -73,6 +73,24 @@ const Home: React.FC = () => {
             Start Notetaking
           </IonButton>
         </div>
+        <div className="home-content">
+          <h1>EventBoard!</h1>
+          <p>Get the edge on your learning with video notes.</p>
+
+          <IonButton
+            expand="block"
+            onClick={() => history.push('/add-event')}
+          >
+            Start Adding Events
+          </IonButton>
+          <IonButton
+            expand="block"
+            onClick={() => history.push('/events')}
+          >
+            View Events
+          </IonButton>
+        </div>
+        <br /><br />
         <IonButton expand="block" onClick={handleLogout}>
             Log Out
           </IonButton>

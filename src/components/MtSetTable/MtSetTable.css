@@ -1,0 +1,107 @@
+html {
+    --overflow: -moz-scrollbars-vertical; 
+    --overflow-y: scroll;
+}
+
+.SetContentLeftSideMySets{
+    display: flex;
+    flex-direction: column;
+    margin-top: 72px;
+    width: 195px;
+    color: #353534;
+    align-items: center;
+    max-height: 100vh;
+}
+
+.SetContentLeftSideMySetsHeader{
+    font-size: 30px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.2px;
+}
+
+.SetContentLeftSideMySetsUserSets {
+    width: 100%;
+    flex-grow: 1; 
+    overflow-y: scroll;
+    scrollbar-gutter: stable;
+    display: flex;
+    flex-direction: column;
+    gap: 8px; 
+    padding-right: 4px; 
+    align-items: center;
+    padding-right: 15px;
+}
+
+
+.SetContentLeftSideMySetsUserSets::-webkit-scrollbar {
+    width: 27px;
+    
+}
+
+.SetContentLeftSideMySetsUserSets::-webkit-scrollbar-track {
+    border-radius: 6px;
+    border: #353534;
+    border-width: 4px;
+}
+
+.SetContentLeftSideMySetsUserSets::-webkit-scrollbar-thumb {
+    background: #353534; 
+    border-radius: 6px;
+}
+
+.SetContentLeftSideMySetsUserSets {
+    scrollbar-width: 27px;
+    border-radius: 6px;
+    border: #353534;
+    border-width: 4px;
+    scrollbar-color: #353534 #eee; 
+}
+
+
+.SetContentLeftSideMySetsUserSetsContainer{
+    display: flex;
+    flex-direction: row;
+    width: 168px;
+    height: 52px;
+    border-radius: 26px;
+    color: #EBE7DB;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    background: #62AE8A;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 14px;
+    padding-right: 14px;
+}
+
+.SetContentLeftSideMySetsUserSetsContainerImg{
+    width: 24px;
+    height: 24px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+}
+
+.SetContentLeftSideMySetsAddNew{
+    display: flex;
+    flex-direction: row;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    gap: 8px;
+    align-items: center;
+    margin-top: 16px;
+}
+
+.SetContentLeftSideMySetsAddNewImg{
+    width: 33px;
+    height: 33px;
+    flex-shrink: 0;
+    aspect-ratio: 1/1;
+}

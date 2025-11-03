@@ -14,4 +14,5 @@ http://ionicframework.com/docs/theming/ */
 
 body, ion-app {
     font-family: var(--ion-font-family);
+    --background: #E8E4D8; 
 }

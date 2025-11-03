@@ -9,6 +9,7 @@ import Memory from './components/Games/Memory/Memory';
 import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
 import './theme/variables.css';
 import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
+import AddEventBoard from './components/EventBoard/addEventBoard';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -70,6 +71,9 @@ const App: React.FC = () => (
             </Route>
         <Route exact path="/notes">
             <VideoNotetaking />
+            </Route>
+        <Route exact path="/add-event">
+            <AddEventBoard />
             </Route>
         <Route exact path="/welcome">
           <LandingPage />

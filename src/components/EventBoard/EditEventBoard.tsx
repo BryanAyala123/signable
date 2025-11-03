@@ -39,6 +39,7 @@ useEffect(() => {
         for (const id in data) {
             loadedEvents.push({ id, ...data[id] });
         }
+        loadedEvents.sort((a, b) => a.date.localeCompare(b.date));
         setEvents(loadedEvents);
     });
     return () => unsubscribe();

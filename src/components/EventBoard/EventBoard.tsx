@@ -20,7 +20,7 @@ const EventBoard: React.FC = () => {
         const eventsRef = ref(db, 'events');
         const unsubscribe = onValue(eventsRef, (snapshot) => {
             const data = snapshot.val();
-            const loadedEvents: Event[] = [];
+            let loadedEvents: Event[] = [];
             if (data) {
                 Object.entries(data).forEach(([id, event]: [string, any]) => {
                     loadedEvents.push({
@@ -31,6 +31,7 @@ const EventBoard: React.FC = () => {
                         location: event.location,
                     });
                 });
+                loadedEvents = loadedEvents.sort((a, b) => a.date.localeCompare(b.date));
             }
             setEvents(loadedEvents);
             setLoading(false);

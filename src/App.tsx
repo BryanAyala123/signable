@@ -9,7 +9,7 @@ import Memory from './components/Games/Memory/Memory';
 import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
 import './theme/variables.css';
 import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
-import AddEventBoard from './components/EventBoard/addEventBoard';
+import AddEventBoard from './components/EventBoard/AddEventBoard';
 import EventBoard from './components/EventBoard/EventBoard';
 import EditEventBoard from './components/EventBoard/EditEventBoard';
 

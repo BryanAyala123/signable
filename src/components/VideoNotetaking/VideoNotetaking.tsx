@@ -4,6 +4,7 @@ import { IonPage, IonContent, IonButton, IonText, IonCard, IonCardContent, IonLi
 import "./VideoNotetaking.css"; // You can define Ionic-safe styling here
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { deleteDoc } from "firebase/firestore";
 
 
 
@@ -15,10 +16,29 @@ const VideoNotetaking: React.FC = () => {
   const chunks = useRef<Blob[]>([]);
   const [video, setVideo] = useState<string>("");
 
-  const [notes, setNotes] = React.useState<{ title: string; content: string; video?: string }[]>([]);
+  const [notes, setNotes] = React.useState<{ id: string; title: string; content: string; video?: string }[]>([]);
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState("");
   const [selectedNote, setSelectedNote] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    const fetchNotes = async () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return;
+      const db = getFirestore();
+      const notesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "notes");
+      const snapshot = await (await import("firebase/firestore")).getDocs(notesRef);
+      const notesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        title: doc.data().title,
+        content: doc.data().content,
+        video: doc.data().video,
+      }));
+      setNotes(notesData);
+    };
+    fetchNotes();
+  }, []);
 
   const startRecording = async () => {
     if (!navigator.mediaDevices?.getUserMedia) return;
@@ -35,18 +55,19 @@ const VideoNotetaking: React.FC = () => {
     };
     mediaRecorderRef.current.onstop = () => {
       const blob = new Blob(chunks.current, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      setVideo(url);
-
-      // setRecordedVideos((prev) => [url, ...prev]);
-
-      if (videoRef.current) {
-        videoRef.current.src = url;
-        videoRef.current.controls = true;
-        videoRef.current.play();
-        videoRef.current.srcObject = null;
-        videoRef.current.pause();
-      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        setVideo(base64data);
+        if (videoRef.current) {
+          videoRef.current.src = base64data;
+          videoRef.current.controls = true;
+          videoRef.current.play();
+          videoRef.current.srcObject = null;
+          videoRef.current.pause();
+        }
+      };
+      reader.readAsDataURL(blob);
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
@@ -61,10 +82,10 @@ const VideoNotetaking: React.FC = () => {
     setRecording(false);
   };
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (title.trim() && content.trim()) {
-      setNotes([...notes, { title, content, video }]);
-      addNoteToFirestore(title, content, video)
+      const id = await addNoteToFirestore(title, content, video)
+      setNotes([...notes, { id, title, content, video }]);
       setTitle("");
       setContent("");
     }
@@ -106,10 +127,22 @@ const VideoNotetaking: React.FC = () => {
   const handleDeleteNote = (index: number) => {
     const updatedNotes = notes.filter((_, idx) => idx !== index);
     setNotes(updatedNotes);
+    deleteNoteFromFirestore(notes[index].id);
     setSelectedNote(null);
     setTitle("");
     setContent("");
   };
+
+  async function deleteNoteFromFirestore(noteId: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const db = getFirestore();
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    await deleteDoc(noteRef);
+  }
+
+
 
   return (
     <IonPage>

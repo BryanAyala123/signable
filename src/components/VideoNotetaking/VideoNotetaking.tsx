@@ -2,6 +2,8 @@ import React, { useRef, useState } from "react";
 import { IonPage, IonContent, IonButton, IonText, IonCard, IonCardContent, IonList, IonItem, IonLabel } from "@ionic/react";
 
 import "./VideoNotetaking.css"; // You can define Ionic-safe styling here
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 
 
@@ -62,10 +64,26 @@ const VideoNotetaking: React.FC = () => {
   const handleAddNote = () => {
     if (title.trim() && content.trim()) {
       setNotes([...notes, { title, content, video }]);
+      addNoteToFirestore(title, content, video)
       setTitle("");
       setContent("");
     }
   };
+
+  async function addNoteToFirestore(title: string, content: string, video: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const db = getFirestore();
+    const noteId = crypto.randomUUID();
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    await setDoc(noteRef, {
+      title,
+      content,
+      video
+    });
+    return noteId;
+  }
 
   const handleSelectNote = (index: number) => {
     setSelectedNote(index);
@@ -211,15 +229,15 @@ const VideoNotetaking: React.FC = () => {
                 style={{ marginBottom: "8px", width: "100%" }}
                 rows={3}
               />
-              {selectedNote === null ? (
-                <IonButton expand="block" onClick={handleAddNote}>
+                {selectedNote === null ? (
+                <IonButton expand="block" onClick={handleAddNote} disabled={recording}>
                   Add Note
                 </IonButton>
-              ) : (
-                <IonButton expand="block" color="secondary" onClick={handleUpdateNote}>
+                ) : (
+                <IonButton expand="block" color="secondary" onClick={handleUpdateNote} disabled={recording}>
                   Update Note
                 </IonButton>
-              )}
+                )}
             </div>
           </IonCard>
         </div>

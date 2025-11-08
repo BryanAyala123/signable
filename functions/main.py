@@ -1,7 +1,6 @@
 """Firebase HTTPS function for ASL recognition with OpenCV preprocessing."""
 from __future__ import annotations
 
-
 import base64
 import io
 import json
@@ -51,7 +50,7 @@ def load_model_if_needed():
         try:
             print("🧠 Loading ASL classifier model...")
             import keras
-            model_path = os.path.join(os.path.dirname(__file__), "asl_classified.h5")
+            model_path = os.path.join(os.path.dirname(__file__), "asl_detect.h5")
             MODEL = keras.models.load_model(model_path)
             print("✅ ASL classifier model loaded successfully.")
         except Exception as exc:

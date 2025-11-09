@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from "react";
 import {
   IonPage,
@@ -7,389 +6,215 @@ import {
   IonTitle,
   IonContent,
   IonButton,
-  IonGrid,
-  IonRow,
-  IonCol,
+  IonText,
   IonCard,
   IonCardContent,
-  IonText,
   useIonToast,
+  IonSpinner,
 } from "@ionic/react";
 import axios from "axios";
+import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 
+const FUNCTION_URL =
+  "https://classify-landmarks-ft6ax3huaq-uc.a.run.app";
+const FRAMES_TO_CAPTURE = 15;
 
-const MODEL_URL = "https://recognize-sign-ft6ax3huaq-uc.a.run.app";
-const ROI_SIZE = 250;
-const ROI_OFFSET = 24;
-
-
-const SignLanguageRecognition: React.FC = () => {
+const LandmarkCapture: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const roiCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const processedCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const animationFrameRef = useRef<number | null>(null);
-  const isCapturingRef = useRef<boolean>(false);
-
-
-  const [cameraReady, setCameraReady] = useState(false);
+  const handLandmarkerRef = useRef<HandLandmarker | null>(null);
+  const [isCameraOn, setIsCameraOn] = useState(false);
   const [capturing, setCapturing] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [recognizedText, setRecognizedText] = useState<string>(" ");
-  const [prevLetter, setPrevLetter] = useState<string>(" ");
-  const [timerTens, setTimerTens] = useState<number>(0);
-
-
-  const frameCountRef = useRef<number>(0);
+  const [processing, setProcessing] = useState(false);
+  const [recognizedLetter, setRecognizedLetter] = useState<string>("");
   const [presentToast] = useIonToast();
 
+  const streamRef = useRef<MediaStream | null>(null);
 
+  // Load MediaPipe model once
   useEffect(() => {
+    const loadModel = async () => {
+      try {
+        const vision = await FilesetResolver.forVisionTasks(
+          "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
+        );
+        const handLandmarker = await HandLandmarker.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task",
+          },
+          numHands: 1,
+          runningMode: "VIDEO",
+        });
+        handLandmarkerRef.current = handLandmarker;
+      } catch (err) {
+        console.error("Failed to load MediaPipe model:", err);
+      }
+    };
+    loadModel();
     return () => stopCamera();
   }, []);
 
-
-  const startCamera = async (): Promise<void> => {
-    setError(null);
+  // Camera controls
+  const startCamera = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
-        audio: false,
       });
       streamRef.current = stream;
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         await videoRef.current.play();
-        setCameraReady(true);
       }
-    } catch (e: any) {
-      setError("Unable to access camera. Check permissions.");
-      console.error(e);
+      setIsCameraOn(true);
+      setRecognizedLetter("");
+    } catch (err) {
+      console.error("Camera error:", err);
+      presentToast({ message: "Unable to access camera.", duration: 3000 });
     }
   };
 
-
-  const stopCamera = (): void => {
-    if (animationFrameRef.current) cancelAnimationFrame(animationFrameRef.current);
-    isCapturingRef.current = false;
+  const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
       streamRef.current = null;
     }
-    if (videoRef.current) {
-      videoRef.current.pause();
-      videoRef.current.srcObject = null;
-    }
-    frameCountRef.current = 0;
-    setCameraReady(false);
+    setIsCameraOn(false);
     setCapturing(false);
-    setRecognizedText(" ");
-    setPrevLetter(" ");
   };
 
+  // Function to send landmarks
+const sendLandmarksToServer = async (frames: number[][]) => {
+  setProcessing(true);
+  setRecognizedLetter("Processing...");
+  try {
+    // 🔍 Log the outgoing data clearly
+    console.log("[DEBUG] Sending to server:", {
+      url: FUNCTION_URL,
+      payload: { frames },
+      frameCount: frames.length,
+      firstFrame: frames[0],
+    });
 
-  const extractRoiPngBase64 = (ctx: CanvasRenderingContext2D): string | null => {
-    const roiCanvas = document.createElement("canvas");
-    roiCanvas.width = ROI_SIZE;
-    roiCanvas.height = ROI_SIZE;
-    const roiCtx = roiCanvas.getContext("2d", { willReadFrequently: true });
-    if (!roiCtx) return null;
-    const roiData = ctx.getImageData(ROI_OFFSET, ROI_OFFSET, ROI_SIZE, ROI_SIZE);
-    roiCtx.putImageData(roiData, 0, 0);
-    return roiCanvas.toDataURL("image/png", 0.9).split(",")[1];
-  };
+    const res = await axios.post(
+      FUNCTION_URL,
+      JSON.stringify({ frames }), // ✅ explicitly stringify
+      { headers: { "Content-Type": "application/json" }, timeout: 30000 }
+    );
 
+    const letter = res.data?.result ?? "?";
+    setRecognizedLetter(letter);
+    presentToast({ message: `Detected: ${letter}`, duration: 2000 });
+  } catch (err) {
+    console.error("Server error:", err);
+    setRecognizedLetter("Error");
+    presentToast({
+      message: "Prediction failed",
+      duration: 3000,
+      color: "danger",
+    });
+  } finally {
+    setProcessing(false);
+    setCapturing(false);
+  }
+};
 
-  const recognizeSignOnServer = async (base64Image: string) => {
-    try {
-      const res = await axios.post(
-        MODEL_URL,
-        { image: base64Image },
-        { headers: { "Content-Type": "application/json" }, timeout: 30000 }
-      );
-      const prediction = res.data?.prediction ?? "ERROR";
-      const processedB64 = res.data?.processed_roi_base64;
-
-
-      // update processed preview
-      if (processedB64 && processedCanvasRef.current) {
-        const img = new Image();
-        img.onload = () => {
-          const ctx = processedCanvasRef.current!.getContext("2d", { willReadFrequently: true })!;
-          ctx.clearRect(0, 0, ROI_SIZE, ROI_SIZE);
-          ctx.drawImage(img, 0, 0, ROI_SIZE, ROI_SIZE);
-        };
-        img.src = "data:image/png;base64," + processedB64;
-      }
-
-
-      return prediction;
-    } catch (err: any) {
-      console.error("Server error:", err);
-      presentToast({ message: "Prediction failed", duration: 3000, color: "danger" });
-      return "ERROR";
-    }
-  };
-
-
-  const startContinuousLoop = () => {
-    if (!videoRef.current || !roiCanvasRef.current) return;
-
-
-    isCapturingRef.current = true;
+  // Capture exactly 15 frames
+  const captureFrames = async () => {
+    if (!videoRef.current || !handLandmarkerRef.current) return;
     setCapturing(true);
-    const videoEl = videoRef.current;
-    const ctx = roiCanvasRef.current.getContext("2d", { willReadFrequently: true });
-    if (!ctx) return;
+    setRecognizedLetter("");
+    const handLandmarker = handLandmarkerRef.current;
+    const frames: number[][] = [];
 
+    for (let i = 0; i < FRAMES_TO_CAPTURE; i++) {
+      const now = performance.now();
+      const result = handLandmarker.detectForVideo(videoRef.current, now);
+      if (result.landmarks && result.landmarks[0]) {
+        const lm = result.landmarks[0];
+        const xs = lm.map(p => p.x);
+        const ys = lm.map(p => p.y);
 
-    const loop = () => {
-      if (!isCapturingRef.current) return;
+        const minX = Math.min(...xs);
+        const minY = Math.min(...ys);
 
-
-      ctx.drawImage(videoEl, 0, 0, videoEl.videoWidth, videoEl.videoHeight);
-      frameCountRef.current += 1;
-
-
-      if (frameCountRef.current % 100 === 0) {
-        setTimerTens(frameCountRef.current / 100);
+        const normalized = lm.flatMap(p => [p.x - minX, p.y - minY]);
+        frames.push(normalized);
       }
+      // Wait a bit between captures to simulate ~30fps (33ms per frame)
+      await new Promise((resolve) => setTimeout(resolve, 33));
+    }
 
-
-      if (frameCountRef.current === 300) {
-        frameCountRef.current = 99;
-        const base64Image = extractRoiPngBase64(ctx);
-        if (base64Image) {
-          recognizeSignOnServer(base64Image).then((prediction) => {
-            const letter = prediction === "0" ? " " : prediction;
-            setPrevLetter(letter);
-            setRecognizedText(letter);
-            presentToast({ message: `Detected: ${letter}`, duration: 1000 });
-          });
-        }
-      }
-
-
-      animationFrameRef.current = requestAnimationFrame(loop);
-    };
-
-
-    animationFrameRef.current = requestAnimationFrame(loop);
-  };
-
-
-  const handleStartCapture = () => {
-    if (cameraReady && !capturing) {
-      startContinuousLoop();
+    if (frames.length > 0) {
+      await sendLandmarksToServer(frames);
+    } else {
+      presentToast({
+        message: "No landmarks detected during capture.",
+        duration: 2000,
+      });
+      setCapturing(false);
     }
   };
-
-
-  const handleProcessedImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = (reader.result as string).split(",")[1];
-      const prediction = await recognizeSignOnServer(base64);
-
-
-      const letter = prediction === "0" ? " " : prediction;
-      setPrevLetter(letter);
-      setRecognizedText(letter);
-      presentToast({ message: `Detected: ${letter}`, duration: 2000 });
-    };
-    reader.readAsDataURL(file);
-  };
-
 
   return (
     <IonPage>
       <IonHeader>
         <IonToolbar>
-          <IonTitle>ASL Sign Recognition</IonTitle>
+          <IonTitle>ASL Landmark Recognition</IonTitle>
         </IonToolbar>
       </IonHeader>
 
+      <IonContent className="ion-padding">
+        <IonCard>
+          <IonCardContent>
+            <video
+              ref={videoRef}
+              style={{
+                width: "100%",
+                borderRadius: "12px",
+                transform: "scaleX(-1)",
+                background: "#000",
+              }}
+              autoPlay
+              muted
+              playsInline
+            />
+          </IonCardContent>
+        </IonCard>
 
-      <IonContent fullscreen className="ion-padding">
-        <IonGrid>
-          <IonRow>
-            <IonCol size="12" sizeMd="7">
-              <IonCard>
-                <IonCardContent style={{ position: "relative", padding: 0 }}>
-                  <div
-                    style={{
-                      position: "relative",
-                      width: "100%",
-                      paddingBottom: "75%",
-                      backgroundColor: "#000",
-                    }}
-                  >
-                    <video
-                      ref={videoRef}
-                      style={{
-                        position: "absolute",
-                        top: 0,
-                        left: 0,
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        transform: "scaleX(-1)",
-                      }}
-                      autoPlay
-                      muted
-                      playsInline
-                    />
-                    {cameraReady && (
-                      <div
-                        style={{
-                          position: "absolute",
-                          inset: 0,
-                          pointerEvents: "none",
-                        }}
-                      >
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: ROI_OFFSET,
-                            right: ROI_OFFSET,
-                            width: ROI_SIZE,
-                            height: ROI_SIZE,
-                            border: "2px solid #00ff00",
-                          }}
-                        />
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 14,
-                            left: 24,
-                            fontSize: 18,
-                            fontWeight: 700,
-                            color: "#fff",
-                            textShadow: "1px 1px 2px rgba(0,0,0,0.8)",
-                          }}
-                        >
-                          {prevLetter}
-                        </div>
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 50,
-                            left: 275,
-                            fontSize: 18,
-                            color: "#ccc",
-                            textShadow: "1px 1px 2px rgba(0,0,0,0.8)",
-                          }}
-                        >
-                          {recognizedText}
-                        </div>
-                        <div
-                          style={{
-                            position: "absolute",
-                            top: 120,
-                            left: 300,
-                            fontSize: 24,
-                            color: "#fff",
-                            textShadow: "1px 1px 2px rgba(0,0,0,0.8)",
-                          }}
-                        >
-                          {timerTens}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                  <canvas ref={roiCanvasRef} width={640} height={480} style={{ display: "none" }} />
-                </IonCardContent>
-              </IonCard>
+        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
+          {!isCameraOn ? (
+            <IonButton onClick={startCamera}>Start Camera</IonButton>
+          ) : !capturing ? (
+            <IonButton onClick={captureFrames}>Start Capturing</IonButton>
+          ) : (
+            <IonButton color="medium" disabled>
+              Capturing...
+            </IonButton>
+          )}
+          {isCameraOn && (
+            <IonButton color="danger" onClick={stopCamera}>
+              Stop Camera
+            </IonButton>
+          )}
+        </div>
 
-
-              <IonCard style={{ marginTop: "12px" }}>
-                <IonCardContent>
-                  <IonText>
-                    <h3>Processed ROI (from server)</h3>
-                  </IonText>
-                  <canvas
-                    ref={processedCanvasRef}
-                    width={ROI_SIZE}
-                    height={ROI_SIZE}
-                    style={{
-                      width: "100%",
-                      backgroundColor: "#000",
-                      border: "1px solid #444",
-                      display: "block",
-                      marginTop: "8px",
-                    }}
-                  />
-                </IonCardContent>
-              </IonCard>
-
-
-              {error && (
-                <IonText color="danger">
-                  <p>{error}</p>
-                </IonText>
-              )}
-
-
-              <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-                {!cameraReady ? (
-                  <IonButton onClick={startCamera}>Start Camera</IonButton>
-                ) : !capturing ? (
-                  <IonButton onClick={handleStartCapture}>Start Capturing</IonButton>
-                ) : (
-                  <IonButton color="medium" onClick={stopCamera}>
-                    Stop Camera
-                  </IonButton>
-                )}
-              </div>
-
-
-              <IonButton>
-                <label htmlFor="fileInput" style={{ cursor: "pointer" }}>
-                  Upload Processed Image
-                </label>
-                <input
-                  id="fileInput"
-                  type="file"
-                  accept="image/*"
-                  style={{ display: "none" }}
-                  onChange={handleProcessedImageUpload}
-                />
-              </IonButton>
-            </IonCol>
-
-
-            <IonCol size="12" sizeMd="5">
-              <IonCard>
-                <IonCardContent>
-                  <IonText>
-                    <h2>Recognized Text</h2>
-                  </IonText>
-                  <p style={{ marginTop: 8, fontSize: 20 }}>{recognizedText}</p>
-                  <hr />
-                  <IonText>
-                    <strong>How it works:</strong>
-                    <ul style={{ fontSize: "14px", marginTop: "8px" }}>
-                      <li>Click "Start Camera" to enable webcam</li>
-                      <li>Then click "Start Capturing" to begin recognition</li>
-                      <li>ROI outlined in green is processed continuously</li>
-                      <li>Every 300 frames, a prediction is sent to the server</li>
-                      <li>Recognized letters appear live</li>
-                      <li>Stop Camera to end recognition</li>
-                    </ul>
-                  </IonText>
-                </IonCardContent>
-              </IonCard>
-            </IonCol>
-          </IonRow>
-        </IonGrid>
+        <div style={{ marginTop: 20, textAlign: "center" }}>
+          {processing ? (
+            <>
+              <IonSpinner name="dots" />
+              <IonText>
+                <h3>Processing...</h3>
+              </IonText>
+            </>
+          ) : recognizedLetter ? (
+            <IonText>
+              <h2>Detected: {recognizedLetter}</h2>
+            </IonText>
+          ) : null}
+        </div>
       </IonContent>
     </IonPage>
   );
 };
 
-
-export default SignLanguageRecognition;
+export default LandmarkCapture;

@@ -5,6 +5,7 @@ import "./VideoNotetaking.css"; // You can define Ionic-safe styling here
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { deleteDoc } from "firebase/firestore";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 
 
 
@@ -98,12 +99,23 @@ const VideoNotetaking: React.FC = () => {
     const db = getFirestore();
     const noteId = crypto.randomUUID();
     const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    const url = await uploadVideoBase64ToFirebase(video, user.uid, noteId);
     await setDoc(noteRef, {
       title,
       content,
-      video
+      video: url
     });
     return noteId;
+  }
+
+  async function uploadVideoBase64ToFirebase(base64Video: string, userId: string, noteId: string): Promise<string> {
+    const storage = getStorage();
+    // Remove the data URL prefix if present
+    const base64 = base64Video.split(",")[1] || base64Video;
+    const videoRef = ref(storage, `users/${userId}/notes/${noteId}/video.webm`);
+    await uploadString(videoRef, base64, "base64");
+    const url = await getDownloadURL(videoRef);
+    return url;
   }
 
   const handleSelectNote = (index: number) => {
@@ -118,11 +130,26 @@ const VideoNotetaking: React.FC = () => {
         idx === selectedNote ? { ...note, title, content } : note
       );
       setNotes(updatedNotes);
+      updateNoteInFirestore(notes[selectedNote].id, title, content, notes[selectedNote].video || "");
       setSelectedNote(null);
       setTitle("");
       setContent("");
     }
   };
+
+  async function updateNoteInFirestore(noteId: string, title: string, content: string, video: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const db = getFirestore();
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    await setDoc(noteRef, {
+      title,
+      content,
+      video
+    }, { merge: true });
+  }
+
 
   const handleDeleteNote = (index: number) => {
     const updatedNotes = notes.filter((_, idx) => idx !== index);
@@ -140,6 +167,18 @@ const VideoNotetaking: React.FC = () => {
     const db = getFirestore();
     const noteRef = doc(db, "users", user.uid, "notes", noteId);
     await deleteDoc(noteRef);
+
+    // Delete the video from Firebase Storage
+    const storage = getStorage();
+    const videoRef = ref(storage, `users/${user.uid}/notes/${noteId}/video.webm`);
+    try {
+      await (await import("firebase/storage")).deleteObject(videoRef);
+    } catch (error) {
+      // Ignore if file does not exist
+      if ((error as any)?.code !== "storage/object-not-found") {
+        throw error;
+      }
+    }
   }
 
 

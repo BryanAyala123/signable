@@ -2,6 +2,12 @@ import React, { useRef, useState } from "react";
 import { IonPage, IonContent, IonButton, IonText, IonCard, IonCardContent, IonList, IonItem, IonLabel } from "@ionic/react";
 
 import "./VideoNotetaking.css"; // You can define Ionic-safe styling here
+import { getFirestore, doc, setDoc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+import { deleteDoc } from "firebase/firestore";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
+import AppHeader from "../layout/AppHeader";
+import AppFooter from "../layout/AppFooter";
 
 
 
@@ -13,10 +19,29 @@ const VideoNotetaking: React.FC = () => {
   const chunks = useRef<Blob[]>([]);
   const [video, setVideo] = useState<string>("");
 
-  const [notes, setNotes] = React.useState<{ title: string; content: string; video?: string }[]>([]);
+  const [notes, setNotes] = React.useState<{ id: string; title: string; content: string; video?: string }[]>([]);
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState("");
   const [selectedNote, setSelectedNote] = React.useState<number | null>(null);
+
+  React.useEffect(() => {
+    const fetchNotes = async () => {
+      const auth = getAuth();
+      const user = auth.currentUser;
+      if (!user) return;
+      const db = getFirestore();
+      const notesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "notes");
+      const snapshot = await (await import("firebase/firestore")).getDocs(notesRef);
+      const notesData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        title: doc.data().title,
+        content: doc.data().content,
+        video: doc.data().video,
+      }));
+      setNotes(notesData);
+    };
+    fetchNotes();
+  }, []);
 
   const startRecording = async () => {
     if (!navigator.mediaDevices?.getUserMedia) return;
@@ -33,18 +58,19 @@ const VideoNotetaking: React.FC = () => {
     };
     mediaRecorderRef.current.onstop = () => {
       const blob = new Blob(chunks.current, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      setVideo(url);
-
-      // setRecordedVideos((prev) => [url, ...prev]);
-
-      if (videoRef.current) {
-        videoRef.current.src = url;
-        videoRef.current.controls = true;
-        videoRef.current.play();
-        videoRef.current.srcObject = null;
-        videoRef.current.pause();
-      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64data = reader.result as string;
+        setVideo(base64data);
+        if (videoRef.current) {
+          videoRef.current.src = base64data;
+          videoRef.current.controls = true;
+          videoRef.current.play();
+          videoRef.current.srcObject = null;
+          videoRef.current.pause();
+        }
+      };
+      reader.readAsDataURL(blob);
       if (stream) {
         stream.getTracks().forEach(track => track.stop());
         setStream(null);
@@ -59,13 +85,40 @@ const VideoNotetaking: React.FC = () => {
     setRecording(false);
   };
 
-  const handleAddNote = () => {
+  const handleAddNote = async () => {
     if (title.trim() && content.trim()) {
-      setNotes([...notes, { title, content, video }]);
+      const id = await addNoteToFirestore(title, content, video)
+      setNotes([...notes, { id, title, content, video }]);
       setTitle("");
       setContent("");
     }
   };
+
+  async function addNoteToFirestore(title: string, content: string, video: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const db = getFirestore();
+    const noteId = crypto.randomUUID();
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    const url = await uploadVideoBase64ToFirebase(video, user.uid, noteId);
+    await setDoc(noteRef, {
+      title,
+      content,
+      video: url
+    });
+    return noteId;
+  }
+
+  async function uploadVideoBase64ToFirebase(base64Video: string, userId: string, noteId: string): Promise<string> {
+    const storage = getStorage();
+    // Remove the data URL prefix if present
+    const base64 = base64Video.split(",")[1] || base64Video;
+    const videoRef = ref(storage, `users/${userId}/notes/${noteId}/video.webm`);
+    await uploadString(videoRef, base64, "base64");
+    const url = await getDownloadURL(videoRef);
+    return url;
+  }
 
   const handleSelectNote = (index: number) => {
     setSelectedNote(index);
@@ -79,153 +132,376 @@ const VideoNotetaking: React.FC = () => {
         idx === selectedNote ? { ...note, title, content } : note
       );
       setNotes(updatedNotes);
+      updateNoteInFirestore(notes[selectedNote].id, title, content, notes[selectedNote].video || "");
       setSelectedNote(null);
       setTitle("");
       setContent("");
     }
   };
 
+  async function updateNoteInFirestore(noteId: string, title: string, content: string, video: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const db = getFirestore();
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    await setDoc(noteRef, {
+      title,
+      content,
+      video
+    }, { merge: true });
+  }
+
+
   const handleDeleteNote = (index: number) => {
     const updatedNotes = notes.filter((_, idx) => idx !== index);
     setNotes(updatedNotes);
+    deleteNoteFromFirestore(notes[index].id);
     setSelectedNote(null);
     setTitle("");
     setContent("");
   };
 
+  async function deleteNoteFromFirestore(noteId: string) {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) throw new Error("User not authenticated");
+    const db = getFirestore();
+    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    await deleteDoc(noteRef);
+
+    // Delete the video from Firebase Storage
+    const storage = getStorage();
+    const videoRef = ref(storage, `users/${user.uid}/notes/${noteId}/video.webm`);
+    try {
+      await (await import("firebase/storage")).deleteObject(videoRef);
+    } catch (error) {
+      // Ignore if file does not exist
+      if ((error as any)?.code !== "storage/object-not-found") {
+        throw error;
+      }
+    }
+  }
+
+
+
   return (
     <IonPage>
+      <AppHeader />
       <IonContent className="ion-padding">
-        <IonText>
-          <h2>Video Notetaking</h2>
-          <p>Take notes while watching your video.</p>
-        </IonText>
         <div style={{ display: "flex", gap: "16px", justifyContent: "center", maxWidth: 1200, margin: "0 auto" }}>
-          <div className="notes-list" style={{ marginTop: "24px", maxWidth: "800px", marginLeft: 0, marginRight: "auto" }}>
+            <div
+            className="notes-list"
+            style={{
+              marginTop: "24px",
+              maxWidth: "800px",
+              marginLeft: 0,
+              marginRight: "auto",
+              background: "#F5F3ED",
+              borderRadius: "24px",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
+              padding: "24px 120px 16px 120px",
+              border: "2px solid #D6D3C2",
+            }}
+            >
             <IonText>
-              <h3>Notes</h3>
+              <h3 style={{
+              fontFamily: "Figtree",
+              fontWeight: 700,
+              fontSize: 28,
+              color: "#353534",
+              marginBottom: 18,
+              letterSpacing: 1.2,
+              textAlign: "left"
+              }}>Entries</h3>
             </IonText>
             {notes.length === 0 && (
               <IonText color="medium">
-                <p>No notes yet.</p>
+              <p style={{ fontStyle: "italic", color: "#888", margin: "12px 0" }}>No entries yet.</p>
               </IonText>
             )}
             {notes.map((note, idx) => {
               const isExpanded = selectedNote === idx;
               return (
-                <div
-                  key={idx}
-                  className="note-item"
-                  style={{
-                    border: "1px solid #ccc",
-                    borderRadius: "8px",
-                    padding: "12px",
-                    marginBottom: "8px",
-                    background: "#000000ff",
-                    boxShadow: "0 2px 8px rgba(0,0,0,0.05)",
-                    maxWidth: "100%",
-                    cursor: "pointer",
-                  }}
-                  onClick={() => setSelectedNote(isExpanded ? null : idx)}
-                >
-                  <strong>{note.title}</strong>
-                  {isExpanded && (
-                    <p style={{ marginTop: "8px", whiteSpace: "pre-wrap" }}>{note.content}</p>
-                  )}
-                  {isExpanded && note.video && (
-                    <>
-                      <video
-                        src={note.video}
-                        controls
-                        preload="auto"
-                        style={{ width: "100%", marginTop: "8px" }}
-                        onClick={e => e.stopPropagation()}
-                      />
-                      <IonButton
-                        size="small"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleSelectNote(idx);
-                        }}
-                        style={{ marginRight: "8px" }}
-                      >
-                        Edit
-                      </IonButton>
-                      <IonButton
-                        size="small"
-                        color="danger"
-                        onClick={e => {
-                          e.stopPropagation();
-                          handleDeleteNote(idx);
-                        }}
-                      >
-                        Delete
-                      </IonButton>
-                    </>
-                  )}
+              <div
+                key={idx}
+                className="note-item"
+                style={{
+                border: isExpanded ? "2px solid #2dd36f" : "1.5px solid #CFCFCF",
+                borderRadius: "18px",
+                padding: "18px 16px 14px 16px",
+                marginBottom: "14px",
+                background: isExpanded ? "#E8F8F1" : "#fff",
+                boxShadow: isExpanded
+                  ? "0 2px 12px rgba(45,211,111,0.08)"
+                  : "0 1px 4px rgba(0,0,0,0.04)",
+                maxWidth: "100%",
+                cursor: "pointer",
+                transition: "box-shadow 0.2s, border 0.2s, background 0.2s",
+                position: "relative",
+                }}
+                onClick={() => setSelectedNote(isExpanded ? null : idx)}
+              >
+                <div style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 10,
+                }}>
+                <div style={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  background: isExpanded ? "#2dd36f" : "#CFCFCF",
+                  marginRight: 8,
+                  transition: "background 0.2s"
+                }} />
+                <strong style={{
+                  fontFamily: "Figtree",
+                  fontWeight: 600,
+                  fontSize: 20,
+                  color: "#353534",
+                  letterSpacing: 0.8,
+                  flex: 1,
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap"
+                }}>{note.title}</strong>
                 </div>
-              );
-            })}
-          </div>
-          <IonCard style={{ maxWidth: 600, margin: "0 auto", width: "100%" }}>
-            <IonCardContent>
-              <video ref={videoRef} width="100%" height="240" autoPlay muted />
-              <div style={{ marginTop: 10 }}>
-                {!recording ? (
+                {isExpanded && (
+                <p style={{
+                  marginTop: "12px",
+                  whiteSpace: "pre-wrap",
+                  fontFamily: "Figtree",
+                  fontSize: 16,
+                  color: "#353534",
+                  background: "#F7F7F7",
+                  borderRadius: 10,
+                  padding: "10px 12px",
+                  border: "1px solid #E0E0E0"
+                }}>{note.content}</p>
+                )}
+                {isExpanded && note.video && (
+                <>
+                  <video
+                  src={note.video}
+                  controls
+                  preload="auto"
+                  style={{
+                    width: "100%",
+                    marginTop: "12px",
+                    borderRadius: 12,
+                    border: "1.5px solid #CFCFCF",
+                    background: "#000"
+                  }}
+                  onClick={e => e.stopPropagation()}
+                  />
+                  <div style={{
+                  display: "flex",
+                  gap: 10,
+                  marginTop: 14,
+                  justifyContent: "flex-end"
+                  }}>
                   <IonButton
-                    onClick={() => {
-                      if (videoRef.current) {
-                        videoRef.current.muted = true;
-                        videoRef.current.controls = false;
-                      }
-                      startRecording();
+                    size="small"
+                    fill="outline"
+                    color="success"
+                    onClick={e => {
+                    e.stopPropagation();
+                    handleSelectNote(idx);
+                    }}
+                    style={{
+                    borderRadius: 18,
+                    fontWeight: 500,
+                    fontFamily: "Figtree",
+                    letterSpacing: 0.5,
+                    padding: "0 18px",
+                    fontSize: 15,
+                    border: "1.5px solid #2dd36f"
                     }}
                   >
-                    Start Recording
+                    Edit
                   </IonButton>
-                ) : (
-                  <IonButton color="danger" onClick={() => {
-                    stopRecording();
-                    if (videoRef.current) {
-                      videoRef.current.muted = false;
-                    }
-                  }}>
-                    Stop Recording
+                  <IonButton
+                    size="small"
+                    color="danger"
+                    fill="outline"
+                    onClick={e => {
+                    e.stopPropagation();
+                    handleDeleteNote(idx);
+                    }}
+                    style={{
+                    borderRadius: 18,
+                    fontWeight: 500,
+                    fontFamily: "Figtree",
+                    letterSpacing: 0.5,
+                    padding: "0 18px",
+                    fontSize: 15,
+                    border: "1.5px solid #eb445a"
+                    }}
+                  >
+                    Delete
                   </IonButton>
+                  </div>
+                </>
                 )}
               </div>
-            </IonCardContent>
-
-            <div className="note-form" style={{ maxWidth: 600, margin: "0 auto" }}>
-              <input
-                type="text"
-                placeholder="Note Title"
-                value={title}
-                onChange={e => setTitle(e.target.value)}
-                style={{ marginBottom: "8px", width: "100%" }}
-              />
+              );
+            })}
+            </div>
+          <IonCard style={{width: '70%', maxWidth: '800px', height: '100%', background: '#EBE7DB', borderRadius: 39, border: '2px #343434 solid'}}>
+            <div style={{ padding: "16px", justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+                <div style={{ color: '#353534', fontSize: 40, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 1.60, wordWrap: 'break-word' }}>
+                <input
+                  type="text"
+                  placeholder="Entry Title"
+                  value={title}
+                  onChange={e => setTitle(e.target.value)}
+                  style={{ background: 'none', outline: 'none', border: 'none' }}
+                />
+                </div>
+            </div>
+            <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+              <div style={{ width: '100%', height: 2, background: '#353534', borderRadius: 1 }} />
+            </div>
+              <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
               <textarea
-                placeholder="Note Content"
+                placeholder="Entry Content"
                 value={content}
                 onChange={e => setContent(e.target.value)}
-                style={{ marginBottom: "8px", width: "100%" }}
-                rows={3}
+                style={{
+                marginBottom: "8px",
+                width: "100%",
+                background: 'none',
+                fontSize: 20,
+                fontFamily: 'Figtree',
+                fontWeight: '400',
+                letterSpacing: 1.28,
+                color: '#353534',
+                padding: 16,
+                border: 'none',
+                resize: 'none',
+                minHeight: 120, // Increased height for more typing space
+                height: 250,    // You can adjust this value as needed
+                boxSizing: 'border-box'
+                }}
+                rows={15} // Increased rows for more visible lines
               />
-              {selectedNote === null ? (
-                <IonButton expand="block" onClick={handleAddNote}>
-                  Add Note
-                </IonButton>
-              ) : (
-                <IonButton expand="block" color="secondary" onClick={handleUpdateNote}>
-                  Update Note
-                </IonButton>
-              )}
+              </div>
+            <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+              <video ref={videoRef} width="100%" height="240" autoPlay muted />
+            </div>
+            <div style={{ padding: "16px", justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
+              <div style={{width: '100%', height: '100%', background: '#343434', borderRadius: 26, border: '2px #343434 solid'}}>
+                  <div style={{
+                  padding: "8px",
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  gap: '24px',
+                  width: '100%',
+                  boxSizing: 'border-box'
+                  }}>
+                  <div style={{ flex: 1 }} />
+                  <button
+                    style={{
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    cursor: "pointer",
+                    outline: "none",
+                    borderRadius: "50%",
+                    boxShadow: recording
+                      ? "0 0 0 2px #eb445a, 0 0 8px 2px #eb445a55"
+                      : "none",
+                    transition: "box-shadow 0.2s",
+                    }}
+                    onClick={() => {
+                    if (!recording) {
+                      if (videoRef.current) {
+                      videoRef.current.muted = true;
+                      videoRef.current.controls = false;
+                      }
+                      startRecording();
+                    } else {
+                      stopRecording();
+                      if (videoRef.current) {
+                      videoRef.current.muted = false;
+                      }
+                    }
+                    }}
+                    aria-label={recording ? "Stop Recording" : "Start Recording"}
+                  >
+                    <img
+                    src="/assets/videoNotes/video-on.svg"
+                    alt="Video Icon"
+                    style={{
+                      filter: recording
+                      ? "drop-shadow(0 0 4px #eb445a) brightness(1.2)"
+                      : "none",
+                      opacity: recording ? 1 : 0.85,
+                      transition: "filter 0.2s, opacity 0.2s",
+                      width: 32,
+                      height: 32,
+                    }}
+                    />
+                  </button>
+                  <button
+                    onClick={() => {
+                    if (selectedNote === null) {
+                      handleAddNote();
+                    } else {
+                      handleUpdateNote();
+                    }
+                    }}
+                    disabled={recording}
+                    style={{
+                    opacity: recording ? 0.5 : 1,
+                    filter: recording ? "grayscale(0.7)" : "none",
+                    cursor: recording ? "not-allowed" : "pointer",
+                    background: "none",
+                    border: "none",
+                    padding: 0,
+                    outline: "none",
+                    borderRadius: "50%",
+                    boxShadow: recording
+                      ? "0 0 0 2px #eb445a, 0 0 8px 2px #eb445a55"
+                      : "none",
+                    transition: "box-shadow 0.2s, filter 0.2s, opacity 0.2s",
+                    }}
+                  >
+                    <svg
+                    width="32"
+                    height="32"
+                    viewBox="0 0 32 32"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                    style={{
+                      display: "block",
+                      margin: "auto",
+                      filter: recording ? "grayscale(0.7)" : "none",
+                    }}
+                    >
+                    <circle cx="16" cy="16" r="16" fill="#2dd36f" />
+                    <path
+                      d="M10 17.5L14 21L22 13"
+                      stroke="white"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    </svg>
+                  </button>
+                  <div style={{ flex: 1 }} />
+                  </div>
+              </div>
             </div>
           </IonCard>
         </div>
+        
 
 
       </IonContent>
+      <AppFooter />
     </IonPage>
   );
 };

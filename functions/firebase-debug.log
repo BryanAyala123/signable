@@ -1,0 +1,62 @@
+[debug] [2025-11-09T03:12:50.598Z] ----------------------------------------------------------------------
+[debug] [2025-11-09T03:12:50.602Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\adria\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only functions --debug
+[debug] [2025-11-09T03:12:50.602Z] CLI Version:   14.24.1
+[debug] [2025-11-09T03:12:50.602Z] Platform:      win32
+[debug] [2025-11-09T03:12:50.603Z] Node Version:  v24.11.0
+[debug] [2025-11-09T03:12:50.603Z] Time:          Sat Nov 08 2025 22:12:50 GMT-0500 (Eastern Standard Time)
+[debug] [2025-11-09T03:12:50.603Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-11-09T03:12:50.806Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-11-09T03:12:50.808Z] > authorizing via signed-in user (adrianrojas801@gmail.com)
+[debug] [2025-11-09T03:12:50.808Z] [iam] checking project signable-dev for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-11-09T03:12:50.810Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:50.810Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:50.811Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev:testIamPermissions [none]
+[debug] [2025-11-09T03:12:50.811Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev:testIamPermissions x-goog-quota-user=projects/signable-dev
+[debug] [2025-11-09T03:12:50.812Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-11-09T03:12:51.011Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev:testIamPermissions 200
+[debug] [2025-11-09T03:12:51.011Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-11-09T03:12:51.012Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.012Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.012Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/signable-dev/serviceAccounts/signable-dev@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-11-09T03:12:51.013Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/signable-dev/serviceAccounts/signable-dev@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-11-09T03:12:51.249Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/signable-dev/serviceAccounts/signable-dev@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-11-09T03:12:51.250Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/signable-dev/serviceAccounts/signable-dev@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'signable-dev'...
+[info] 
+[info] i  deploying functions 
+[debug] [2025-11-09T03:12:51.253Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.253Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.254Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev [none]
+[debug] [2025-11-09T03:12:51.375Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev 200
+[debug] [2025-11-09T03:12:51.375Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/signable-dev {"projectNumber":"1030810674581","projectId":"signable-dev","lifecycleState":"ACTIVE","name":"signable","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-10-06T04:58:41.069993Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-11-09T03:12:51.378Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.379Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.379Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/signable-dev/adminSdkConfig [none]
+[debug] [2025-11-09T03:12:51.645Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/signable-dev/adminSdkConfig 200
+[debug] [2025-11-09T03:12:51.645Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/signable-dev/adminSdkConfig {"projectId":"signable-dev","databaseURL":"https://signable-dev-default-rtdb.firebaseio.com","storageBucket":"signable-dev.firebasestorage.app"}
+[debug] [2025-11-09T03:12:51.646Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.646Z] Checked if tokens are valid: true, expires at: 1762659665770
+[debug] [2025-11-09T03:12:51.646Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/signable-dev/configs [none]
+[debug] [2025-11-09T03:12:51.847Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/signable-dev/configs 200
+[debug] [2025-11-09T03:12:51.848Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/signable-dev/configs {}
+[debug] [2025-11-09T03:12:51.849Z] Customer code is not Node
+[debug] [2025-11-09T03:12:51.850Z] Validating python source
+[debug] [2025-11-09T03:12:51.850Z] Building python source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[debug] [2025-11-09T03:12:51.851Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-11-09T03:12:51.861Z] Running command with virtualenv: command="C:\Users\adria\signable\functions\venv\Scripts\activate.bat", args=["","&&","python.exe","-c","\"import firebase_functions; import os; print(os.path.dirname(firebase_functions.__file__))\""]
+[debug] [2025-11-09T03:12:51.883Z] stderr: The system cannot find the path specified.
+
+[debug] [2025-11-09T03:12:51.889Z] Error: spawn "C:\Users\adria\signable\functions\venv\Scripts\activate.bat" ENOENT
+    at notFoundError (C:\Users\adria\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:6:26)
+    at verifyENOENT (C:\Users\adria\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:40:16)
+    at cp.emit (C:\Users\adria\AppData\Roaming\npm\node_modules\firebase-tools\node_modules\cross-spawn\lib\enoent.js:27:25)
+    at ChildProcess._handle.onexit (node:internal/child_process:294:12)
+[error] 
+[error] Error: An unexpected error has occurred.

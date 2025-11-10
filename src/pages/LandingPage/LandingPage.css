@@ -5,46 +5,86 @@
 .MainLandingDiv{
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-direction: column;
     gap: 70px; 
     margin-top: 20px;
+    padding: 0;
+    width: 100%;
 }
 
 .FirstBlockDiv{
     display: flex;
-    color: #EBE5DA;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 1400px;
+    min-height: 800px;
+    border-radius: 40px;
+    background-color: #343434;
+    padding: 20px;
+    margin: 0 20px;
+}
+
+.FirstBlockDivInner{
+    display: flex;
+    color: #343434;
     flex-direction: row;
     align-items: center;
     width: 100%; 
-    max-width: 1400px; 
-    padding: 0 4vw;
-    height: auto;
-    min-height: 821px;
-    margin: 0 auto; 
-    background-color: #343434;
-    border-radius: 40px;
+    min-height: 760px;
+    background-color: #E8E4D8;
+    border-radius: 92px;
     justify-content: center;
-    gap: 80px;
+    padding: 40px;
+}
 
+.FirstBlockLeftSide{
+    flex: 1;
+    max-width: 600px;
 }
 
 .FirstBlockLeftSideHeader{
-    font-size: 40px;
+    font-size: clamp(28px, 5vw, 40px);
     text-align: left;
 }
 
 .FirstBlockText{
     margin: 0;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 1.6px;
+}
+
+.FirstBlockTextUnderline{
+    margin: 0;
+    position: relative;
+    display: inline-block;
+}
+
+.FirstBlockTextUnderline::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -5px;
+    width: 100%;
+    height: 3.51px;
+    background: url('/public/assets/thickUnderline.svg') center;
+    background-repeat: no-repeat;
 }
 
 .FirstBlockLeftSideDisc{
     text-align: left;
-    font-size: 20px;
+    font-size: clamp(16px, 2.5vw, 20px);
+    margin: 20px 0;
 }
 
 .FirstBlockLeftSideButtons{
     display: flex;
     gap: 18px;
+    flex-wrap: wrap;
 }
 
 .FirstBlockLeftSideButton{
@@ -53,9 +93,10 @@
     border-radius: 31px;
     background-color: #F1D493;
     color: #343434;
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 20px);
     cursor: pointer;
     transition: all 0.2s ease;
+    border: none;
 }
 
 .FirstBlockLeftSideButton:hover {
@@ -68,11 +109,20 @@
     transform: scale(0.95); 
 }
 
+.FirstBlockRightSide{
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .FirstBlockRightSideImage{
-    height: 724px;
-    width: 690px;
+    width: 100%;
+    max-width: 757px;
+    height: auto;
     border-radius: 40px;
     aspect-ratio: 345/362;
+    object-fit: cover;
 }
 
 .SecondBlockDiv{
@@ -80,8 +130,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
-    height: 793px;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    min-height: 793px;
+    padding: 60px 20px;
     flex-shrink: 0;
     background-color: #F1D493;
     color: #343434;
@@ -98,50 +151,48 @@
     background-color: #343434; 
 }
 
-
 .SecondBlockDiv::before {
-    left: 57px;
+    left: 20px;
 }
 
-
 .SecondBlockDiv::after {
-    right: 57px; 
+    right: 20px; 
 }
 
 .SecondBlockDivLargerHeader{
-    width: 944px;
-    height: 95px;
-    flex-shrink: 0;
+    width: 100%;
+    max-width: 944px;
     margin-top: 30px;
     margin-bottom: 50px;
+    padding: 0 20px;
 }
 
 .SecondBlockDivLargerHeaderText{
     color: #343434;
-    font-size: 40px;
+    font-size: clamp(24px, 4vw, 40px);
     font-style: normal;
     font-weight: 500;
-    line-height: normal;
+    line-height: 1.3;
     letter-spacing: 1.6px;
 }
 
 .SecondBlockDivLargeHeader{
     display: flex;
     flex-direction: column;
-    width: 940px;
-    height: 53px;
-    font-size: 40px;
+    width: 100%;
+    max-width: 940px;
+    font-size: clamp(24px, 4vw, 40px);
     letter-spacing: 1.6px;
     margin-bottom: 50px;
     font-weight: 600;
-    padding-bottom: 12px;
+    padding: 0 20px 12px;
 }
 
 .SecondBlockDivLargeHeaderSignable{
     position: relative;
     color: #D84141; 
     font-weight: 500;
-    font-size: 40px;
+    font-size: clamp(24px, 4vw, 40px);
     display: inline-block; 
     line-height: 1.2; 
 }
@@ -151,28 +202,67 @@
     position: absolute;
     left: 0;
     bottom: -5px;
-    width: 162px;
+    width: 100%;
+    max-width: 162px;
     height: 3.51px;
     background: url('/public/assets/signableUnderline.png') center;
+    background-repeat: no-repeat;
 }
 
 .SecondBlockDivDisc{
     display: flex;
     flex-direction: column;
-    gap:30px;
+    gap: 30px;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 40px;
+}
+
+/* Keyframe animation for sliding in from left */
+@keyframes slideInFromLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
 }
 
 .SecondBlockDivDiscContainer{
     display: flex;
     flex-direction: row;
-    width: max-content;
-    gap: 70px;
+    width: 100%;
+    gap: 30px;
+    opacity: 0;
+    transform: translateX(-100px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    align-items: center;
+}
+
+.SecondBlockDivDiscContainer.animate {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.SecondBlockDivDiscContainer.animate:nth-child(1) {
+    transition-delay: 0.2s;
+}
+
+.SecondBlockDivDiscContainer.animate:nth-child(2) {
+    transition-delay: 0.4s;
+}
+
+.SecondBlockDivDiscContainer.animate:nth-child(3) {
+    transition-delay: 0.6s;
 }
 
 .SecondBlockDivDiscContainerImg{
     display: flex;
     width: 94px;
     height: 94px;
+    min-width: 94px;
     justify-content: center;
     align-items: center;
     border-radius: 50%;
@@ -189,33 +279,32 @@
 .SecondBlockDivDiscContainerText{
     display: flex;
     color: #E8E4D8;
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 20px);
     letter-spacing: 0.8px;
     align-items: center;
     justify-content: center;
     text-align: left;
-    padding-left: 38px;
-    padding-right: 38px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 20px 38px;
     flex-shrink: 0;
     background-color: #343434;
     border-radius: 46px;
+    flex: 1;
 }
 
 .ThirdBlockDiv{
     display: flex;
     flex-direction: column;
-    width: 100%; 
-    max-width: 1500px; 
-    height: auto; 
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+    margin-right: calc(-50vw + 50%);
+    max-width: none;
+    min-height: auto; 
     background-color: #343434;
     color: #E8E4D8;
     position: relative;
     text-align: left;
     align-items: center;
-    padding-top: 30px;
-    padding-bottom: 30px;
+    padding: 60px 20px;
     gap: 50px;
 }
 
@@ -229,21 +318,20 @@
     background-color: #E8E4D8; 
 }
 
-
 .ThirdBlockDiv::before {
-    left: 57px;
+    left: 20px;
 }
 
-
 .ThirdBlockDiv::after {
-    right: 57px; 
+    right: 20px; 
 }
 
 .ThirdBlockDivTitle{
-    width: 80vw;
-    height: 53;
-    font-size: 40px;
+    width: 100%;
+    max-width: 90%;
+    font-size: clamp(28px, 4vw, 40px);
     letter-spacing: 1.6px;
+    padding: 0 20px;
 }
 
 .ThirdBlockDivContent{
@@ -251,37 +339,74 @@
     flex-direction: row;
     gap: 30px;
     align-items: center;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .ThirdBlockDivContentBlock{
     display: flex;
     flex-direction: column;
-    width: 513px;
-    height: 567px;
+    width: 100%;
+    max-width: 513px;
+    min-height: 567px;
     border-radius: 40px;
     background-color: #E8E4D8;
     justify-content: center;
     align-items: center;
+    padding: 30px;
+    opacity: 0;
+    transform: translateY(-80px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.ThirdBlockDivContentBlock.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+.ThirdBlockDivContentBlock.animate:nth-child(1) {
+    transition-delay: 0.1s;
+}
+
+.ThirdBlockDivContentBlock.animate:nth-child(3) {
+    transition-delay: 0.3s;
 }
 
 .ThirdBlockDivContentBlockHeader{
-    font-size: 20px;
+    font-size: clamp(18px, 2.5vw, 20px);
     letter-spacing: 0.8px;
     color: #343434;
-    margin-bottom: 50px;
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 .ThirdBlockDivContentBlockImg{
-    width: 444px;
-    height: 296px;
+    width: 100%;
+    max-width: 444px;
+    height: auto;
     aspect-ratio: 3/2;
     border-radius: 40px;
+    object-fit: cover;
 }
 
 .ThirdBlockDivContentBlockText{
     color: #343434;
-    font-size: 20px;
+    font-size: clamp(16px, 2vw, 20px);
     letter-spacing: 0.8px;
+    width: 100%;
+    max-width: 413px;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.ThirdBlockDivContentPlusSign{
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .ThirdBlockDivContentPlusSignImg{
@@ -289,8 +414,180 @@
     height: 46px;
 }
 
-.ThirdBlockDivContentBlockText{
-    width: 413px;
+/* Tablet Breakpoint (768px and below) */
+@media (max-width: 768px) {
+    .MainLandingDiv{
+        gap: 50px;
+        margin-top: 10px;
+    }
+
+    .FirstBlockDiv{
+        min-height: auto;
+        border-radius: 30px;
+    }
+
+    .FirstBlockDivInner{
+        flex-direction: column;
+        gap: 40px;
+        border-radius: 60px;
+        padding: 30px 20px;
+        min-height: auto;
+    }
+
+    .FirstBlockLeftSide{
+        max-width: 100%;
+        text-align: center;
+    }
+
+    .FirstBlockLeftSideHeader{
+        text-align: center;
+    }
+
+    .FirstBlockLeftSideDisc{
+        text-align: center;
+    }
+
+    .FirstBlockLeftSideButtons{
+        justify-content: center;
+    }
+
+    .FirstBlockRightSideImage{
+        max-width: 100%;
+    }
+
+    .SecondBlockDiv::before {
+        left: 10px;
+    }
+
+    .SecondBlockDiv::after {
+        right: 10px;
+    }
+
+    .SecondBlockDivDisc{
+        padding: 0 20px;
+    }
+
+    .SecondBlockDivDiscContainer{
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .SecondBlockDivDiscContainerText{
+        text-align: center;
+    }
+
+    .ThirdBlockDiv::before {
+        left: 10px;
+    }
+
+    .ThirdBlockDiv::after {
+        right: 10px;
+    }
+
+    .ThirdBlockDivContent{
+        flex-direction: column;
+    }
+
+    .ThirdBlockDivContentPlusSign{
+        transform: rotate(90deg);
+    }
 }
 
+/* Mobile Breakpoint (480px and below) */
+@media (max-width: 480px) {
+    .MainLandingDiv{
+        gap: 30px;
+        padding: 0 10px;
+    }
 
+    .FirstBlockDiv{
+        border-radius: 20px;
+        padding: 10px;
+    }
+
+    .FirstBlockDivInner{
+        border-radius: 40px;
+        padding: 20px 15px;
+        gap: 30px;
+    }
+
+    .FirstBlockLeftSideButtons{
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .FirstBlockLeftSideButton{
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .SecondBlockDiv{
+        padding: 40px 10px;
+    }
+
+    .SecondBlockDiv::before,
+    .SecondBlockDiv::after {
+        display: none;
+    }
+
+    .SecondBlockDivLargerHeader,
+    .SecondBlockDivLargeHeader{
+        padding: 0 10px;
+    }
+
+    .SecondBlockDivDisc{
+        padding: 0 10px;
+    }
+
+    .SecondBlockDivDiscContainer{
+        gap: 15px;
+    }
+
+    .SecondBlockDivDiscContainerImg{
+        width: 70px;
+        height: 70px;
+        min-width: 70px;
+    }
+
+    .SecondBlockDivDiscContainerImgIcon{
+        width: 42px;
+        height: 42px;
+    }
+
+    .SecondBlockDivDiscContainerText{
+        padding: 15px 20px;
+    }
+
+    .ThirdBlockDiv{
+        padding: 40px 10px;
+    }
+
+    .ThirdBlockDiv::before,
+    .ThirdBlockDiv::after {
+        display: none;
+    }
+
+    .ThirdBlockDivTitle{
+        padding: 0 10px;
+    }
+
+    .ThirdBlockDivContent{
+        padding: 0 10px;
+        gap: 20px;
+    }
+
+    .ThirdBlockDivContentBlock{
+        padding: 20px;
+        min-height: auto;
+    }
+
+    .ThirdBlockDivContentBlockHeader{
+        margin-bottom: 20px;
+    }
+
+    .ThirdBlockDivContentPlusSignImg{
+        width: 36px;
+        height: 36px;
+    }
+}

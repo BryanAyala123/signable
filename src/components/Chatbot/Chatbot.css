@@ -31,36 +31,30 @@
   background:linear-gradient(180deg, #fff, #fafafa);
   position:relative;
 }
+
+.messages.mini{
+  flex:1; 
+  min-height:0; 
+  width: 100%;
+  overflow:auto;
+  padding:16px;
+  background: #353534;
+  position:relative;
+}
+
+.chatbotContainer.mini .chatControls {
+  background: #353534;
+  border-top: 1px solid #353534;
+  width: 95%;
+}
+
 .message{ margin:8px 0; display:flex; }
 .message.user{ justify-content:flex-end }
 .message.bot{ justify-content:flex-start }
 .bubble{ max-width:70%; padding:8px 12px; border-radius:16px; background:#636262 }
-.message.user .bubble{ background:#0f6ccf }
-.bubble p{ margin:0 0 6px 0; line-height:1.4; font-size:0.95rem; }
-.bubble li{ margin:0 0 6px 0; line-height:1.4; font-size:0.95rem; list-style-position: inside; }
-.bubble span{
-  pointer-events: none; /* Let clicks pass through to links */
-}
-.bubble a{ 
-  color: #4dabf7; 
-  text-decoration: underline; 
-  cursor: pointer;
-  pointer-events: auto;
-  position: relative;
-  z-index: 10;
-  display: inline-block; /* Ensure it has a clickable area */
-}
-.bubble a:hover{
-  color: #74c0fc;
-  text-decoration: underline;
-  background: rgba(74, 171, 247, 0.1);
-  border-radius: 2px;
-}
-.bubble a:active{
-  color: #339af0;
-}
-.bubble strong{ font-weight:600; }
-.bubble em{ font-style:italic; }
+.message.user .bubble{ background:#636262 }
+.bubble p{ margin:0 0 6px 0; line-height:1.4; font-size:0.95rem; color: #EBE7DB;}
+.bubble a{ color:inherit; text-decoration:underline; color: #EBE7DB;}
 .chatControls{ display:flex; gap:8px; padding:12px; border-top:1px solid #eee; align-items:center; background:rgba(255,255,255,0.9) }
 .chatInput{ flex:1; padding:10px 14px; border-radius:8px; border:1px solid #ccc }
 .chatSend{ padding:10px 14px; border-radius:8px; border:none; background:#1976d2; color:white; cursor:pointer }
@@ -74,6 +68,42 @@
   text-align:center;
   pointer-events:none;
 }
+
+.chatSend.mini{
+  padding:10px 14px; 
+  border-radius:8px; 
+  border:none; 
+  background:#636262; 
+  color:#EBE7DB; 
+  cursor:pointer
+}
+
+.chatInput.mini{
+  flex:1; 
+  padding:10px 14px; 
+  border-radius:8px; 
+  background-color: #EBE7DB;
+  color: #353534;
+  border-radius: 33px;
+}
+
+.chatbotContainer.mini {
+  position: relative; 
+  width: 601px;
+  height: 404px;
+  border-radius: 39px;
+  background-color: #353534;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  top: 0; 
+  left: 0; 
+  margin: 0; 
+  padding: 0;
+  overflow: hidden;
+}
+
 
 /* Typing indicator (three dots) */
 .typingMessage { pointer-events: none; }

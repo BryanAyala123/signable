@@ -1,12 +1,17 @@
 /* For information on how to create your own theme, please see:
 http://ionicframework.com/docs/theming/ */
 @font-face {
-    font-family: 'AzoSans';
-    src: url('../assets/fonts/AzoSans-Regular.otf') format('opentype');
+    font-family: 'Figtree';
+    src: url('public/assets/fonts/Figtree/static/Figtree-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
 
 :root {
-    --ion-font-family: 'Nunito Sans', 'Inter';
+    --ion-font-family: 'Figtree';
+}
+
+body, ion-app {
+    font-family: var(--ion-font-family);
+    --background: #E8E4D8; 
 }

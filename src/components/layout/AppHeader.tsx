@@ -3,6 +3,9 @@ import { IonHeader, IonToolbar, IonButton, IonAvatar } from '@ionic/react';
 import logo from '/public/assets/signable-logo.png';
 import { useHistory } from 'react-router-dom';
 import { personCircle } from 'ionicons/icons';
+import { useAuth } from '../../contexts/authContext';
+import { doSignOut } from '../../firebase/auth';
+import { useIonRouter } from '@ionic/react';
 import './Layout.css';
 
 /**
@@ -13,6 +16,19 @@ import './Layout.css';
  */
 const AppHeader: React.FC = () => {
     const history = useHistory();
+    const { currentUser, loading } = useAuth();
+    const router = useIonRouter();
+
+    const handleLogout = async () => {
+        try {
+            await doSignOut();
+            // Force a full page reload to clear all state and show landing page
+            window.location.href = '/';
+        } catch (error) {
+            console.error('Logout error:', error);
+        }
+    };
+    
     return (
     <IonHeader className='IonHeader'>
         <IonToolbar className='mainToolbar'>
@@ -24,7 +40,7 @@ const AppHeader: React.FC = () => {
                     <span className="separator"></span>
                     <IonButton fill="clear" onClick={() => history.push('/flashcards/0')}><span className='tabText'>Flashcards</span></IonButton>
                     <span className="separator"></span>
-                    <IonButton fill="clear"><span className='tabText'>Social</span></IonButton>
+                    <IonButton fill="clear" onClick={() => history.push('/add-event')}><span className='tabText'>Social</span></IonButton>
                     <span className="separator"></span>
                     <IonButton fill='clear' onClick={() => history.push('/games')}><span className='tabText'>Games</span></IonButton>
                     <span className="separator"></span>
@@ -32,7 +48,7 @@ const AppHeader: React.FC = () => {
                     <span className="separator"></span>
                     <IonButton fill='clear' onClick={() => history.push('/resources')}><span className='tabText'>Resources</span></IonButton>
                     <IonAvatar className="profileIcon">
-                        <img src={personCircle} alt="Profile" className='profilePicture'/>
+                        <IonButton fill='clear' onClick={handleLogout}><img src={personCircle} alt="Profile" className='profilePicture'/></IonButton>
                     </IonAvatar>
                     </div>
                 </div>

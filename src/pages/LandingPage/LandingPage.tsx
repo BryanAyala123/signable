@@ -1,8 +1,9 @@
 import { IonContent, IonPage} from '@ionic/react';
+import { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../../components/layout/AppHeader';
 import AppFooter from '../../components/layout/AppFooter';
-import landingImage from '/public/assets/LandingPageImage.png';
+import landingImage from '/public/assets/singaldo.png';
 import landingImage2 from '/public/assets/landingPageImage2.png';
 import landingImage3 from '/public/assets/landingPageImage3.png';
 import UsbIcon from '/public/assets/usbIcon.png';
@@ -20,31 +21,83 @@ import './LandingPage.css';
 
 const LandingPage: React.FC = () => {
     const history = useHistory();
+    useEffect(() => {
+        const observerOptions = {
+            threshold: 0.2,
+            rootMargin: '0px'
+        };
+    
+        const observerCallback = (entries: any[]) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const containers = entry.target.querySelectorAll('.SecondBlockDivDiscContainer');
+                    containers.forEach((container: { classList: { add: (arg0: string) => void; }; }) => {
+                        container.classList.add('animate');
+                    });
+                }
+            });
+        };
+    
+        const observer = new IntersectionObserver(observerCallback, observerOptions);
+        const targetSection = document.querySelector('.SecondBlockDivDisc');
+        if (targetSection) {
+            observer.observe(targetSection);
+        }
+    
+        const thirdBlockCallback = (entries: any[]) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const blocks = entry.target.querySelectorAll('.ThirdBlockDivContentBlock');
+                    blocks.forEach((block: { classList: { add: (arg0: string) => void; }; }) => {
+                        block.classList.add('animate');
+                    });
+                }
+            });
+        };
+    
+        const thirdBlockObserver = new IntersectionObserver(thirdBlockCallback, observerOptions);
+        const thirdBlockContent = document.querySelector('.ThirdBlockDivContent');
+        if (thirdBlockContent) {
+            thirdBlockObserver.observe(thirdBlockContent);
+        }
+    
+        return () => {
+            if (targetSection) {
+                observer.unobserve(targetSection);
+            }
+            if (thirdBlockContent) {
+                thirdBlockObserver.unobserve(thirdBlockContent);
+            }
+        };
+    }, []);
+
 return (
     <IonPage>
         <AppHeader />
             <IonContent className="MainLandingContent">
                     <div className='MainLandingDiv'>
                         <div className='FirstBlockDiv'>
-                            <div className='FirstBlockLeftSide'>
-                                <div className='FirstBlockLeftSideHeader'>
-                                    <h1 className='FirstBlockText'>Because everyone</h1>
-                                    <h1 className='FirstBlockText' >should be understood.</h1>
+                            <div className='FirstBlockDivInner'>
+                                <div className='FirstBlockLeftSide'>
+                                    <div className='FirstBlockLeftSideHeader'>
+                                        <h1 className='FirstBlockText'>Because <span className='FirstBlockTextUnderline'>everyone</span></h1>
+                                        <h1 className='FirstBlockText' >should be understood.</h1>
+                                    </div>
+                                    <div className='FirstBlockLeftSideDisc'>
+                                        <p>Start practicing ASL today!</p>
+                                    </div>
+                                    <div className='FirstBlockLeftSideButtons'>
+                                        <button className='FirstBlockLeftSideButton' onClick={() => history.push('/login')}>
+                                            Log In
+                                        </button>
+                                        <button className='FirstBlockLeftSideButton' onClick={() => history.push('/register')}>
+                                            Sign Up
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className='FirstBlockLeftSideDisc'>
-                                    <p>Start practicing ASL today!</p>
+                                <div className='FirstBlockRightSide'>
+                                    <img src={landingImage} className='FirstBlockRightSideImage'/>
                                 </div>
-                                <div className='FirstBlockLeftSideButtons'>
-                                    <button className='FirstBlockLeftSideButton' onClick={() => history.push('/login')}>
-                                        Log In
-                                    </button>
-                                    <button className='FirstBlockLeftSideButton' onClick={() => history.push('/register')}>
-                                        Sign Up
-                                    </button>
-                                </div>
-                            </div>
-                            <div className='FirstBlockRightSide'>
-                                <img src={landingImage} className='FirstBlockRightSideImage'/>
                             </div>
                         </div>
 

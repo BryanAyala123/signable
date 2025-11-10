@@ -3,6 +3,7 @@ import './Home.css';
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import MemoryContainer from '../components/Games/Memory/MemoryContainer';
+import AppHeader from '../components/layout/AppHeader';
 
 
 const Games: React.FC = () => {
@@ -10,12 +11,7 @@ const Games: React.FC = () => {
     return (
         <IonPage>
             <IonHeader>
-                <IonToolbar color="primary">
-                    <IonButtons slot="start">
-                        <IonBackButton defaultHref="/home" />
-                    </IonButtons>
-                    <IonTitle>ASL Games</IonTitle>
-                </IonToolbar>
+                <AppHeader />
             </IonHeader>
             <IonContent fullscreen>
                 <IonHeader collapse="condense">

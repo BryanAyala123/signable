@@ -24,6 +24,7 @@
     gap: 40px; 
     margin-top: 20px;
     align-items: center;
+    padding: 0 20px;
 }
 
 .LeftSideDivText{
@@ -46,6 +47,7 @@
     color: #E8E4D8;
     align-items: center;
     justify-content: center;
+    padding: 40px 20px;
 }
 
 .RightSideDivHeaderText{
@@ -158,13 +160,71 @@
 }
 
 .LeftSideDivTextWelcome{
-    margin-bottom: 0px;
+    margin-bottom: 23px;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.1s forwards;
+    position: relative;
+}
+
+.LeftSideDivTextOther {
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.8s forwards;
+}
+
+.LeftSideDivTextWelcome::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -10px;
+    width: 30px;
+    height: 10px;
+    background: url('/public/assets/drawnDashes.svg') no-repeat center;
+    background-size: contain;
+    transform: rotate(70deg);
+}
+
+.LeftSideDivTextWelcome::after {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: -25px;
+    width: 30px;
+    height: 10px;
+    background: url('/public/assets/drawnDashes.svg') no-repeat center;
+    background-size: contain;
+    transform: rotate(40deg);
+}
+
+.dash-third {
+    position: absolute;
+    top: 0px;
+    left: -35px;
+    width: 30px;
+    height: 10px;
+    background: url('/public/assets/drawnDashes.svg') no-repeat center;
+    background-size: contain;
+    transform: rotate(0deg);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .LeftSideDivTextSignable{
     margin-top: 0px;
     position: relative;
+    opacity: 0;
+    animation: fadeInUp 0.8s ease-out 0.8s forwards;
 }
+
+
 
 .LeftSideDivTextSignable::after {
     content: '';
@@ -176,7 +236,265 @@
     background: url('/public/assets/signableUnderline.png') center;
 }
 
+.dash-third-register {
+    position: absolute;
+    top: -15px;
+    left: -25px;
+    width: 30px;
+    height: 10px;
+    background: url('/public/assets/drawnDashes.svg') no-repeat center;
+    background-size: contain;
+    transform: rotate(40deg);
+}
+
+.dash-fourth-register {
+    position: absolute;
+    top: 0px;
+    left: -35px;
+    width: 30px;
+    height: 10px;
+    background: url('/public/assets/drawnDashes.svg') no-repeat center;
+    background-size: contain;
+    transform: rotate(0deg);
+}
+
 .googleSignIn{
     color: #E8E4D8;
     background-color: transparent;
+}
+
+.RegisterForm{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* TABLET RESPONSIVE - Below 1024px */
+@media (max-width: 1024px) {
+    .RegisterPageMainDiv {
+        gap: 30px;
+    }
+
+    .LeftSideDivText {
+        width: 350px;
+        font-size: 32px;
+    }
+
+    .RightSideDiv {
+        width: 550px;
+        height: 650px;
+    }
+
+    .RightSideDivInput,
+    .RightSideDivEmailInput,
+    .RightSideDivPasswordInput,
+    .RightSideDivInputField,
+    .RightSideDivBottomInfo {
+        width: 400px;
+    }
+
+    .RightSideDivHeaderText {
+        margin-bottom: 60px;
+    }
+}
+
+/* MOBILE LANDSCAPE & SMALL TABLETS - Below 768px */
+@media (max-width: 768px) {
+    .RegisterPageMainDiv {
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 10px;
+    }
+
+    .LeftSideDivText {
+        width: 100%;
+        max-width: 400px;
+        font-size: 28px;
+        text-align: center;
+        align-items: center;
+    }
+
+    .RightSideDiv {
+        width: 90%;
+        max-width: 500px;
+        height: auto;
+        min-height: 550px;
+        padding: 30px 20px;
+    }
+
+    .RightSideDivInput,
+    .RightSideDivEmailInput,
+    .RightSideDivPasswordInput,
+    .RightSideDivInputField,
+    .RightSideDivBottomInfo {
+        width: 90%;
+        max-width: 400px;
+    }
+
+    .RightSideDivHeaderText {
+        margin-bottom: 40px;
+    }
+
+    .RightSideDivSignInButton {
+        width: 200px;
+    }
+
+    /* Adjust dash positions for centered text */
+    .LeftSideDivTextWelcome::before {
+        left: 50%;
+        margin-left: -70px;
+    }
+
+    .LeftSideDivTextWelcome::after {
+        left: 50%;
+        margin-left: -85px;
+    }
+
+    .dash-third {
+        left: 50%;
+        margin-left: -95px;
+    }
+
+    .LeftSideDivTextSignable::before {
+        left: 50%;
+        margin-left: -70px;
+    }
+
+    .dash-third-register {
+        left: 50%;
+        margin-left: -85px;
+    }
+
+    .dash-fourth-register {
+        left: 50%;
+        margin-left: -95px;
+    }
+}
+
+/* MOBILE PORTRAIT - Below 480px */
+@media (max-width: 480px) {
+    .back-button {
+        width: 28px;
+        height: 28px;
+        top: 12px;
+        left: 12px;
+    }
+
+    .RegisterPageMainDiv {
+        padding: 0 10px;
+    }
+
+    .LeftSideDivText {
+        font-size: 24px;
+        max-width: 320px;
+    }
+
+    .RightSideDiv {
+        width: 95%;
+        border-radius: 30px;
+        padding: 25px 15px;
+    }
+
+    .RightSideDivHeaderText {
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+
+    .RightSideDivInput,
+    .RightSideDivEmailInput,
+    .RightSideDivPasswordInput,
+    .RightSideDivInputField {
+        width: 100%;
+        height: 55px;
+        font-size: 14px;
+        padding-left: 60px;
+    }
+
+    .RightSideDivInputField {
+        padding-left: 25px;
+    }
+
+    .RightSideDivBottomInfo {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+        font-size: 14px;
+    }
+
+    .RightSideDivSignInButton {
+        width: 180px;
+        height: 55px;
+        font-size: 18px;
+    }
+
+    .googleSignIn {
+        font-size: 14px;
+    }
+
+    /* Smaller dashes for mobile */
+    .LeftSideDivTextWelcome::before,
+    .LeftSideDivTextWelcome::after,
+    .dash-third,
+    .LeftSideDivTextSignable::before,
+    .dash-third-register,
+    .dash-fourth-register {
+        width: 20px;
+        height: 8px;
+    }
+
+    .LeftSideDivTextWelcome::before {
+        top: -15px;
+        margin-left: -50px;
+    }
+
+    .LeftSideDivTextWelcome::after {
+        top: -12px;
+        margin-left: -60px;
+    }
+
+    .dash-third {
+        top: -2px;
+        margin-left: -68px;
+    }
+
+    .LeftSideDivTextSignable::before {
+        top: -15px;
+        margin-left: -50px;
+    }
+
+    .dash-third-register {
+        top: -12px;
+        margin-left: -60px;
+    }
+
+    .dash-fourth-register {
+        top: -2px;
+        margin-left: -68px;
+    }
+
+    .LeftSideDivTextSignable::after {
+        width: 120px;
+    }
+}
+
+/* EXTRA SMALL MOBILE - Below 360px */
+@media (max-width: 360px) {
+    .LeftSideDivText {
+        font-size: 20px;
+    }
+
+    .RightSideDivInput,
+    .RightSideDivEmailInput,
+    .RightSideDivPasswordInput,
+    .RightSideDivInputField {
+        height: 50px;
+        font-size: 13px;
+    }
+
+    .RightSideDivSignInButton {
+        width: 160px;
+        height: 50px;
+        font-size: 16px;
+    }
 }

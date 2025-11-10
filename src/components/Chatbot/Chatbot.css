@@ -37,7 +37,30 @@
 .bubble{ max-width:70%; padding:8px 12px; border-radius:16px; background:#636262 }
 .message.user .bubble{ background:#0f6ccf }
 .bubble p{ margin:0 0 6px 0; line-height:1.4; font-size:0.95rem; }
-.bubble a{ color:inherit; text-decoration:underline; }
+.bubble li{ margin:0 0 6px 0; line-height:1.4; font-size:0.95rem; list-style-position: inside; }
+.bubble span{
+  pointer-events: none; /* Let clicks pass through to links */
+}
+.bubble a{ 
+  color: #4dabf7; 
+  text-decoration: underline; 
+  cursor: pointer;
+  pointer-events: auto;
+  position: relative;
+  z-index: 10;
+  display: inline-block; /* Ensure it has a clickable area */
+}
+.bubble a:hover{
+  color: #74c0fc;
+  text-decoration: underline;
+  background: rgba(74, 171, 247, 0.1);
+  border-radius: 2px;
+}
+.bubble a:active{
+  color: #339af0;
+}
+.bubble strong{ font-weight:600; }
+.bubble em{ font-style:italic; }
 .chatControls{ display:flex; gap:8px; padding:12px; border-top:1px solid #eee; align-items:center; background:rgba(255,255,255,0.9) }
 .chatInput{ flex:1; padding:10px 14px; border-radius:8px; border:1px solid #ccc }
 .chatSend{ padding:10px 14px; border-radius:8px; border:none; background:#1976d2; color:white; cursor:pointer }
@@ -66,7 +89,6 @@
   60% { transform: translateY(0); opacity:0.5 }
   100% { transform: translateY(0); opacity:0.25 }
 }
-
 /* Small responsive tweaks */
 @media (max-width:640px){
   .bubble{ max-width:85%; }

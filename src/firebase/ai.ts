@@ -17,8 +17,18 @@ const ai = getAI(app, { backend: new GoogleAIBackend() });
 export const model = getGenerativeModel(ai, {
   model: 'gemini-2.5-flash',
   // Pass the manually defined tool object
-  tools: [googleSearchTool], 
+  tools: [googleSearchTool],
+  generationConfig: {
+    temperature: 0,
+  },
 });
 
-export const tools = [{googleSearch: {}}]
+export const tools = [{ googleSearch: {} }];
 export { ai };
+
+// 🎯 Key Step: Create the Chat Session
+// This function will be called once per user session (e.g., when the user opens the chatbot)
+export function startChatSession() {
+  const chat = model.startChat();
+  return chat; // Return the chat object to be used for all communication
+}

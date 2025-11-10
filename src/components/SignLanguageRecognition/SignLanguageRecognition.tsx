@@ -11,9 +11,14 @@ import {
   IonCardContent,
   useIonToast,
   IonSpinner,
+  IonFooter,
 } from "@ionic/react";
 import axios from "axios";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
+import AppHeader from '../layout/AppHeader';
+import AppFooter from '../layout/AppFooter';
+import play from '/public/assets/Buttons/playButton.svg';
+import './SignLanguageRecognition.css';
 
 const FUNCTION_URL =
   "https://classify-landmarks-ft6ax3huaq-uc.a.run.app";
@@ -22,7 +27,6 @@ const FRAMES_TO_CAPTURE = 15;
 const LandmarkCapture: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
-  const [isCameraOn, setIsCameraOn] = useState(false);
   const [capturing, setCapturing] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [recognizedLetter, setRecognizedLetter] = useState<string>("");
@@ -30,7 +34,33 @@ const LandmarkCapture: React.FC = () => {
 
   const streamRef = useRef<MediaStream | null>(null);
 
-  // Load MediaPipe model once
+  // Start camera automatically when component mounts
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: "user" },
+      });
+      streamRef.current = stream;
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        await videoRef.current.play();
+      }
+      setRecognizedLetter("");
+    } catch (err) {
+      console.error("Camera error:", err);
+      presentToast({ message: "Unable to access camera.", duration: 3000 });
+    }
+  };
+
+  const stopCamera = () => {
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+    }
+    setCapturing(false);
+  };
+
+  // Load MediaPipe model and start camera
   useEffect(() => {
     const loadModel = async () => {
       try {
@@ -46,6 +76,9 @@ const LandmarkCapture: React.FC = () => {
           runningMode: "VIDEO",
         });
         handLandmarkerRef.current = handLandmarker;
+        
+        // Start camera after model loads
+        await startCamera();
       } catch (err) {
         console.error("Failed to load MediaPipe model:", err);
       }
@@ -54,69 +87,39 @@ const LandmarkCapture: React.FC = () => {
     return () => stopCamera();
   }, []);
 
-  // Camera controls
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: "user" },
-      });
-      streamRef.current = stream;
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
-      setIsCameraOn(true);
-      setRecognizedLetter("");
-    } catch (err) {
-      console.error("Camera error:", err);
-      presentToast({ message: "Unable to access camera.", duration: 3000 });
-    }
-  };
-
-  const stopCamera = () => {
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
-    }
-    setIsCameraOn(false);
-    setCapturing(false);
-  };
-
   // Function to send landmarks
-const sendLandmarksToServer = async (frames: number[][]) => {
-  setProcessing(true);
-  setRecognizedLetter("Processing...");
-  try {
-    // 🔍 Log the outgoing data clearly
-    console.log("[DEBUG] Sending to server:", {
-      url: FUNCTION_URL,
-      payload: { frames },
-      frameCount: frames.length,
-      firstFrame: frames[0],
-    });
+  const sendLandmarksToServer = async (frames: number[][]) => {
+    setProcessing(true);
+    setRecognizedLetter("Processing...");
+    try {
+      console.log("[DEBUG] Sending to server:", {
+        url: FUNCTION_URL,
+        payload: { frames },
+        frameCount: frames.length,
+        firstFrame: frames[0],
+      });
 
-    const res = await axios.post(
-      FUNCTION_URL,
-      JSON.stringify({ frames }), // ✅ explicitly stringify
-      { headers: { "Content-Type": "application/json" }, timeout: 30000 }
-    );
+      const res = await axios.post(
+        FUNCTION_URL,
+        JSON.stringify({ frames }),
+        { headers: { "Content-Type": "application/json" }, timeout: 30000 }
+      );
 
-    const letter = res.data?.result ?? "?";
-    setRecognizedLetter(letter);
-    presentToast({ message: `Detected: ${letter}`, duration: 2000 });
-  } catch (err) {
-    console.error("Server error:", err);
-    setRecognizedLetter("Error");
-    presentToast({
-      message: "Prediction failed",
-      duration: 3000,
-      color: "danger",
-    });
-  } finally {
-    setProcessing(false);
-    setCapturing(false);
-  }
-};
+      const letter = res.data?.result ?? "?";
+      setRecognizedLetter(letter);
+    } catch (err) {
+      console.error("Server error:", err);
+      setRecognizedLetter("Error");
+      presentToast({
+        message: "Prediction failed",
+        duration: 3000,
+        color: "danger",
+      });
+    } finally {
+      setProcessing(false);
+      setCapturing(false);
+    }
+  };
 
   // Capture exactly 15 frames
   const captureFrames = async () => {
@@ -140,7 +143,6 @@ const sendLandmarksToServer = async (frames: number[][]) => {
         const normalized = lm.flatMap(p => [p.x - minX, p.y - minY]);
         frames.push(normalized);
       }
-      // Wait a bit between captures to simulate ~30fps (33ms per frame)
       await new Promise((resolve) => setTimeout(resolve, 33));
     }
 
@@ -158,61 +160,62 @@ const sendLandmarksToServer = async (frames: number[][]) => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>
-          <IonTitle>ASL Landmark Recognition</IonTitle>
-        </IonToolbar>
+        <AppHeader />
       </IonHeader>
 
       <IonContent className="ion-padding">
-        <IonCard>
-          <IonCardContent>
-            <video
-              ref={videoRef}
-              style={{
-                width: "100%",
-                borderRadius: "12px",
-                transform: "scaleX(-1)",
-                background: "#000",
-              }}
-              autoPlay
-              muted
-              playsInline
-            />
-          </IonCardContent>
-        </IonCard>
+        <div className="MainContent">
+          <div className="LeftContent">
+            <IonCard className="ionCard">
+              <IonCardContent>
+                <video
+                  ref={videoRef}
+                  className="video-preview"
+                  autoPlay
+                  muted
+                  playsInline
+                />
+              </IonCardContent>
+            </IonCard>
+          </div>
+          <div className="RightContent">
 
-        <div style={{ display: "flex", gap: 8, marginTop: 10 }}>
-          {!isCameraOn ? (
-            <IonButton onClick={startCamera}>Start Camera</IonButton>
-          ) : !capturing ? (
-            <IonButton onClick={captureFrames}>Start Capturing</IonButton>
-          ) : (
-            <IonButton color="medium" disabled>
-              Capturing...
-            </IonButton>
-          )}
-          {isCameraOn && (
-            <IonButton color="danger" onClick={stopCamera}>
-              Stop Camera
-            </IonButton>
-          )}
-        </div>
+            <div className="result-container">
+              <div className="result-container-header">
+                <p>Letter Signed:</p>
+              </div>
+              <div className="result-container-text">
+                {processing ? (
+                  <>
+                    <IonSpinner name="dots" />
+                    <IonText>
+                      <h3>Processing...</h3>
+                    </IonText>
+                  </>
+                ) : recognizedLetter ? (
+                  <IonText>
+                    <h2 className="letterSigned">{recognizedLetter}</h2>
+                  </IonText>
+                ) : null}
+              </div>
+            </div>
 
-        <div style={{ marginTop: 20, textAlign: "center" }}>
-          {processing ? (
-            <>
-              <IonSpinner name="dots" />
-              <IonText>
-                <h3>Processing...</h3>
-              </IonText>
-            </>
-          ) : recognizedLetter ? (
-            <IonText>
-              <h2>Detected: {recognizedLetter}</h2>
-            </IonText>
-          ) : null}
+            <div className="button-container">
+              <p>Start Processing</p>
+              {!capturing ? (
+                <IonButton onClick={captureFrames}><img className="playImage" src={play}/></IonButton>
+              ) : (
+                <p color="medium">
+                  Processing...
+                </p>
+              )}
+            </div>
+          </div>
         </div>
       </IonContent>
+      <IonFooter>
+        <AppFooter/>
+      </IonFooter>
     </IonPage>
   );
 };

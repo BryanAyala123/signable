@@ -2,7 +2,7 @@
 http://ionicframework.com/docs/theming/ */
 @font-face {
     font-family: 'Figtree';
-    src: url('public/assets/fonts/Figtree/static/Figtree-Regular.ttf') format('truetype');
+    src: url('/assets/fonts/Figtree/static/Figtree-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }

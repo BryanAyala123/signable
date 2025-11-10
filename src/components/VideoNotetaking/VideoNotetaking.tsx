@@ -200,7 +200,7 @@ const VideoNotetaking: React.FC = () => {
               background: "#F5F3ED",
               borderRadius: "24px",
               boxShadow: "0 4px 24px rgba(0,0,0,0.07)",
-              padding: "24px 20px 16px 20px",
+              padding: "24px 120px 16px 120px",
               border: "2px solid #D6D3C2",
             }}
             >
@@ -213,11 +213,11 @@ const VideoNotetaking: React.FC = () => {
               marginBottom: 18,
               letterSpacing: 1.2,
               textAlign: "left"
-              }}>Notes</h3>
+              }}>Entries</h3>
             </IonText>
             {notes.length === 0 && (
               <IonText color="medium">
-              <p style={{ fontStyle: "italic", color: "#888", margin: "12px 0" }}>No notes yet.</p>
+              <p style={{ fontStyle: "italic", color: "#888", margin: "12px 0" }}>No entries yet.</p>
               </IonText>
             )}
             {notes.map((note, idx) => {
@@ -348,24 +348,24 @@ const VideoNotetaking: React.FC = () => {
               );
             })}
             </div>
-          <IonCard style={{width: '70%', height: '100%', background: '#EBE7DB', borderRadius: 39, border: '2px #343434 solid'}}>
+          <IonCard style={{width: '70%', maxWidth: '800px', height: '100%', background: '#EBE7DB', borderRadius: 39, border: '2px #343434 solid'}}>
             <div style={{ padding: "16px", justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
-              <div style={{ color: '#353534', fontSize: 40, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 1.60, wordWrap: 'break-word' }}>
+                <div style={{ color: '#353534', fontSize: 40, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 1.60, wordWrap: 'break-word' }}>
                 <input
                   type="text"
-                  placeholder="Note Title"
+                  placeholder="Entry Title"
                   value={title}
                   onChange={e => setTitle(e.target.value)}
-                  style={{ background: 'none' }}
+                  style={{ background: 'none', outline: 'none', border: 'none' }}
                 />
-              </div>
+                </div>
             </div>
             <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
-              <div style={{width: '100%', outline: '2px #353534 solid', outlineOffset: '-1px'}} />
+              <div style={{ width: '100%', height: 2, background: '#353534', borderRadius: 1 }} />
             </div>
               <div style={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}>
               <textarea
-                placeholder="Note Content"
+                placeholder="Entry Content"
                 value={content}
                 onChange={e => setContent(e.target.value)}
                 style={{

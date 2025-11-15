@@ -12,6 +12,7 @@ import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
 import AddEventBoard from './components/EventBoard/AddEventBoard';
 import EventBoard from './components/EventBoard/EventBoard';
 import EditEventBoard from './components/EventBoard/EditEventBoard';
+import AslLex from './components/AslLex/asl-lex';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -73,6 +74,9 @@ const App: React.FC = () => (
             </Route>
         <Route exact path="/notes">
             <VideoNotetaking />
+            </Route>
+        <Route exact path="/asl-lex">
+            <AslLex />
             </Route>
         <Route exact path="/add-event">
             <AddEventBoard />

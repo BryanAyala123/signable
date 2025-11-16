@@ -14,6 +14,7 @@ import EventBoard from './components/EventBoard/EventBoard';
 import EditEventBoard from './components/EventBoard/EditEventBoard';
 import Library from './components/Library/Library';
 import Course from './components/Library/Course';
+import Sets from './Sets/Sets';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -75,7 +76,7 @@ const App: React.FC = () => (
             </Route>
         <Route exact path="/notes">
             <VideoNotetaking />
-            </Route>
+        </Route>
         <Route exact path="/add-event">
             <AddEventBoard />
             </Route>
@@ -93,6 +94,15 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/library/:course_id">
           <Course />
+        </Route>
+        <Route exact path="/library/:course_id/notes">
+            <VideoNotetaking />
+        </Route>
+        <Route exact path="/library/:course_id/sets">
+            <Sets />
+        </Route>
+        <Route exact path="/library/:course_id/sets/:set_id">
+            <Sets />
         </Route>
         <Route exact path="/register">
           <RegisterPage />

@@ -8,8 +8,11 @@ import { deleteDoc } from "firebase/firestore";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import AppHeader from "../layout/AppHeader";
 import AppFooter from "../layout/AppFooter";
+import { useParams } from "react-router-dom";
 
-
+interface RouteParams {
+  course_id?: string;
+}
 
 const VideoNotetaking: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -24,13 +27,21 @@ const VideoNotetaking: React.FC = () => {
   const [content, setContent] = React.useState("");
   const [selectedNote, setSelectedNote] = React.useState<number | null>(null);
 
+  const { course_id } = useParams<RouteParams>();
+
+
   React.useEffect(() => {
     const fetchNotes = async () => {
       const auth = getAuth();
       const user = auth.currentUser;
       if (!user) return;
       const db = getFirestore();
-      const notesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "notes");
+      let notesRef;
+      if (course_id) {
+        notesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "courses", course_id, "notes");
+      } else {
+        notesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "notes");
+      }
       const snapshot = await (await import("firebase/firestore")).getDocs(notesRef);
       const notesData = snapshot.docs.map(doc => ({
         id: doc.id,
@@ -41,7 +52,7 @@ const VideoNotetaking: React.FC = () => {
       setNotes(notesData);
     };
     fetchNotes();
-  }, []);
+  }, [course_id]);
 
   const startRecording = async () => {
     if (!navigator.mediaDevices?.getUserMedia) return;
@@ -100,7 +111,12 @@ const VideoNotetaking: React.FC = () => {
     if (!user) throw new Error("User not authenticated");
     const db = getFirestore();
     const noteId = crypto.randomUUID();
-    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    let noteRef;
+      if (course_id) {
+        noteRef = doc(db, "users", user.uid, "courses", course_id, "notes", noteId);
+      } else {
+        noteRef = doc(db, "users", user.uid, "notes", noteId);
+      }
     const url = await uploadVideoBase64ToFirebase(video, user.uid, noteId);
     await setDoc(noteRef, {
       title,
@@ -144,7 +160,12 @@ const VideoNotetaking: React.FC = () => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
     const db = getFirestore();
-    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    let noteRef;
+      if (course_id) {
+        noteRef = doc(db, "users", user.uid, "courses", course_id, "notes", noteId);
+      } else {
+        noteRef = doc(db, "users", user.uid, "notes", noteId);
+      }
     await setDoc(noteRef, {
       title,
       content,
@@ -167,7 +188,12 @@ const VideoNotetaking: React.FC = () => {
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
     const db = getFirestore();
-    const noteRef = doc(db, "users", user.uid, "notes", noteId);
+    let noteRef;
+      if (course_id) {
+        noteRef = doc(db, "users", user.uid, "courses", course_id, "notes", noteId);
+      } else {
+        noteRef = doc(db, "users", user.uid, "notes", noteId);
+      }
     await deleteDoc(noteRef);
 
     // Delete the video from Firebase Storage

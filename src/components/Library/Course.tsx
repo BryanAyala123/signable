@@ -65,8 +65,13 @@ const Course: React.FC = () => {
 
                 <h3>Notes</h3>
                 <button onClick={() => {
-                    window.location.href = '/notes';
+                    window.location.href = '/library/' + course_id + '/notes';
                 }}>Add New Notes</button>
+
+                <h3>Sets</h3>
+                <button onClick={() => {
+                    window.location.href = '/library/' + course_id + '/sets';
+                }}>Add New Sets</button>
             </IonContent>
             <AppFooter />
         </IonPage>

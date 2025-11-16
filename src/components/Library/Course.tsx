@@ -27,6 +27,7 @@ const Course: React.FC = () => {
     const { course_id } = useParams<RouteParams>();
     const [course, setCourse] = useState<Course>();
     const [notes, setNotes] = useState<Note[]>([]);
+    const [sets, setSets] = useState<any[]>([]);
     
     React.useEffect(() => {
             const fetchItems = async () => {
@@ -45,6 +46,25 @@ const Course: React.FC = () => {
                 };
                 setCourse(course);
               }
+
+                const notesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "courses", course_id, "notes");
+                const notesSnapshot = await (await import("firebase/firestore")).getDocs(notesRef);
+                const notesData = notesSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    title: doc.data().title,
+                    content: doc.data().content,
+                    url: doc.data().url
+                }));
+                setNotes(notesData);
+
+                const setsRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "courses", course_id, "sets");
+                const setsSnapshot = await (await import("firebase/firestore")).getDocs(setsRef);
+                const setsData = setsSnapshot.docs.map(doc => ({
+                    id: doc.id,
+                    title: doc.data().title,
+                    vocabTerms: doc.data().vocabTerms
+                }));
+                setSets(setsData);
             };
             fetchItems();
           }, []);
@@ -64,11 +84,34 @@ const Course: React.FC = () => {
                 )}
 
                 <h3>Notes</h3>
+                <ul>
+                    {notes.map(note => (
+                        <li key={note.id}>
+                            <h4>{note.title}</h4>
+                            {note.url && (
+                                <a href={note.url} target="_blank" rel="noopener noreferrer">
+                                    View Note
+                                </a>
+                            )}
+                        </li>
+                    ))}
+                </ul>
                 <button onClick={() => {
                     window.location.href = '/library/' + course_id + '/notes';
                 }}>Add New Notes</button>
 
                 <h3>Sets</h3>
+                <ul>
+                    {sets.map(set => (
+                        <li key={set.id}>
+                            <h4>
+                                <a href={`/library/${course_id}/sets/${set.id}`}>
+                                    {set.title}
+                                </a>
+                            </h4>
+                        </li>
+                    ))}
+                </ul>
                 <button onClick={() => {
                     window.location.href = '/library/' + course_id + '/sets';
                 }}>Add New Sets</button>

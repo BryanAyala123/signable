@@ -5,6 +5,7 @@ import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import AppHeader from '../layout/AppHeader';
 import AppFooter from '../layout/AppFooter';
+import { deleteDoc } from "firebase/firestore";
 
 interface RouteParams {
     course_id: string;
@@ -69,7 +70,16 @@ const Course: React.FC = () => {
             fetchItems();
           }, []);
 
+    const deleteSet = async (setId: string) => {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (!user) return;
+        const db = getFirestore();
+        const setDocRef = doc(db, "users", user.uid, "courses", course_id, "sets", setId);
+        await deleteDoc(setDocRef);
 
+        setSets(prevSets => prevSets.filter(set => set.id !== setId));
+    };
 
     return (
         <IonPage>
@@ -109,6 +119,15 @@ const Course: React.FC = () => {
                                     {set.title}
                                 </a>
                             </h4>
+                            <button
+                                onClick={async (e) => {
+                                    e.stopPropagation();
+                                    e.preventDefault();
+                                    await deleteSet(set.id);
+                                }}
+                            >
+                                Delete
+                            </button>
                         </li>
                     ))}
                 </ul>

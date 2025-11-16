@@ -339,6 +339,18 @@ return (
                         </IonLabel>
                         <IonButton
                             slot="end"
+                            color="primary"
+                            onClick={() => {
+                                const newTerm = prompt("Edit term:", term.term);
+                                if (newTerm !== null && newTerm.trim() !== "" && newTerm !== term.term) {
+                                    updateVocabTerm(idx, { ...term, term: newTerm });
+                                }
+                            }}
+                        >
+                            Edit
+                        </IonButton>
+                        <IonButton
+                            slot="end"
                             color="danger"
                             onClick={() => deleteVocabTerm(idx)}
                         >

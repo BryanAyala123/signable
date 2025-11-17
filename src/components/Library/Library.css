@@ -58,7 +58,6 @@ h1{
 .VerticalDivider{
     background-color: #343434;
     width: 2px;
-    height: 500px;
 }
 
 .LibaryContentBottomRightSideHeader{
@@ -197,7 +196,7 @@ h1{
     --highlight-color-focused: #343434;
     --highlight-color-valid: #343434;
     --highlight-color-invalid: #343434;
-    color: #343434;
+    --color: #343434;
     font-size: 20px;
     font-weight: 300;
     letter-spacing: 0.8px;

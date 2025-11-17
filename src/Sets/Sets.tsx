@@ -34,12 +34,14 @@ type Note = {
     title: string;
     content: string;
     url: string;
+    creationDate: number;
 };
 
 type VocabSet = {
     id: string;
     title: string;
     vocabTerms: any[];
+    creationDate: number;
 };
 
 type CourseWithContent = {
@@ -58,6 +60,7 @@ interface RouteParams {
 const Sets: React.FC = () => {
     const [title, setTitle] = React.useState<string>('Sample Vocabulary Set');
     const [vocabTerms, setVocabTerms] = React.useState<VocabTerm[]>([]);
+    const [creationDate, setCreationDate] = React.useState<number>(Date.now());
     const [allCourses, setAllCourses] = React.useState<CourseWithContent[]>([]);
     const initialized = useRef(false);
     let { course_id, set_id } = useParams<RouteParams>();
@@ -85,7 +88,8 @@ const Sets: React.FC = () => {
                 const newSetRef = doc(db, "users", user.uid, "courses", course_id, "sets", Math.random().toString(36).substr(2, 9));
                 const newSet = {
                     title: 'New Vocabulary Set',
-                    vocabTerms: []
+                    vocabTerms: [],
+                    creationDate: Date.now()
                 };
                 await setDoc(newSetRef, newSet);
                 const newId = newSetRef.id;
@@ -126,16 +130,20 @@ const Sets: React.FC = () => {
                         id: doc.id,
                         title: doc.data().title,
                         content: doc.data().content,
-                        url: doc.data().url
+                        url: doc.data().url,
+                        creationDate: doc.data().creationDate
                     }));
+                    courseNotes.sort((a, b) => a.creationDate - b.creationDate);
 
                     const courseSetsRef = collection(db, "users", user.uid, "courses", courseId, "sets");
                     const courseSetsSnapshot = await getDocs(courseSetsRef);
                     const courseSets = courseSetsSnapshot.docs.map(doc => ({
                         id: doc.id,
                         title: doc.data().title,
-                        vocabTerms: doc.data().vocabTerms
+                        vocabTerms: doc.data().vocabTerms,
+                        creationDate: doc.data().creationDate
                     }));
+                    courseSets.sort((a, b) => a.creationDate - b.creationDate);
 
                     return {
                         id: courseId,
@@ -319,7 +327,8 @@ const Sets: React.FC = () => {
         const setDocRef = doc(db, "users", user.uid, "courses", course_id, "sets", set_id);
         setDoc(setDocRef, {
             title,
-            vocabTerms: terms
+            vocabTerms: terms,
+            creationDate
         });
     };
 

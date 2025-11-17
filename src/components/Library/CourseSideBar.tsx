@@ -17,12 +17,14 @@ type Note = {
     title: string;
     content: string;
     url: string;
+    creationDate: number;
 };
 
 type VocabSet = {
     id: string;
     title: string;
     vocabTerms: any[];
+    creationDate: number;
 };
 
 type CourseWithContent = {

@@ -26,12 +26,14 @@ const Course: React.FC = () => {
         title: string;
         content: string;
         url: string;
+        creationDate: number;
     }
 
     type VocabSet = {
         id: string;
         title: string;
         vocabTerms: any[];
+        creationDate: number;
     };
 
     type CourseWithContent = {
@@ -75,8 +77,10 @@ const Course: React.FC = () => {
                 id: doc.id,
                 title: doc.data().title,
                 content: doc.data().content,
-                url: doc.data().url
+                url: doc.data().url,
+                creationDate: doc.data().creationDate
             }));
+            notesData.sort((a, b) => a.creationDate - b.creationDate);
             setNotes(notesData);
 
             // Fetch sets for current course
@@ -85,8 +89,10 @@ const Course: React.FC = () => {
             const setsData = setsSnapshot.docs.map(doc => ({
                 id: doc.id,
                 title: doc.data().title,
-                vocabTerms: doc.data().vocabTerms
+                vocabTerms: doc.data().vocabTerms,
+                creationDate: doc.data().creationDate
             }));
+            setsData.sort((a, b) => a.creationDate - b.creationDate);
             setSets(setsData);
 
             // Fetch ALL courses for sidebar
@@ -105,7 +111,8 @@ const Course: React.FC = () => {
                         id: doc.id,
                         title: doc.data().title,
                         content: doc.data().content,
-                        url: doc.data().url
+                        url: doc.data().url,
+                        creationDate: doc.data().creationDate
                     }));
 
                     // Fetch sets for this course
@@ -114,7 +121,8 @@ const Course: React.FC = () => {
                     const courseSets = courseSetsSnapshot.docs.map(doc => ({
                         id: doc.id,
                         title: doc.data().title,
-                        vocabTerms: doc.data().vocabTerms
+                        vocabTerms: doc.data().vocabTerms,
+                        creationDate: doc.data().creationDate
                     }));
 
                     return {

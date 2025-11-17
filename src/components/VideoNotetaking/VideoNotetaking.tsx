@@ -19,12 +19,14 @@ type Note = {
   title: string;
   content: string;
   url: string;
+  creationDate: number;
 };
 
 type VocabSet = {
   id: string;
   title: string;
   vocabTerms: any[];
+  creationDate: number;
 };
 
 type CourseWithContent = {
@@ -43,9 +45,10 @@ const VideoNotetaking: React.FC = () => {
   const chunks = useRef<Blob[]>([]);
   const [video, setVideo] = useState<string>("");
   const [allCourses, setAllCourses] = React.useState<CourseWithContent[]>([]);
-  const [notes, setNotes] = React.useState<{ id: string; title: string; content: string; video?: string }[]>([]);
+  const [notes, setNotes] = React.useState<{ id: string; title: string; content: string; video?: string; creationDate: number }[]>([]);
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState("");
+  const [creationDate, setCreationDate] = React.useState<number>(Date.now());
   const [selectedNote, setSelectedNote] = React.useState<number | null>(null);
 
   const { course_id } = useParams<RouteParams>();
@@ -70,6 +73,7 @@ const VideoNotetaking: React.FC = () => {
         title: doc.data().title,
         content: doc.data().content,
         video: doc.data().video,
+        creationDate: doc.data().creationDate
       }));
       setNotes(notesData);
 
@@ -89,8 +93,10 @@ const VideoNotetaking: React.FC = () => {
             id: doc.id,
             title: doc.data().title,
             content: doc.data().content,
-            url: doc.data().url || doc.data().video || ""
+            url: doc.data().url || doc.data().video || "",
+            creationDate: doc.data().creationDate
           }));
+            courseNotes.sort((a, b) => a.creationDate - b.creationDate);
 
           // Fetch sets for this course
           const courseSetsRef = collection(db, "users", user.uid, "courses", courseId, "sets");
@@ -98,8 +104,10 @@ const VideoNotetaking: React.FC = () => {
           const courseSets = courseSetsSnapshot.docs.map(doc => ({
             id: doc.id,
             title: doc.data().title,
-            vocabTerms: doc.data().vocabTerms
+            vocabTerms: doc.data().vocabTerms,
+            creationDate: doc.data().creationDate
           }));
+          courseSets.sort((a, b) => a.creationDate - b.creationDate);
 
           return {
             id: courseId,
@@ -160,14 +168,15 @@ const VideoNotetaking: React.FC = () => {
 
   const handleAddNote = async () => {
     if (title.trim() && content.trim()) {
-      const id = await addNoteToFirestore(title, content, video);
-      setNotes([...notes, { id, title, content, video }]);
+      setCreationDate(Date.now());
+      const id = await addNoteToFirestore(title, content, video, creationDate);
+      setNotes([...notes, { id, title, content, video, creationDate }]);
       setTitle("");
       setContent("");
     }
   };
 
-  async function addNoteToFirestore(title: string, content: string, video: string) {
+  async function addNoteToFirestore(title: string, content: string, video: string, creationDate: number) {
     const auth = getAuth();
     const user = auth.currentUser;
     if (!user) throw new Error("User not authenticated");
@@ -183,7 +192,8 @@ const VideoNotetaking: React.FC = () => {
     await setDoc(noteRef, {
       title,
       content,
-      video: url
+      video: url,
+      creationDate
     });
     return noteId;
   }
@@ -201,6 +211,7 @@ const VideoNotetaking: React.FC = () => {
     setSelectedNote(index);
     setTitle(notes[index].title);
     setContent(notes[index].content);
+    setCreationDate(notes[index].creationDate);
   };
 
   const handleUpdateNote = () => {

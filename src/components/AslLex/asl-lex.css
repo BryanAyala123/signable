@@ -33,18 +33,21 @@
 
 
 .main-title {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
   color: #353534;
-  font-family: Figtree;
   font-size: 40px;
   font-style: normal;
   font-weight: 400;
   line-height: normal;
   letter-spacing: 1.6px;
+  position: relative;
 }
+
 
 .main-sub {
   color: #343434;
-  font-family: Figtree;
   font-size: 20px;
   font-style: normal;
   font-weight: 400;
@@ -163,4 +166,39 @@
   background: #343434;
   box-sizing: border-box;
   margin: 30px auto 0 auto; 
+}
+
+.main-title::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  width: 30px;
+  height: 10px;
+  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background-size: contain;
+  transform: rotate(70deg);
+}
+
+.main-title::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -25px;
+  width: 30px;
+  height: 10px;
+  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background-size: contain;
+  transform: rotate(40deg);
+}
+
+.dash-third {
+  position: absolute;
+  top: 0px;
+  left: -35px;
+  width: 30px;
+  height: 10px;
+  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background-size: contain;
+  transform: rotate(0deg);
 }

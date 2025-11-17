@@ -89,7 +89,7 @@ const ASLLex: React.FC = () => {
 
             <section className="main-section">
             
-              <h1 className="main-title">Welcome to ASL-Lex!</h1>
+              <h1 className={"main-title"}><span className="dash-third"></span>Welcome to ASL-Lex!</h1>
               <p className="main-sub">Find Terms, Regional Differences, and More</p>
 
               <div className="searchbar">

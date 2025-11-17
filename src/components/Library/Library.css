@@ -1,0 +1,234 @@
+.LibaryContentTop{
+    flex: 1;
+    align-items: center;
+    justify-self: center;
+    margin-top: 40px;
+    margin-bottom: 50px;
+}
+
+h1{
+    color: #353534;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+}
+
+.coursetitle{
+    color: #353534;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+}
+
+.LibaryContentTopHeader{
+    position: relative;
+    margin: 0;
+    color: #353534;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+}
+
+.LibaryContentTopHeader::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -24px;
+    width: 140%;
+    max-width: 450px;
+    height: 9px;
+    background: url('/public/assets/greenUnderline.svg') center no-repeat;
+    background-size: contain;
+}
+
+.LibaryContentBottom{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 70px;
+}
+
+.VerticalDivider{
+    background-color: #343434;
+    width: 2px;
+    height: 300px;
+}
+
+.LibaryContentBottomRightSideHeader{
+    color: #353534;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+    text-align: left;
+}
+
+.modalContent {
+    display: flex;
+    gap: 16px;
+    flex-direction: column;
+}
+
+.addButton {
+    text-transform: none;
+}
+
+.LibaryContentBottomLeftSideHeader{
+    color: #353534;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+}
+
+.headerRow {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+    margin-bottom: 16px;
+}
+
+.LibaryContentBottomLeftSideHeaderButton{
+    width: 41px;
+    height: 41px;
+    margin-top: 10px;
+}
+
+.LibaryContentBottomLeftSideCourse{
+    width: 736px;
+    height: 173px;
+    border-radius: 20px;
+    border: 2px solid #353534;
+    background-color: #EBE7DB;
+    display: flex;
+    flex-direction: row;
+    color: #343434;
+}
+
+.HorizontalDivider{
+    background-color: #343434;
+    width: 2px;
+    height: 173px;
+}
+
+.LibaryContentBottomLeftSideCourseName{
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+}
+
+.LibaryContentBottomLeftSideCourseDesc{
+    flex: 2;
+}
+
+.pencilSvg{
+    width: 40px;
+    height: 40px;
+}
+
+.LibaryContentBottomLeftSideCourseNameHeader{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.LibaryContentBottomLeftSideCourseDesc{
+    color: #343434;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    margin-left: 30px;
+}
+
+.modalContent {
+    display: flex;
+    gap: 32px;
+    flex-direction: column;
+    padding: 20px;
+}
+
+.modalHeader {
+    color: #353534;
+    font-size: 40px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.6px;
+    margin: 0;
+    text-align: center;
+}
+
+.inputWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modalInputLabel {
+    color: #353534;
+    font-size: 18px;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+}
+
+.modalInput {
+    --background: #EBE7DB;
+    --border-color: #353534;
+    --border-width: 2px;
+    --border-radius: 20px;
+    --padding-start: 20px;
+    --padding-end: 20px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    --highlight-color-focused: #343434;
+    --highlight-color-valid: #343434;
+    --highlight-color-invalid: #343434;
+    color: #343434;
+    font-size: 20px;
+    font-weight: 300;
+    letter-spacing: 0.8px;
+}
+
+.addButton {
+    --background: #343434;
+    --background-activated: #252525;
+    --background-hover: #252525;
+    --border-color: #343434;
+    --border-width: 2px;
+    --border-radius: 20px;
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+    --color: #EBE7DB;
+    --color-activated: #EBE7DB;
+    --color-hover: #EBE7DB;
+    text-transform: none;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+    margin-top: 8px;
+}
+
+.modalToolbar {
+    --background: #EBE7DB;
+    --border-color: #353534;
+}
+
+.closeButton {
+    text-transform: none;
+    color: #343434;
+    font-size: 16px;
+    letter-spacing: 0.8px;
+}

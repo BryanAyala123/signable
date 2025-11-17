@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon } from '@ionic/react';
+import { IonPage, IonHeader, IonToolbar, IonTitle, IonContent, IonList, IonItem, IonInput, IonButton, IonIcon, IonModal, IonButtons } from '@ionic/react';
 import { useHistory } from 'react-router-dom';
 import { trash, add } from 'ionicons/icons';
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { deleteDoc } from "firebase/firestore";
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
-
+import appIcon from '/public/assets/square-plus.svg';
+import pencil from '/public/assets/blackPencil.svg';
+import './Library.css'
 import AppHeader from "../layout/AppHeader";
 import AppFooter from "../layout/AppFooter";
 
@@ -20,25 +22,26 @@ const Library: React.FC = () => {
     const [courses, setCourses] = useState<Course[]>([]);
     const [newCourse, setNewCourse] = useState('');
     const [newContent, setNewContent] = useState('');
+    const [showModal, setShowModal] = useState(false);
     const history = useHistory();
 
     React.useEffect(() => {
         const fetchCourses = async () => {
-          const auth = getAuth();
-          const user = auth.currentUser;
-          if (!user) return;
-          const db = getFirestore();
-          const coursesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "courses");
-          const snapshot = await (await import("firebase/firestore")).getDocs(coursesRef);
-          const coursesData = snapshot.docs.map(doc => ({
-            id: doc.id,
-            title: doc.data().title,
-            content: doc.data().content
-          }));
-          setCourses(coursesData);
-        };
-        fetchCourses();
-      }, []);
+            const auth = getAuth();
+            const user = auth.currentUser;
+            if (!user) return;
+            const db = getFirestore();
+            const coursesRef = (await import("firebase/firestore")).collection(db, "users", user.uid, "courses");
+            const snapshot = await (await import("firebase/firestore")).getDocs(coursesRef);
+            const coursesData = snapshot.docs.map(doc => ({
+                id: doc.id,
+                title: doc.data().title,
+                content: doc.data().content
+            }));
+            setCourses(coursesData);
+            };
+            fetchCourses();
+        }, []);
 
     
 
@@ -86,53 +89,100 @@ const Library: React.FC = () => {
 
     return (
         <IonPage>
-            <AppHeader />
-            <IonContent className="ion-padding">
-                <IonList>
-                    {courses.map(course => (
-                        <IonItem key={course.id} button onClick={() => handleCourseClick(course.id)}>
-                            <div>
-                                <div>{course.title}</div>
-                                <div style={{ fontSize: 12, color: '#666' }}>{course.content}</div>
-                            </div>
-                            <IonButton
-                                slot="end"
-                                color="danger"
-                                fill="clear"
-                                onClick={e => {
-                                    e.stopPropagation();
-                                    handleDeleteCourse(course.id);
-                                }}
-                            >
-                                <IonIcon icon={trash} />
-                            </IonButton>
-                        </IonItem>
-                    ))}
-                </IonList>
-                <div style={{ display: 'flex', gap: 8, marginTop: 16, flexDirection: 'column' }}>
-                    <IonInput
-                        value={newCourse}
-                        placeholder="Course title"
-                        onIonChange={e => setNewCourse(e.detail.value!)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') handleAddCourse();
-                        }}
-                    />
-                    <IonInput
-                        value={newContent}
-                        placeholder="Course content"
-                        onIonChange={e => setNewContent(e.detail.value!)}
-                        onKeyDown={e => {
-                            if (e.key === 'Enter') handleAddCourse();
-                        }}
-                    />
-                    <IonButton onClick={handleAddCourse}>
-                        <IonIcon icon={add} />
+    <AppHeader />
+    <IonContent className="ion-padding">
+        <div className='LibaryContent'>
+            <div className='LibaryContentTop'>
+                <h1 className='LibaryContentTopHeader'>My Library</h1>
+            </div>
+
+            <div className='LibaryContentBottom'>
+                <div className='LibaryContentBottomRightSide'>
+                    <h1 className='LibaryContentBottomRightSideHeader'>Recents</h1>
+                </div>
+                <div className='VerticalDivider'></div>
+                <div className='LibaryContentBottomLeftSide'>
+                <div className='headerRow'>
+                <h1 className='LibaryContentBottomLeftSideHeader'>Courses</h1>
+                    <IonButton onClick={() => setShowModal(true)} className='triggerButton'>
+                        <img src={appIcon} className='LibaryContentBottomLeftSideHeaderButton'/>
                     </IonButton>
                 </div>
-            </IonContent>
-            <AppFooter />
-        </IonPage>
+
+                    <IonList>
+                        {courses.map(course => (
+                            <IonItem key={course.id} button onClick={() => handleCourseClick(course.id)} className='LibaryContentBottomLeftSideCourse'>
+                                <div className='LibaryContentBottomLeftSideCourseName'>
+                                    <div className='LibaryContentBottomLeftSideCourseNameHeader'>
+                                        <h1><u className='coursetitle'>{course.title}</u><img src={pencil} className='pencilSvg'/></h1>
+                                    </div>
+                                </div>
+                                <div className='HorizontalDivider'></div>
+                                <div className='LibaryContentBottomLeftSideCourseDesc'>
+                                    <p>{course.content}</p>
+                                </div>
+                                <IonButton
+                                    slot="end"
+                                    color="danger"
+                                    fill="clear"
+                                    onClick={e => {
+                                        e.stopPropagation();
+                                        handleDeleteCourse(course.id);
+                                    }}
+                                >
+                                    <IonIcon icon={trash} />
+                                </IonButton>
+                            </IonItem>
+                        ))}
+                    </IonList>
+                </div>
+            </div>
+        </div>
+    </IonContent>
+    <AppFooter />
+        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+        <IonHeader>
+            <IonToolbar className='modalToolbar'>
+                <IonTitle className='modalHeader'>Add New Course</IonTitle>
+                <IonButtons slot="end">
+                    <IonButton onClick={() => setShowModal(false)} className='closeButton'>
+                        Close
+                    </IonButton>
+                </IonButtons>
+            </IonToolbar>
+        </IonHeader>
+        <IonContent className="ion-padding" style={{ '--background': '#EBE7DB' }}>
+            <div className='modalContent'>
+                <IonInput
+                    value={newCourse}
+                    placeholder="Course title"
+                    onIonChange={e => setNewCourse(e.detail.value!)}
+                    label="Title"
+                    labelPlacement="stacked"
+                    className='modalInput'
+                />
+                <IonInput
+                    value={newContent}
+                    placeholder="Course content"
+                    onIonChange={e => setNewContent(e.detail.value!)}
+                    label="Description"
+                    labelPlacement="stacked"
+                    className='modalInput'
+                />
+                <IonButton 
+                    expand="block"
+                    className='addButton'
+                    onClick={() => {
+                        handleAddCourse();
+                        setShowModal(false);
+                    }}
+                >
+                    Add Course
+                </IonButton>
+            </div>
+        </IonContent>
+    </IonModal>
+</IonPage>
     );
 };
 

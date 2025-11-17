@@ -1,5 +1,6 @@
 .mainContent {
     background-color: #EBE7DB;
+    color: #343434;
 }
 
 .mainSetContent {
@@ -8,6 +9,10 @@
     height: 100%;
 }
 
+
+.recordingVid{
+    color: #343434;
+}
 
 /* Left Side - Term List */
 .mainSetContentLeftSide {
@@ -201,7 +206,8 @@
 }
 
 .newTermButton{
-    padding: 5px
+    padding: 5px;
+    color: #343434;
 }
 
 .emptyState {

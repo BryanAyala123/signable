@@ -1,0 +1,204 @@
+/* PAGE + LAYOUT */
+.asllex-page {
+  background: #EBE7DB;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;     /* stack content + footer */
+  font-family: Figtree;
+}
+
+/* inner content grows and pushes footer to bottom */
+.asllex-container {
+  flex: 1;
+  width: 100%;
+  max-width: 1440px;
+  padding-top: 60px;          
+  margin: 0 auto;
+}
+
+/* Bottom divider (footer) */
+.footer-divider {
+  width: 1444px;
+  height: 0;
+  border-top: 2px solid #343434;
+  box-sizing: border-box;
+  margin: 60px auto 40px auto; 
+}
+
+
+.main-section {
+  text-align: center;
+  margin-top: 40px;
+}
+
+
+.main-title {
+  display: inline-block;
+  align-items: center;
+  justify-content: center;
+  color: #353534;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 1.6px;
+  position: relative;
+}
+
+
+.main-sub {
+  color: #343434;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.8px;
+}
+
+/* Search Bar */
+.searchbar {
+  width: 832px;
+  height: 84px;
+  background: #353534;
+  border-radius: 75.5px;
+  margin: 30px auto 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 0 28px;
+  box-sizing: border-box;
+}
+
+.search-input {
+  flex: 1;
+  height: 100%;
+  border: none;
+  background: transparent;
+  color: #EBE7DB;
+  text-align: left;
+  font-family: Figtree;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 1.6px;
+  outline: none;
+}
+
+.search-input::placeholder {
+  color: #EBE7DB;
+  text-align: 'left';
+  font-family: Figtree;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 1.6px;
+}
+
+/* Results */
+.results-section {
+  margin-top: 40px;
+}
+
+/* Result Cards (rounded dark blocks) */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 340px);
+  justify-content: center;
+  gap: 30px;
+}
+
+.result-title {
+  color: #353534;
+  font-family: Figtree;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.8px;
+}
+
+.result-card {
+  background: #353534;
+  border-radius: 30px;
+  width: 340px;
+  height: 240px;
+  color: white;
+  padding: 18px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column; /* ensures vertical stacking */
+  gap: 8px;
+}
+
+/* Video inside cards */
+.result-video {
+  width: 100%;
+  height: 209px;
+  border-radius: 18px;
+  object-fit: cover;
+}
+
+/* Loading Spinner */
+.loader {
+  width: 40px;
+  height: 40px;
+  border: 5px solid #353534;
+  border-top: 5px solid transparent;
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 40px auto;
+}
+
+.main-accent {
+  position: relative;
+  width: 40px;
+  height: 14px;
+  margin: 0 auto 6px auto;
+  background-size: contain;
+  transform: rotate(-18deg);
+  filter: hue-rotate(-10deg) brightness(1.1) saturate(1.3);
+}
+
+.divider-line {
+  width: 827px;
+  height: 2px;
+  background: #343434;
+  box-sizing: border-box;
+  margin: 30px auto 0 auto; 
+}
+
+.main-title::before {
+  content: '';
+  position: absolute;
+  top: -20px;
+  left: -10px;
+  width: 30px;
+  height: 10px;
+  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background-size: contain;
+  transform: rotate(70deg);
+}
+
+.main-title::after {
+  content: '';
+  position: absolute;
+  top: -15px;
+  left: -25px;
+  width: 30px;
+  height: 10px;
+  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background-size: contain;
+  transform: rotate(40deg);
+}
+
+.dash-third {
+  position: absolute;
+  top: 0px;
+  left: -35px;
+  width: 30px;
+  height: 10px;
+  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background-size: contain;
+  transform: rotate(0deg);
+}

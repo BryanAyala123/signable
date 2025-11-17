@@ -12,6 +12,7 @@ import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
 import AddEventBoard from './components/EventBoard/AddEventBoard';
 import EventBoard from './components/EventBoard/EventBoard';
 import EditEventBoard from './components/EventBoard/EditEventBoard';
+import AslLex from './components/AslLex/asl-lex';
 import Library from './components/Library/Library';
 import Course from './components/Library/Course';
 import Sets from './Sets/Sets';
@@ -76,7 +77,10 @@ const App: React.FC = () => (
             </Route>
         <Route exact path="/notes">
             <VideoNotetaking />
-        </Route>
+            </Route>
+        <Route exact path="/asl-lex">
+            <AslLex />
+            </Route>
         <Route exact path="/add-event">
             <AddEventBoard />
             </Route>

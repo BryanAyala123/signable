@@ -473,7 +473,7 @@ const Sets: React.FC = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <p>{recording ? 'Stop Recording' : 'Record Video'}</p>
+                                                    <p className='recordingVid'>{recording ? 'Stop Recording' : 'Record Video'}</p>
                                                 </button>
                                                 <label className='videoUploadLabel'>
                                                     <input

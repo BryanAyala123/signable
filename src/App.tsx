@@ -81,7 +81,6 @@ const App: React.FC = () => (
         <Route exact path="/asl-lex">
             <AslLex />
             </Route>
-        </Route>
         <Route exact path="/add-event">
             <AddEventBoard />
             </Route>

@@ -9,7 +9,8 @@ import {
 import { chevronDown, chevronForward, add, document, albums } from 'ionicons/icons';
 import courseIcon from '/public/assets/courseIcon.svg';
 import pencil from '/public/assets/blackPencil.svg';
-import './CourseSidebar.css';
+import './CourseSideBar.css';
+import { useHistory } from 'react-router';
 
 type Note = {
     id: string;
@@ -38,6 +39,7 @@ interface CourseSidebarProps {
 
 const CourseSidebar: React.FC<CourseSidebarProps> = ({ courses }) => {
     const [expandedCourses, setExpandedCourses] = React.useState<Set<string>>(new Set());
+    const history = useHistory();
 
     const toggleCourse = (courseId: string) => {
         setExpandedCourses((prev) => {
@@ -71,7 +73,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courses }) => {
         <div className='content'>
             <div className="course-sidebar">
                 <div className='course-sidebar-header'>
-                    <h1><u>My Library</u></h1>
+                    <h1 onClick={() => history.push('/library')}><u>My Library</u></h1>
                 </div>
                 <IonList>
                     {courses.map(course => {

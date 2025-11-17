@@ -480,7 +480,7 @@ const VideoNotetaking: React.FC = () => {
                       placeholder="Entry Title"
                       value={title}
                       onChange={e => setTitle(e.target.value)}
-                      style={{ background: 'none', outline: 'none', border: 'none' }}
+                      style={{ background: 'none', outline: 'none', border: 'none', textAlign:'center' }}
                     />
                   </div>
                 </div>

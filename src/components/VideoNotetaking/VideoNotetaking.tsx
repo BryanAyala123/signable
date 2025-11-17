@@ -75,6 +75,7 @@ const VideoNotetaking: React.FC = () => {
         video: doc.data().video,
         creationDate: doc.data().creationDate
       }));
+      notesData.sort((a, b) => a.creationDate - b.creationDate);
       setNotes(notesData);
 
       // Fetch ALL courses for sidebar

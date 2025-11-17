@@ -15,3 +15,24 @@ body, ion-app {
     font-family: var(--ion-font-family);
     --background: #E8E4D8; 
 }
+
+ion-button {
+    text-transform: none !important;
+}
+
+ion-item {
+    --background: transparent;
+    --border-width: 0;
+    --inner-border-width: 0;
+    --padding-start: 0;
+    --padding-end: 0;
+    --inner-padding-end: 0;
+}
+
+ion-list {
+    background: transparent !important;
+    --background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}

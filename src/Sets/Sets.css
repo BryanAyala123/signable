@@ -1,0 +1,279 @@
+.mainContent {
+    background-color: #EBE7DB;
+}
+
+.mainSetContent {
+    display: flex;
+    flex: 1;
+    height: 100%;
+}
+
+
+/* Left Side - Term List */
+.mainSetContentLeftSide {
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    background-color: #EBE7DB;
+    overflow-y: auto;
+}
+
+.courseTitle h1 {
+    font-size: 24px;
+    margin: 0 0 16px 0;
+    color: #343434;
+    text-align: center;
+}
+
+.setNameInput {
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: #EBE7DB;
+}
+
+.title-input {
+    width: 100%;
+    padding: 12px;
+    text-align: center;
+    background-color: #EBE7DB;
+    font-size: 40px;
+    border: none;
+    color: #343434;
+}
+
+.title-input:active{
+    border: none;
+}
+
+.termsList {
+    flex: 1;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+
+.termItem {
+    padding: 12px 16px;
+    margin-bottom: 3px;
+    border-bottom: 2px solid #343434;
+    color: #343434;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.termItem:hover {
+    background-color: transparent;
+    border-color: transparent;
+}
+
+
+.termName {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.addTermSection {
+    border-top: 1px solid #D4CFC0;
+    padding-top: 20px;
+}
+
+.newTermInput {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #D4CFC0;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.video-container {
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    margin: 12px 0;
+    background-color: #000;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.video-button {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    outline: none;
+    border-radius: 50%;
+    box-shadow: none;
+    transition: box-shadow 0.2s;
+    display: block;
+    margin: 12px auto;
+}
+
+
+.video-icon {
+    width: 32px;
+    height: 32px;
+    filter: none;
+    opacity: 0.85;
+    padding: 5;
+    border-radius: 10px;
+    background-color: #343434;
+    transition: filter 0.2s, opacity 0.2s;
+}
+
+
+.add-term-button {
+    width: 100%;
+    margin-top: 8px;
+}
+
+/* Right Side - Term Card */
+.mainSetContentRightSide {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px;
+}
+
+.termCard {
+    width: 100%;
+    max-width: 600px;
+    height: 98%;
+    border: 2px solid #343434;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.termCardHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 16px 20px;
+}
+
+.editButton,
+.deleteButton {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.editButton {
+    background-color: #4A90E2;
+    color: white;
+}
+
+.editButton:hover {
+    background-color: #3A7BC8;
+}
+
+.deleteButton {
+    background-color: #E74C3C;
+    color: white;
+}
+
+.deleteButton:hover {
+    background-color: #C0392B;
+}
+
+.termCardContent {
+    padding: 10px;
+    text-align: center;
+}
+
+.termCardTitle {
+    font-size: 28px;
+    font-weight: 600;
+    margin: 0 0 24px 0;
+    color: #333;
+}
+
+.termCardVideo,
+.termCardImage {
+    width: 90%;
+    height: 350px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.newTermButton{
+    padding: 5px
+}
+
+.emptyState {
+    text-align: center;
+    color: #999;
+}
+
+.emptyState p {
+    font-size: 18px;
+}
+
+.term-image {
+    max-width: 120px;
+    max-height: 120px;
+    margin-top: 8px;
+}
+
+.term-video {
+    max-width: 240px;
+    max-height: 240px;
+    margin-top: 8px;
+}
+
+.newTermFormContainer {
+    margin-bottom: 20px;
+}
+
+.newTermFormLabel {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+}
+
+.newTermNameInput {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    text-align: center;
+}
+
+.videoSection {
+    margin-bottom: 20px;
+}
+
+.videoButtonsContainer {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.videoButtonFlex {
+    flex: 1;
+}
+
+.videoUploadLabel {
+    flex: 1;
+}
+
+.videoUploadInput {
+    display: none;
+}
+
+.videoUploadButton {
+    width: 100%;
+    color: #343434;
+}
+
+.saveTermButton {
+    margin-top: 20px;
+}
+
+.videoPreviewContainer {
+    margin-bottom: 10px;
+}
+

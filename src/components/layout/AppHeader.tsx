@@ -66,8 +66,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                         </IonButton>
                         <span className="separator" />
 
-                        <IonButton fill="clear" onClick={() => history.push('/add-event')}>
-                            <span className="tabText">Social</span>
+                        <IonButton fill="clear" onClick={() => history.push('/library')}>
+                            <span className="tabText">Library</span>
                         </IonButton>
                         <span className="separator" />
 

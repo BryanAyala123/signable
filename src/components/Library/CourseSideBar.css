@@ -1,0 +1,156 @@
+.content{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+.course-sidebar-header{
+    flex: 1;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30;
+    margin-top: 32px;
+    margin-bottom: 32px;
+}
+
+.course-sidebar {
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #EBE7DB;
+}
+
+.course-section {
+    margin-bottom: 8px;
+    margin-left: 15px;
+}
+
+.iconImage{
+    margin-right: 4px;
+}
+
+.course-header {
+    --background: transparent;
+    --background-hover: transparent;
+    --background-activated: transparent;
+    --ripple-color: transparent;
+    --padding-start: 16px;
+    font-weight: 600;
+    color: #343434;
+    display: flex;
+    align-items: center;
+}
+
+
+.course-content {
+    padding: 8px 0;
+    background: transparent;
+}
+
+.content-section {
+    margin-bottom: 16px;
+    padding: 0 16px;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    font-weight: 500;
+    color: #343434;
+    font-size: 0.9rem;
+}
+
+.section-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.section-title {
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.85rem;
+}
+
+.items-list {
+    padding-left: 8px;
+}
+
+.nested-item {
+    --padding-start: 32px;
+    --background: transparent;
+    --background-hover: transparent;
+    --background-activated: transparent;
+    --ripple-color: transparent;
+    font-size: 0.95rem;
+    color: #343434;
+    width: 100%;
+}
+
+.nested-item:hover {
+    --background: transparent;
+}
+.empty-message {
+    padding: 12px 32px;
+    color: var(--ion-color-medium);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+.add-button {
+    margin: 8px 0 8px 24px;
+    --padding-start: 8px;
+    --padding-end: 8px;
+    font-size: 0.9rem;
+    color: #343434;
+    --background-hover: transparent;
+    --background-activated: transparent;
+    --ripple-color: transparent;
+}
+
+.course-header:hover {
+    color: #343434;
+}
+
+.course-header:hover ion-label {
+    color: #343434;
+}
+
+
+.nested-item * {
+    color: #343434 !important;
+}
+
+.nested-item:hover * {
+    color: #343434 !important;
+}
+
+.ionIcon{
+    color: #343434;
+}
+
+.divider{
+    width: 2px;
+    height: 100%;
+    border-radius: 20px;
+    background-color: #343434;
+}
+
+/* Scrollbar styling for webkit browsers */
+.course-sidebar::-webkit-scrollbar {
+    width: 8px;
+}
+
+.course-sidebar::-webkit-scrollbar-track {
+    background: var(--ion-color-light);
+}
+
+.course-sidebar::-webkit-scrollbar-thumb {
+    background: var(--ion-color-medium);
+    border-radius: 4px;
+}
+
+.course-sidebar::-webkit-scrollbar-thumb:hover {
+    background: var(--ion-color-medium-shade);
+}

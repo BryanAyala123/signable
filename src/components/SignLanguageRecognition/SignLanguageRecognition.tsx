@@ -20,26 +20,38 @@ import './SignLanguageRecognition.css';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
+// backend model apiendpoint and frame count per capture
 const FUNCTION_URL =
   "https://classify-landmarks-ft6ax3huaq-uc.a.run.app";
 const FRAMES_TO_CAPTURE = 15;
 
 const LandmarkCapture: React.FC = () => {
+
+  // camera and model refrences 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
+  const streamRef = useRef<MediaStream | null>(null);
+
+  // UI states
   const [capturing, setCapturing] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [recognizedLetter, setRecognizedLetter] = useState<string>("");
   const [presentToast] = useIonToast();
+
+  // Firebase data
   const [courses, setCourses] = useState<any[]>([]);
   const [sets, setSets] = useState<any[]>([]);
   const [selectedCourse, setSelectedCourse] = useState<string>("");
   const [selectedSet, setSelectedSet] = useState<string>("");
+
+  // vocab terms and progress
   const [terms, setTerms] = useState<any[]>([]);
   const [currentPrompt, setCurrentPrompt] = useState<string>("");
   const [letterIndex, setLetterIndex] = useState<number>(0);
   const [correctLetters, setCorrectLetters] = useState<boolean[]>([]);
   const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
+
+  // split into learning v. mastered 
   const masteredTerms = Object.keys(termProgress).filter(
     term => termProgress[term] >= 2
   );
@@ -48,8 +60,8 @@ const LandmarkCapture: React.FC = () => {
   );
   const remainingCount = learningTerms.length;
 
-  const streamRef = useRef<MediaStream | null>(null);
-
+  
+  //-----------camera handling--------------
   // Start camera automatically when component mounts
   const startCamera = async () => {
     try {
@@ -64,10 +76,11 @@ const LandmarkCapture: React.FC = () => {
       setRecognizedLetter("");
     } catch (err) {
       console.error("Camera error:", err);
-      presentToast({ message: "Unable to access camera.", duration: 3000 });
+      // presentToast({ message: "Unable to access camera.", duration: 3000 });
     }
   };
 
+  // stop camera 
   const stopCamera = () => {
     if (streamRef.current) {
       streamRef.current.getTracks().forEach((t) => t.stop());
@@ -76,12 +89,15 @@ const LandmarkCapture: React.FC = () => {
     setCapturing(false);
   };
 
-  const fetchSets = async (courseId: string) => {
-  const auth = getAuth();
-  const user = auth.currentUser;
-  if (!user) return;
 
-  const db = getFirestore();
+  //---------------Firebase--------------
+  //get sets from selected course
+  const fetchSets = async (courseId: string) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const db = getFirestore();
     const setsRef = collection(db, "users", user.uid, "courses", courseId, "sets");
     const setsSnap = await getDocs(setsRef);
     const setList = setsSnap.docs.map(doc => ({
@@ -133,6 +149,7 @@ const LandmarkCapture: React.FC = () => {
     return () => stopCamera();
   }, []);
 
+  // get terms froma set and initialize mastery table 
   const fetchTerms = async (setId: string) => {
     const auth = getAuth();
     const user = auth.currentUser;
@@ -159,6 +176,8 @@ const LandmarkCapture: React.FC = () => {
     }
   };
 
+
+  //------------Mastery/Word picking-------------
   const pickRandomTerm = (termsArray: any[]) => {
     if (!termsArray || termsArray.length === 0) return;
 
@@ -191,6 +210,7 @@ const LandmarkCapture: React.FC = () => {
   };
 
 
+  //-------------Actual model interraction-------------
   // Function to send landmarks
   const sendLandmarksToServer = async (frames: number[][]) => {
     setProcessing(true);
@@ -211,7 +231,7 @@ const LandmarkCapture: React.FC = () => {
 
       const expected = currentPrompt[letterIndex];  // target letter
 
-      const letter = res.data?.result ?? "?";
+      const letter = res.data?.result ?? "?"; // predicted letter
       setRecognizedLetter(letter);
 
       if (letter.toUpperCase() === expected.toUpperCase()) {
@@ -252,6 +272,8 @@ const LandmarkCapture: React.FC = () => {
     }
   };
 
+
+  //------------Frame capture------------
   // Capture exactly 15 frames
   const captureFrames = async () => {
     if (!videoRef.current || !handLandmarkerRef.current) return;
@@ -277,6 +299,7 @@ const LandmarkCapture: React.FC = () => {
       await new Promise((resolve) => setTimeout(resolve, 33));
     }
 
+    // send even if only 1 frame was captured 
     if (frames.length > 0) {
       await sendLandmarksToServer(frames);
     } else {
@@ -293,7 +316,6 @@ const LandmarkCapture: React.FC = () => {
       <IonHeader>
         <AppHeader />
       </IonHeader>
-
       <IonContent className="ion-padding">
         <div className="MainContent">
           <div className="LeftContent">
@@ -309,6 +331,7 @@ const LandmarkCapture: React.FC = () => {
               </IonCardContent>
             </IonCard>
           </div>
+
           <div className="RightContent">
             <div className="set-picker">
               <p className="picker-title">Select Course:</p>
@@ -348,6 +371,7 @@ const LandmarkCapture: React.FC = () => {
                 </>
               )}
             </div>
+
             <div className="prompt-container">
               {selectedSet && currentPrompt && (
                 <>
@@ -372,6 +396,7 @@ const LandmarkCapture: React.FC = () => {
                 </>
               )}
             </div>
+
             {selectedSet && (
               <div className="remaining-terms">
                 <p>{learningTerms.length} terms remaining</p>
@@ -402,6 +427,7 @@ const LandmarkCapture: React.FC = () => {
               <div className="result-container-header">
                 <p>Letter Signed:</p>
               </div>
+
               <div className="result-container-text">
                 {processing ? (
                   <>

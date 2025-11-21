@@ -177,3 +177,39 @@ ion-button {
         font-size: 70px;
     }
 }
+
+.letter-progress {
+  display: flex;
+  gap: 8px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.correct-letter {
+  color: #48e395; /* green */
+}
+
+.mastery-table {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  margin-bottom: 16px;
+}
+
+.mastery-column {
+  width: 50%;
+  padding: 0 10px;
+  border-right: 1px solid #333;
+}
+
+.mastery-column:last-child {
+  border-right: none;
+}
+
+.mastery-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

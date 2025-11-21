@@ -2,8 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import {
   IonPage,
   IonHeader,
-  IonToolbar,
-  IonTitle,
   IonContent,
   IonButton,
   IonText,
@@ -19,6 +17,8 @@ import AppHeader from '../layout/AppHeader';
 import AppFooter from '../layout/AppFooter';
 import play from '/public/assets/Buttons/playButton.svg';
 import './SignLanguageRecognition.css';
+import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
 
 const FUNCTION_URL =
   "https://classify-landmarks-ft6ax3huaq-uc.a.run.app";
@@ -31,6 +31,22 @@ const LandmarkCapture: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [recognizedLetter, setRecognizedLetter] = useState<string>("");
   const [presentToast] = useIonToast();
+  const [courses, setCourses] = useState<any[]>([]);
+  const [sets, setSets] = useState<any[]>([]);
+  const [selectedCourse, setSelectedCourse] = useState<string>("");
+  const [selectedSet, setSelectedSet] = useState<string>("");
+  const [terms, setTerms] = useState<any[]>([]);
+  const [currentPrompt, setCurrentPrompt] = useState<string>("");
+  const [letterIndex, setLetterIndex] = useState<number>(0);
+  const [correctLetters, setCorrectLetters] = useState<boolean[]>([]);
+  const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
+  const masteredTerms = Object.keys(termProgress).filter(
+    term => termProgress[term] >= 2
+  );
+  const learningTerms = Object.keys(termProgress).filter(
+    term => termProgress[term] < 2
+  );
+  const remainingCount = learningTerms.length;
 
   const streamRef = useRef<MediaStream | null>(null);
 
@@ -60,10 +76,40 @@ const LandmarkCapture: React.FC = () => {
     setCapturing(false);
   };
 
+  const fetchSets = async (courseId: string) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  if (!user) return;
+
+  const db = getFirestore();
+    const setsRef = collection(db, "users", user.uid, "courses", courseId, "sets");
+    const setsSnap = await getDocs(setsRef);
+    const setList = setsSnap.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+    setSets(setList);
+  };
+
+
   // Load MediaPipe model and start camera
   useEffect(() => {
     const loadModel = async () => {
       try {
+        const auth = getAuth();
+        const user = auth.currentUser;
+        if (user) {
+          const db = getFirestore();
+
+          // fetch courses
+          const coursesRef = collection(db, "users", user.uid, "courses");
+          const coursesSnap = await getDocs(coursesRef);
+          const courseList = coursesSnap.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setCourses(courseList);
+        }
         const vision = await FilesetResolver.forVisionTasks(
           "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@latest/wasm"
         );
@@ -87,6 +133,64 @@ const LandmarkCapture: React.FC = () => {
     return () => stopCamera();
   }, []);
 
+  const fetchTerms = async (setId: string) => {
+    const auth = getAuth();
+    const user = auth.currentUser;
+    if (!user || !selectedCourse) return;
+
+    const db = getFirestore();
+    const setRef = doc(db, "users", user.uid, "courses", selectedCourse, "sets", setId);
+    const snap = await (await import("firebase/firestore")).getDoc(setRef);
+
+    if (snap.exists()) {
+      const data = snap.data() as { vocabTerms: { term: string }[] };
+      const list: { term: string }[] = data.vocabTerms || [];
+
+      setTerms(list);
+      pickRandomTerm(list);
+
+      // Initialize mastery count per term
+      const progress: { [term: string]: number } = {};
+      list.forEach((t: { term: string }) => {
+        progress[t.term.toUpperCase()] = 0;
+      });
+
+      setTermProgress(progress);
+    }
+  };
+
+  const pickRandomTerm = (termsArray: any[]) => {
+    if (!termsArray || termsArray.length === 0) return;
+
+    // Build a weighted pool
+    const weighted: string[] = [];
+
+    termsArray.forEach((t: { term: string }) => {
+      const word = t.term.toUpperCase();
+      const progress = termProgress[word] ?? 0;
+
+      // weight: 3 → 2 → 1
+      const weight = 3 - Math.min(progress, 2);
+
+      for (let i = 0; i < weight; i++) {
+        weighted.push(word);
+      }
+    });
+
+    // Pick from weighted list
+    const randomWord = weighted[Math.floor(Math.random() * weighted.length)];
+
+    // Find the original term object again
+    const selected = termsArray.find((t: { term: string }) => t.term.toUpperCase() === randomWord);
+    if (!selected) return;
+
+    // Set state
+    setCurrentPrompt(randomWord);
+    setLetterIndex(0);
+    setCorrectLetters(new Array(randomWord.length).fill(false));
+  };
+
+
   // Function to send landmarks
   const sendLandmarksToServer = async (frames: number[][]) => {
     setProcessing(true);
@@ -105,9 +209,36 @@ const LandmarkCapture: React.FC = () => {
         { headers: { "Content-Type": "application/json" }, timeout: 30000 }
       );
 
+      const expected = currentPrompt[letterIndex];  // target letter
+
       const letter = res.data?.result ?? "?";
       setRecognizedLetter(letter);
-    } catch (err) {
+
+      if (letter.toUpperCase() === expected.toUpperCase()) {
+        // mark this letter green
+        setCorrectLetters(prev => {
+          const newArr = [...prev];
+          newArr[letterIndex] = true;
+          return newArr;
+        });
+
+        // if not done, move to next letter
+        if (letterIndex < currentPrompt.length - 1) {
+          setLetterIndex(letterIndex + 1);
+        } else {
+          // word completed → update mastery progress
+          setTermProgress(prev => {
+            const newProgress = { ...prev };
+            newProgress[currentPrompt] = (newProgress[currentPrompt] ?? 0) + 1;
+            return newProgress;
+          });
+
+          // pick a new word
+          pickRandomTerm(terms);
+
+        }
+      }
+          } catch (err) {
       console.error("Server error:", err);
       setRecognizedLetter("Error");
       presentToast({
@@ -179,6 +310,93 @@ const LandmarkCapture: React.FC = () => {
             </IonCard>
           </div>
           <div className="RightContent">
+            <div className="set-picker">
+              <p className="picker-title">Select Course:</p>
+              <select
+                value={selectedCourse}
+                onChange={async (e) => {
+                  const value = e.target.value;
+                  setSelectedCourse(value);
+                  setSelectedSet("");
+                  setTerms([]);
+                  setCurrentPrompt("");
+                  await fetchSets(value);
+                }}
+              >
+                <option value="" disabled>Select a course</option>
+                {courses.map(c => (
+                  <option key={c.id} value={c.id}>{c.title}</option>
+                ))}
+              </select>
+
+              {sets.length > 0 && (
+                <>
+                  <p className="picker-title">Select Set:</p>
+                  <select
+                    value={selectedSet}
+                    onChange={async (e) => {
+                      const value = e.target.value;
+                      setSelectedSet(value);
+                      await fetchTerms(value);
+                    }}
+                  >
+                    <option value="" disabled>Select a set</option>
+                    {sets.map(s => (
+                      <option key={s.id} value={s.id}>{s.title}</option>
+                    ))}
+                  </select>
+                </>
+              )}
+            </div>
+            <div className="prompt-container">
+              {selectedSet && currentPrompt && (
+                <>
+                  <p>Finger Spell:</p>
+                  <div className="letter-progress">
+                    {currentPrompt.split("").map((ch, idx) => (
+                      <span
+                        key={idx}
+                        className={
+                          idx < letterIndex
+                            ? "correct-letter"
+                            : idx === letterIndex
+                            ? "current-letter"
+                            : "pending-letter"
+                        }
+                      >
+                        {ch}
+                        {idx < currentPrompt.length - 1 && " - "}
+                      </span>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+            {selectedSet && (
+              <div className="remaining-terms">
+                <p>{learningTerms.length} terms remaining</p>
+              </div>
+            )}
+
+            <div className="mastery-table">
+              <div className="mastery-column">
+                <p><strong>Still Learning:</strong></p>
+                <ul>
+                  {learningTerms.map(term => (
+                    <li key={term}>{term}</li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mastery-column">
+                <p><strong>Mastered:</strong></p>
+                <ul>
+                  {masteredTerms.map(term => (
+                    <li key={term}>{term}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
 
             <div className="result-container">
               <div className="result-container-header">
@@ -203,7 +421,9 @@ const LandmarkCapture: React.FC = () => {
             <div className="button-container">
               <p>Start Processing</p>
               {!capturing ? (
-                <IonButton onClick={captureFrames}><img className="playImage" src={play}/></IonButton>
+                <IonButton disabled={!selectedSet || !currentPrompt} onClick={captureFrames}>
+                  <img className="playImage" src={play}/>
+                </IonButton>
               ) : (
                 <p color="medium">
                   Processing...

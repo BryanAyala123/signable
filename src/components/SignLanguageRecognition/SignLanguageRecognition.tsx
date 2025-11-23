@@ -396,52 +396,85 @@ const LandmarkCapture: React.FC = () => {
                     </td>
                   </tr>
                   )}
-                  <br></br>
-                  <tr>
-                    <td style={{ textAlign: "right", width: "100%" }}>
-                      <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
-                    </td>
-                    <td style={{ textAlign: "center", width: "100%" }}>
-                      <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
-                    </td>
-                    <td style={{ textAlign: "left", width: "100%" }}>
-                      <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
-                    </td>
-                  </tr>
                 </tbody>
               </table>
             </div>
-
-            <div className="prompt-container">
-              {selectedSet && currentPrompt && (
-                <>
-                  <p>Finger Spell:</p>
-                  <div className="letter-progress">
-                    {currentPrompt.split("").map((ch, idx) => (
-                      <span
-                        key={idx}
-                        className={
-                          idx < letterIndex
-                            ? "correct-letter"
-                            : idx === letterIndex
-                            ? "current-letter"
-                            : "pending-letter"
-                        }
-                      >
-                        {ch}
-                        {idx < currentPrompt.length - 1 && " - "}
-                      </span>
-                    ))}
-                  </div>
-                </>
-              )}
-            </div>
-
-            {selectedSet && (
-              <div className="remaining-terms">
-                <p>{learningTerms.length} terms remaining</p>
-              </div>
-            )}
+            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
+              <tbody>
+                <tr>
+                  <td style={{ width: "100%" }}>
+                    <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
+                    <div style={{width: '100%', height: '100%', background: '#343434', borderRadius: 39, paddingTop: 55, paddingBottom: 55, paddingLeft: 83, paddingRight: 83}}>
+                      <div className="prompt-container">
+                        {selectedSet && currentPrompt && (
+                          <>
+                            <p>Finger Spell:</p>
+                            <div className="letter-progress" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                              {currentPrompt.split("").map((ch, idx) => (
+                                <span
+                                  key={idx}
+                                  className={
+                                    idx < letterIndex
+                                      ? "correct-letter"
+                                      : idx === letterIndex
+                                      ? "current-letter"
+                                      : "pending-letter"
+                                  }
+                                  style={{ textAlign: "center" }}
+                                >
+                                  {ch}
+                                  {idx < currentPrompt.length - 1 && " - "}
+                                </span>
+                              ))}
+                            </div>
+                            <p></p>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
+                    {selectedSet && (
+                      <div className="remaining-terms">
+                        <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>{learningTerms.length} Terms Remaining!</p>
+                      </div>
+                    )}
+                  </td>
+                </tr>
+                <tr>
+                    <td style={{ textAlign: "center" }}>
+                    {selectedSet && currentPrompt && (
+                      <img
+                      src="public/assets/slr/highlighter.svg"
+                      alt="Highlight"
+                      style={{
+                        height: 10,
+                        marginRight: 8,
+                        display: "inline-block",
+                        position: "relative",
+                        top: "-18px"
+                      }}
+                      />
+                    )}
+                    </td>
+                </tr>
+                <tr>
+                  <td>
+                    <table>
+                      <tbody>
+                        
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
 
             <div className="mastery-table">
               <div className="mastery-column">

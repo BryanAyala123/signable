@@ -334,42 +334,82 @@ const LandmarkCapture: React.FC = () => {
 
           <div className="RightContent">
             <div className="set-picker">
-              <p className="picker-title">Select Course:</p>
-              <select
-                value={selectedCourse}
-                onChange={async (e) => {
-                  const value = e.target.value;
-                  setSelectedCourse(value);
-                  setSelectedSet("");
-                  setTerms([]);
-                  setCurrentPrompt("");
-                  await fetchSets(value);
-                }}
-              >
-                <option value="" disabled>Select a course</option>
-                {courses.map(c => (
-                  <option key={c.id} value={c.id}>{c.title}</option>
-                ))}
-              </select>
-
-              {sets.length > 0 && (
-                <>
-                  <p className="picker-title">Select Set:</p>
-                  <select
-                    value={selectedSet}
-                    onChange={async (e) => {
-                      const value = e.target.value;
-                      setSelectedSet(value);
-                      await fetchTerms(value);
-                    }}
-                  >
-                    <option value="" disabled>Select a set</option>
-                    {sets.map(s => (
-                      <option key={s.id} value={s.id}>{s.title}</option>
-                    ))}
-                  </select>
-                </>
-              )}
+              <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
+                <tbody>
+                  <tr>
+                    <td style={{ textAlign: "right", width: "33%" }}>
+                      <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
+                        Current Course: {selectedCourse && courses.find(c => c.id === selectedCourse)?.title}
+                      </div>
+                    </td>
+                    <td style={{ textAlign: "center", width: "34%" }}>
+                      <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
+                    </td>
+                    <td style={{ textAlign: "left", width: "33%" }}>
+                      <div style={{ flex: 0 }}>
+                        <select
+                          className="dropdown"
+                          value=""
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            setSelectedCourse(value);
+                            setSelectedSet("");
+                            setTerms([]);
+                            setCurrentPrompt("");
+                            await fetchSets(value);
+                          }}
+                        >
+                          <option value="" disabled>Change</option>
+                          {courses.map(c => (
+                            <option key={c.id} value={c.id}>{c.title}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </td>
+                  </tr>
+                  <br></br>
+                  {sets.length > 0 && (
+                  <tr>
+                    <td style={{ textAlign: "right" }}>
+                      <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
+                        Current Set: {selectedSet && sets.find(s => s.id === selectedSet)?.title}
+                      </div>        
+                    </td>
+                    <td style={{ textAlign: "center" }}>
+                      <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
+                    </td>
+                    <td style={{ textAlign: "left" }}>
+                      <select
+                        className="dropdown"
+                        value={""}
+                        onChange={async (e) => {
+                          const value = e.target.value;
+                          setSelectedSet(value);
+                          await fetchTerms(value);
+                        }}
+                      >
+                        <option value="" disabled>Change</option>
+                        {sets.map(s => (
+                          <option key={s.id} value={s.id}>{s.title}</option>
+                        ))}
+                      </select>
+                    </td>
+                  </tr>
+                  )}
+                  <br></br>
+                  <tr>
+                    <td style={{ textAlign: "right", width: "100%" }}>
+                      <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
+                    </td>
+                    <td style={{ textAlign: "center", width: "100%" }}>
+                      <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
+                    </td>
+                    <td style={{ textAlign: "left", width: "100%" }}>
+                      <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
 
             <div className="prompt-container">

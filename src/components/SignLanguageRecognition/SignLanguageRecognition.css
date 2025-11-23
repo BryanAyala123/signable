@@ -213,3 +213,20 @@ ion-button {
   padding: 0;
   margin: 0;
 }
+
+.dropdown {
+    border-bottom: none;
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    color: #343434;
+    font-size: 20px;
+    font-family: Figtree;
+    font-weight: 500;
+    text-decoration: underline;
+    letter-spacing: 0.8px;
+    word-wrap: break-word;
+}

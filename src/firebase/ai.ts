@@ -69,10 +69,10 @@ export async function generateLetterHint({
     `They were asked to sign the letter "${uppercaseTarget}". ${comparisonText} ` +
     `${baseline} ${context}
 
-Respond with 1-2 short sentences describing exactly how to adjust the handshape to sign the target letter in comparison to the detected letter (state the detected letter). ` +
-    `Avoid spoken-language mnemonics; focus on hand position, finger placement, and any motion.` +
-    `Make the hint somewhat challenging to motivate improvement.` +
-    `The letter detected might be different from what the user signed. Keep your response focused on the handshape for the target letter "${uppercaseTarget}".`;
+TASK: Describe how to adjust the handshape to correctly produce the target letter, explaining the changes needed from the detected letter to the correct one. Limit your response to 1–2 short sentences. ` +
+  `CONTEXT: The system detected a letter, but the detection may be incorrect. Use uncertain phrasing such as "It seems the system detected…" to avoid assuming the user meant that letter. ` +
+  `FOCUS: Compare the detected handshape to the correct one and explain only hand position, finger placement, and motion. No spoken-language mnemonics. ` +
+  `STYLE: Make the hint slightly challenging to encourage improvement while keeping the tone positive and supportive.`;
 
   const result = chat
     ? await chat.sendMessage(prompt)

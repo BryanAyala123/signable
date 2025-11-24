@@ -7,6 +7,7 @@ import Games from './pages/Games';
 import Resources from './pages/Resources';
 import Memory from './components/Games/Memory/Memory';
 import SignLanguageRecognition from './components/SignLanguageRecognition/SignLanguageRecognition';
+import FreePlay from './components/SLRFreePlay/FreePlay';
 import './theme/variables.css';
 import VideoNotetaking from './components/VideoNotetaking/VideoNotetaking';
 import AddEventBoard from './components/EventBoard/AddEventBoard';
@@ -76,6 +77,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/slr">
             <SignLanguageRecognition />
+            </Route>
+        <Route exact path="/slrfreeplay">
+            <FreePlay />
             </Route>
         <Route exact path="/notes">
             <VideoNotetaking />

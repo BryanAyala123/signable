@@ -29,7 +29,11 @@ const StudyPage: React.FC = () => {
                                 <p className='mainContentSelectionTypeText'>Use Sign Language recognition to learn vocab!</p>
                                 <button className='mainContentSelectionTypeButton' onClick={() => history.push('/slr')}>Go!</button>
                             </div>
-                            <p className='mainContentSelectionTypeFooter'><a><u>Free Play Recognition</u></a></p>
+                            <p className='mainContentSelectionTypeFooter'>
+                                <a onClick={() => history.push('/slrfreeplay')} style={{ cursor: 'pointer' }}>
+                                    <u>Free Play Recognition</u>
+                                </a>
+                            </p>
                         </div>
                         <div className='mainContentSelectionType'>
                             <h1 className='mainContentSelectionTypeHeader'>Flash Cards</h1>

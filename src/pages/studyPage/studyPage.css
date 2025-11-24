@@ -1,0 +1,174 @@
+.mainContentDivStudy{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.mainContentDivHeader{
+    display: flex;
+    justify-content: center;
+}
+
+.mainContentDivHeaderText{
+    position: relative;
+    font-size: clamp(28px, 5vw, 40px);
+    letter-spacing: 1.6px;
+}
+
+.mainContentDivHeaderText::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: -24px;
+    width: min(900px, 90vw); 
+    height: 9px;
+    background: url('/public/assets/greenUnderline.svg') center no-repeat;
+    background-size: contain;
+}
+
+.dividerStudy{
+    margin: 80px auto 40px auto; 
+    width: 80%;
+    height: 2px;
+    background-color: #343434;
+}
+
+.mainContentSelection{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 30px;
+    align-items: flex-start;
+    justify-content: center;
+    text-align: center;
+    color: #343434;
+    width: 100%;
+    max-width: 1200px; /* Limit maximum width */
+}
+
+.mainContentSelectionType{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: min(300px, 90vw); /* Responsive width */
+    height: auto; /* Changed from fixed height */
+    min-height: 380px;
+    padding: 30px 20px;
+    border: 2px solid #343434;
+    border-radius: 40px;
+    box-sizing: border-box;
+}
+
+.mainContentSelectionTypeHeader{
+    font-size: clamp(24px, 4vw, 30px); /* Responsive font size */
+    font-weight: 400;
+    margin: 0 0 15px 0;
+}
+
+.mainContentSelectionTypeText{
+    padding-left: clamp(20px, 5vw, 50px); /* Responsive padding */
+    padding-right: clamp(20px, 5vw, 50px);
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+.mainContentSelectionTypeButton{
+    width: min(250px, 80%); /* Responsive width */
+    height: 60px;
+    border-radius: 65px;
+    background-color: #343434;
+    font-size: clamp(16px, 2.5vw, 20px); /* Responsive font size */
+    color: #EBE7DB;
+    margin-top: 20px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mainContentSelectionTypeButton:hover{
+    background-color: #4a4a4a;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.mainContentSelectionTypeButton:active{
+    background-color: #2a2a2a;
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cardWrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.mainContentSelectionTypeFooter{
+    color: #343434;
+    margin-top: 15px;
+    font-size: clamp(12px, 2vw, 14px);
+    text-align: center;
+    padding: 0 10px;
+}
+
+a{
+    color: #343434;
+}
+
+/* Tablet breakpoint */
+@media (max-width: 992px) {
+    .mainContentSelection {
+        gap: 20px;
+    }
+    
+    .mainContentSelectionType {
+        width: min(280px, 85vw);
+    }
+    
+    .dividerStudy {
+        margin: 60px auto 30px auto;
+    }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+    .mainContentDivStudy {
+        padding: 10px;
+    }
+    
+    .mainContentSelection {
+        flex-direction: column;
+        gap: 25px;
+    }
+    
+    .mainContentSelectionType {
+        width: min(350px, 90vw);
+        min-height: 320px;
+    }
+    
+    .dividerStudy {
+        margin: 40px auto 30px auto;
+        width: 90%;
+    }
+    
+    .mainContentSelectionTypeButton {
+        width: min(220px, 75%);
+        height: 55px;
+    }
+}
+
+/* Small mobile breakpoint */
+@media (max-width: 480px) {
+    .mainContentSelectionType {
+        width: 95vw;
+        padding: 25px 15px;
+    }
+    
+    .mainContentSelectionTypeText {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+}

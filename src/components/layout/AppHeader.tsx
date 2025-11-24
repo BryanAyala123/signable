@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { IonHeader, IonToolbar, IonButton, IonAvatar, useIonRouter } from '@ionic/react';
-import logo from '/public/assets/signable-logo.png';
+import logo from '/public/assets/signableLogo.svg';
 import { useHistory } from 'react-router-dom';
 import { personCircle } from 'ionicons/icons';
 import { useAuth } from '../../contexts/authContext';
@@ -68,7 +68,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
 
                     <input
                         type="text"
-                        placeholder="Enter Words Here"
+                        placeholder="Search for Vocab..."
                         className="headerSearch"
                         value={headerSearch}
                         onChange={(e) => setHeaderSearch(e.target.value)}
@@ -76,33 +76,20 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                     />
 
                     <div className="tabsContainer">
-                        <IonButton fill="clear" onClick={() => history.push('/home')}>
-                            <span className="tabText">Home</span>
+                        <IonButton fill="clear" onClick={() => history.push('/asl-lex')}>
+                            <span className="tabText"><u>ASL-Lex</u></span>
                         </IonButton>
-                        <span className="separator" />
-
-                        <IonButton fill="clear" onClick={() => history.push('/flashcards/0')}>
-                            <span className="tabText">Flashcards</span>
-                        </IonButton>
-                        <span className="separator" />
 
                         <IonButton fill="clear" onClick={() => history.push('/library')}>
-                            <span className="tabText">Library</span>
+                            <span className="tabText"><u>Library</u></span>
                         </IonButton>
-                        <span className="separator" />
 
-                        <IonButton fill="clear" onClick={() => history.push('/games')}>
-                            <span className="tabText">Games</span>
+                        <IonButton fill="clear" onClick={() => history.push('/study')}>
+                            <span className="tabText"><u>Study</u></span>
                         </IonButton>
-                        <span className="separator" />
 
                         <IonButton fill="clear" onClick={() => history.push('/settings')}>
-                            <span className="tabText">Setting</span>
-                        </IonButton>
-                        <span className="separator" />
-
-                        <IonButton fill="clear" onClick={() => history.push('/resources')}>
-                            <span className="tabText">Resources</span>
+                            <span className="tabText"><u>My Account</u></span>
                         </IonButton>
 
                         <IonAvatar className="profileIcon">

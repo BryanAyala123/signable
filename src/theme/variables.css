@@ -36,3 +36,11 @@ ion-list {
     box-shadow: none !important;
     padding: 0 !important;
 }
+
+ion-header {
+    --box-shadow: none;
+}
+
+ion-toolbar {
+    --box-shadow: none;
+}

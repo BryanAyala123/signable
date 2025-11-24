@@ -320,7 +320,7 @@ const LandmarkCapture: React.FC = () => {
         <div className="MainContent">
           <div className="LeftContent">
             <IonCard className="ionCard">
-              <IonCardContent>
+              <IonCardContent className="video-container">
                 <video
                   ref={videoRef}
                   className="video-preview"
@@ -328,6 +328,42 @@ const LandmarkCapture: React.FC = () => {
                   muted
                   playsInline
                 />
+                {/* Overlay letters */}
+                <div className="video-letter-overlay" style={{ display: "flex", alignItems: "center", gap: 16 }}>
+                  <div style={{ color: '#EBE7DB', fontSize: 40, fontFamily: 'Figtree', fontWeight: '400', letterSpacing: 1.60, wordWrap: 'break-word', whiteSpace: 'pre-line' }}>
+                    Letter<br />signed:
+                  </div>
+                    <div style={{ position: "relative", display: "inline-block", minWidth: 64, minHeight: 64 }}>
+                      <img
+                        src="public/assets/slr/circle.svg"
+                        alt="Circle"
+                        style={{
+                        position: "absolute",
+                        left: "50%",
+                        top: "50%",
+                        transform: "translate(-50%, -50%) scale(1.4)",
+                        height: 76,
+                        width: 76,
+                        zIndex: 1,
+                        pointerEvents: "none",
+                        }}
+                      />
+                      <div className="result-container-text" style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 64, minWidth: 64 }}>
+                        {processing ? (
+                        <>
+                          <IonSpinner name="dots" />
+                          <IonText>
+                          <h3>...</h3>
+                          </IonText>
+                        </>
+                        ) : recognizedLetter ? (
+                        <IonText>
+                          <h2 className="letterSigned" style={{ color: '#EBE7DB', fontSize: 64, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 2.56, wordWrap: 'break-word', margin: 0 }}>{recognizedLetter}</h2>
+                        </IonText>
+                        ) : null}
+                      </div>
+                    </div>
+                </div>
               </IonCardContent>
             </IonCard>
           </div>
@@ -501,27 +537,6 @@ const LandmarkCapture: React.FC = () => {
                 </tr>
               </tbody>
             </table>
-
-            <div className="result-container">
-              <div className="result-container-header">
-                <p>Letter Signed:</p>
-              </div>
-
-              <div className="result-container-text">
-                {processing ? (
-                  <>
-                    <IonSpinner name="dots" />
-                    <IonText>
-                      <h3>Processing...</h3>
-                    </IonText>
-                  </>
-                ) : recognizedLetter ? (
-                  <IonText>
-                    <h2 className="letterSigned">{recognizedLetter}</h2>
-                  </IonText>
-                ) : null}
-              </div>
-            </div>
 
             <div className="button-container">
               <p>Start Processing</p>

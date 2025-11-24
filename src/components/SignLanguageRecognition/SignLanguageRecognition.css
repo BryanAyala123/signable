@@ -230,3 +230,18 @@ ion-button {
     letter-spacing: 0.8px;
     word-wrap: break-word;
 }
+
+.video-container {
+  position: relative;   /* enables absolute positioning inside */
+}
+
+.video-letter-overlay {
+  position: absolute;
+  bottom: 20px;   /* adjust as needed */
+  left: 20px;     /* adjust as needed */
+  background: #343434;  /* optional for readability */
+  color: white;
+  padding: 6px 10px;
+  border-radius: 30px;
+  font-size: 14px;
+}

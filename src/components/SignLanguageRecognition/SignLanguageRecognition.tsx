@@ -466,35 +466,41 @@ const LandmarkCapture: React.FC = () => {
                 </tr>
                 <tr>
                   <td>
-                    <table>
-                      <tbody>
-                        
-                      </tbody>
-                    </table>
+                    <div style={{ border: "2px solid black", borderRadius: 40, overflow: "hidden",}}>
+                      <table style={{ width: "100%", marginBottom: 16}}>
+                        <tbody>
+                        <tr>
+                          <td style={{ textAlign: "center" }}>
+                          <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Still Learning</p>
+                          </td>
+                          <td style={{ textAlign: "center" }}>
+                            <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Mastered</p>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
+                            <ul style={{ paddingLeft: 0, marginTop: 0 }}>
+                              {learningTerms.map(term => (
+                                  <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
+                              ))}
+                            </ul>
+                          </td>
+                          <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
+                            <ul style={{ paddingLeft: 0, marginTop: 0 }}>
+                              {masteredTerms.map(term => (
+                                <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
+                              ))} 
+                            </ul>
+                          </td>
+                          
+                        </tr>
+                        </tbody>
+                      </table>
+                    </div>
                   </td>
                 </tr>
               </tbody>
             </table>
-
-            <div className="mastery-table">
-              <div className="mastery-column">
-                <p><strong>Still Learning:</strong></p>
-                <ul>
-                  {learningTerms.map(term => (
-                    <li key={term}>{term}</li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mastery-column">
-                <p><strong>Mastered:</strong></p>
-                <ul>
-                  {masteredTerms.map(term => (
-                    <li key={term}>{term}</li>
-                  ))}
-                </ul>
-              </div>
-            </div>
 
             <div className="result-container">
               <div className="result-container-header">

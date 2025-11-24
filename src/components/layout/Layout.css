@@ -74,6 +74,17 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    height: 40px;
+}
+
+.logoImage {
+    cursor: pointer;
+}
+
+.logoImage:focus {
+    outline: 2px solid #4A7669;
+    border-radius: 8px;
+}
     height: 44px;
 }
 ion-header {

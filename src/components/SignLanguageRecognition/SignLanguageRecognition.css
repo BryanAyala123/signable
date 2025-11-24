@@ -177,3 +177,89 @@ ion-button {
         font-size: 70px;
     }
 }
+
+.letter-progress {
+  display: flex;
+  gap: 8px;
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.correct-letter {
+  color: #48e395; /* green */
+}
+
+.incorrect-letter {
+    color: #E74C3C;
+}
+
+.current-letter {
+    color: #EBE7DB;
+}
+
+.pending-letter {
+    color: #EBE7DB;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.mastery-table {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+  border-bottom: 1px solid #333;
+  margin-bottom: 16px;
+}
+
+.mastery-column {
+  width: 50%;
+  padding: 0 10px;
+  border-right: 1px solid #333;
+}
+
+.mastery-column:last-child {
+  border-right: none;
+}
+
+.mastery-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.dropdown {
+    border-bottom: none;
+    background: transparent;
+    border: none;
+    padding: 4px 2px;
+    outline: none;
+    appearance: none;
+    cursor: pointer;
+    color: #343434;
+    font-size: 20px;
+    font-family: Figtree;
+    font-weight: 500;
+    text-decoration: underline;
+    letter-spacing: 0.8px;
+    word-wrap: break-word;
+}
+
+.video-container {
+  position: relative;   /* enables absolute positioning inside */
+}
+
+.video-letter-overlay {
+  position: absolute;
+  bottom: 20px;   /* adjust as needed */
+  left: 20px;     /* adjust as needed */
+  background: #343434;  /* optional for readability */
+  color: white;
+  padding: 6px 10px;
+  border-radius: 30px;
+  font-size: 14px;
+}

@@ -2,20 +2,13 @@ import React, { useRef, useState } from 'react';
 import {
     IonPage,
     IonHeader,
-    IonToolbar,
-    IonTitle,
     IonContent,
-    IonList,
-    IonItem,
-    IonLabel,
-    IonNote,
     IonButton,
     IonFooter,
 } from '@ionic/react';
 import { getFirestore, doc, setDoc, collection, getDocs } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 import { useParams } from 'react-router-dom';
-import { set } from 'firebase/database';
 import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 import AppHeader from '../components/layout/AppHeader';
 import AppFooter from '../components/layout/AppFooter';

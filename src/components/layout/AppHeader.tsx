@@ -27,6 +27,17 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
         }
     };
 
+    const navigateHome = () => {
+        history.push('/home');
+    };
+
+    const handleLogoKey = (e: React.KeyboardEvent<HTMLImageElement>) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            navigateHome();
+        }
+    };
+
     const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             const trimmed = headerSearch.trim();
@@ -44,7 +55,16 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
         <IonHeader className="IonHeader">
             <IonToolbar className="mainToolbar">
                 <div className="mainLayoutDiv">
-                    <img src={logo} alt="Logo" style={{ height: '80px', width: '170px', marginRight: '10px' }} />
+                    <img
+                        src={logo}
+                        alt="Signable home"
+                        style={{ height: '80px', width: '170px', marginRight: '10px' }}
+                        className="logoImage"
+                        role="button"
+                        tabIndex={0}
+                        onClick={navigateHome}
+                        onKeyDown={handleLogoKey}
+                    />
 
                     <input
                         type="text"

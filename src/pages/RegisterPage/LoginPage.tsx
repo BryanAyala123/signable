@@ -88,7 +88,7 @@ const LoginPage: React.FC = () => {
         <IonPage>
             <AppHeader />
                 <IonContent className="MainLandingContent">
-                {userLoggedIn && <Redirect to="/home" />}
+                {userLoggedIn && <Redirect to="/study" />}
                     <div className="RegisterPageMainDiv">
                     <img
                         src='https://cdn4.iconfinder.com/data/icons/ionicons/512/icon-ios7-arrow-back-512.png'

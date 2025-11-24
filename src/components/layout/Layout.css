@@ -1,6 +1,5 @@
 .IonHeader{
     --box-shadow: none; 
-    border-bottom: none;
 }
 
 .mainToolbar {
@@ -18,13 +17,22 @@
     overflow-x: auto;    
 }
 
+.mainLayoutDivFooter{
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 0 16px;
+    gap: 16px; 
+    overflow-x: auto;    
+}
+
 .mainLayoutDiv::-webkit-scrollbar {
     display: none; 
 }
 
 .mainToolBarFooter{
     --background: #E8E4D8; 
-    --min-height: 10px
+    --min-height: 10px;
 }
 
 .headerSearch{
@@ -32,9 +40,9 @@
     padding-left: 15px;
     height: min-content;
     border-width: 0;
-    width: 325px;
+    width: 400px;
     height: 30px;
-    color:#E8E4D8
+    color:#EBE7DB;
 }
 
 .tabsContainer {
@@ -46,6 +54,7 @@
     color: #3D3D3D;
     font-weight: 500;
     line-height: 1; 
+    font-size: 20px;
 }
 
 .tabsContainer span:not(:last-child)::after {
@@ -65,5 +74,57 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
+    height: 44px;
 }
+ion-header {
+    --box-shadow: none !important;
+    box-shadow: none !important;
+  }
+  
+  ion-toolbar {
+    --box-shadow: none !important; 
+    box-shadow: none !important;
+  }
+  
+  ion-header::after {
+    background: none !important;
+  }
+
+ion-footer {
+    --box-shadow: none !important;
+    box-shadow: none !important;
+}
+
+ion-toolbar {
+    --box-shadow: none !important; 
+    box-shadow: none !important;
+}
+
+ion-footer::after {
+    background: none !important;
+}
+
+.IonHeader {
+  border-bottom: 2px solid #343434;
+}
+
+.IonFooter {
+    border-top: 2px solid #343434;
+    --box-shadow: none;
+}
+  
+  ion-footer.IonFooter {
+    border-top: 2px solid #343434 !important;
+  }
+  
+  /* Also remove any default shadows */
+  ion-footer {
+    --box-shadow: none !important;
+    box-shadow: none !important;
+  }
+  
+  /* Make sure the toolbar inside doesn't cover it */
+  .IonFooter ion-toolbar {
+    --border-width: 0;
+    --padding-top: 0;
+  }

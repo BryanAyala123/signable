@@ -185,8 +185,74 @@ ion-button {
   font-weight: bold;
 }
 
+.hint-card {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    border: 1px solid #d9d4c7;
+    background-color: #f7f4ed;
+    color: #343434;
+    font-size: 0.95rem;
+    line-height: 1.4;
+}
+
+.hint-card.info {
+    border-color: #62ae8a;
+}
+
+.hint-card.success {
+    border-color: #48e395;
+    background-color: #e9fbf2;
+}
+
+.hint-card.error {
+    border-color: #e74c3c;
+    background-color: #fdecea;
+}
+
+.hint-label {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+
+.hint-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #55504a;
+}
+
+.hint-error-text {
+    color: #c0392b;
+    font-weight: 600;
+    margin: 0;
+}
+
+.hint-message {
+    margin: 0;
+}
+
 .correct-letter {
   color: #48e395; /* green */
+}
+
+.incorrect-letter {
+    color: #E74C3C;
+}
+
+.current-letter {
+    color: #343434;
+    border-bottom: 2px solid #343434;
+}
+
+.pending-letter {
+    color: #b3b0aa;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 
 .mastery-table {

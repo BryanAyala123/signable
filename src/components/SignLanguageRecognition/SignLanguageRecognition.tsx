@@ -15,9 +15,9 @@ import axios from "axios";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import AppHeader from '../layout/AppHeader';
 import AppFooter from '../layout/AppFooter';
+import LetterHint from '../LetterHint/letterHint';
 import play from '/public/assets/Buttons/playButton.svg';
 import './SignLanguageRecognition.css';
-import { generateLetterHint, startChatSession } from '../../firebase/ai';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
@@ -26,122 +26,12 @@ const FUNCTION_URL =
   "https://classify-landmarks-ft6ax3huaq-uc.a.run.app";
 const FRAMES_TO_CAPTURE = 15;
 
-const LETTER_HINTS: Record<string, string[]> = {
-  A: [
-    "Create a closed fist with the thumb pressed against the side of the index finger, knuckles facing out.",
-    "Keep the thumb tight to the fingers instead of covering them."
-  ],
-  B: [
-    "Extend all four fingers straight up together while the thumb crosses the palm.",
-    "Flatten the palm toward your audience so the fingers stay parallel."
-  ],
-  C: [
-    "Curve your hand like the letter C as if holding a small ball, thumb opposite the fingers.",
-    "Only curl the fingers and thumb; keep the wrist straight."
-  ],
-  D: [
-    "Point the index finger straight up and touch the thumb to the middle finger, other fingers curled.",
-    "Tuck the ring and pinky tightly against the palm so only one finger is up."
-  ],
-  E: [
-    "Curl all fingertips toward the thumb so they meet the pad of the thumb, palm forward.",
-    "Avoid flattening the fingers like B - keep them bent into a compact shape."
-  ],
-  F: [
-    "Touch the index finger tip to the thumb to form a circle; other three fingers stay extended.",
-    "Let the remaining fingers spread slightly so they do not collapse toward the palm."
-  ],
-  G: [
-    "Hold the thumb and index finger parallel pointing sideways while other fingers curl down.",
-    "Rotate the wrist so the thumb edge faces forward, keeping the hand level."
-  ],
-  H: [
-    "Extend index and middle fingers together pointing sideways, thumb tucked, other fingers folded.",
-    "Stack the two extended fingers evenly so the top edges align."
-  ],
-  I: [
-    "Make a fist and raise just the pinky finger straight up.",
-    "Wrap the thumb across the fingers so it does not poke out like Y."
-  ],
-  J: [
-    "Trace the letter J in the air with the pinky starting from the I handshape.",
-    "Lead the motion with the pinky while the rest of the hand stays relaxed."
-  ],
-  K: [
-    "Extend index and middle fingers in a V while the thumb touches the base of the middle finger, palm out.",
-    "Spread the two fingers slightly so the V shape is clear."
-  ],
-  L: [
-    "Raise the index finger vertically and the thumb horizontally to make an L shape, other fingers tucked.",
-    "Face the palm outward so the viewer clearly sees the outline."
-  ],
-  M: [
-    "Lay the thumb across the palm and fold three fingers over it, pinky resting to the side.",
-    "Cover the thumb completely so it does not peek between the fingers."
-  ],
-  N: [
-    "Tuck the thumb across the palm and cover it with the index and middle fingers only.",
-    "Keep the two covering fingers snug so the thumb remains hidden."
-  ],
-  O: [
-    "Touch all fingertips to the thumb to form a small O shape, palm angled forward.",
-    "Round the fingers from the knuckles rather than just bending the tips."
-  ],
-  P: [
-    "Make the K handshape then tip the wrist so the extended fingers point downward.",
-    "Keep the thumb contacting the middle finger while the index points outward like the leg of P."
-  ],
-  Q: [
-    "Start with the G handshape and drop the wrist so the index finger points down.",
-    "Aim both the thumb and index finger toward the floor with the palm facing inward."
-  ],
-  R: [
-    "Cross the middle finger over the index finger, palm forward, other fingers curled.",
-    "Keep the two crossed fingers straight and close together."
-  ],
-  S: [
-    "Form a fist with the thumb folded across the front of the fingers.",
-    "Do not push the thumb between fingers - let it rest on top of the index and middle finger."
-  ],
-  T: [
-    "Make a fist and insert the thumb between the index and middle finger with the thumb tip showing.",
-    "Ensure the thumb sticks out slightly so it is distinct from S."
-  ],
-  U: [
-    "Extend the index and middle fingers together pointing up while other fingers curl.",
-    "Keep the two fingers touching rather than spread apart."
-  ],
-  V: [
-    "Raise the index and middle fingers in a V shape, remaining fingers curled to the palm.",
-    "Spread the two fingers just enough to show the V without exaggerating."
-  ],
-  W: [
-    "Extend index, middle, and ring fingers with slight spacing; pinky and thumb stay tucked.",
-    "Hold the three fingers level so they form the points of the W."
-  ],
-  X: [
-    "Curl the index finger like a hook while other fingers stay folded and the thumb rests on them.",
-    "Point the knuckle upward so the hooked finger faces forward."
-  ],
-  Y: [
-    "Extend the thumb and pinky while the other fingers remain curled.",
-    "Stretch the thumb and pinky away from each other to suggest the Y shape."
-  ],
-  Z: [
-    "Use the extended index finger to draw the letter Z in the air: across, diagonal, across.",
-    "Keep the diagonal stroke sharp so the letter outline is clear."
-  ],
-};
-
-const DEFAULT_HINT = "Focus on matching the exact ASL handshape: adjust finger placement, thumb position, and palm orientation.";
-
 const LandmarkCapture: React.FC = () => {
 
   // camera and model refrences 
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const handLandmarkerRef = useRef<HandLandmarker | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
-  const coachChatRef = useRef<any | null>(null);
 
   // UI states
   const [capturing, setCapturing] = useState(false);
@@ -163,29 +53,6 @@ const LandmarkCapture: React.FC = () => {
   const [incorrectLetters, setIncorrectLetters] = useState<boolean[]>([]);
   const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
 
-  // adaptive hinting
-  const [hintMessage, setHintMessage] = useState<string>("");
-  const [hintStatus, setHintStatus] = useState<"info" | "success" | "error" | "">("");
-  const [hintLoading, setHintLoading] = useState(false);
-  const [hintError, setHintError] = useState<string>("");
-  const hintRequestIdRef = useRef(0);
-
-  const ensureCoachChat = () => {
-    if (!coachChatRef.current) {
-      try {
-        coachChatRef.current = startChatSession();
-      } catch (error) {
-        console.error("Failed to start coach chat session:", error);
-        return null;
-      }
-    }
-    return coachChatRef.current;
-  };
-
-  useEffect(() => {
-    ensureCoachChat();
-  }, []);
-
   // split into learning v. mastered 
   const masteredTerms = Object.keys(termProgress).filter(
     term => termProgress[term] >= 2
@@ -193,70 +60,6 @@ const LandmarkCapture: React.FC = () => {
   const learningTerms = Object.keys(termProgress).filter(
     term => termProgress[term] < 2
   );
-  const getBaselineHintForLetter = (letter: string) => {
-    const normalized = letter?.toUpperCase() ?? "";
-    const candidates = LETTER_HINTS[normalized];
-    if (!candidates || candidates.length === 0) {
-      return DEFAULT_HINT;
-    }
-    return candidates[Math.floor(Math.random() * candidates.length)];
-  };
-
-  const resetHint = () => {
-    hintRequestIdRef.current += 1;
-    setHintMessage("");
-    setHintStatus("");
-    setHintError("");
-    setHintLoading(false);
-  };
-
-  const showSuccessHint = (letter: string) => {
-    hintRequestIdRef.current += 1;
-    setHintStatus("success");
-    setHintMessage(`Great job signing ${letter.toUpperCase()}!`);
-    setHintError("");
-    setHintLoading(false);
-  };
-
-  const requestLetterHint = async (
-    targetLetter: string,
-    detectedLetter?: string,
-    attemptContext?: string
-  ) => {
-    if (!targetLetter) return;
-    const uppercaseTarget = targetLetter.toUpperCase();
-    const baselineHint = getBaselineHintForLetter(uppercaseTarget);
-    const requestId = ++hintRequestIdRef.current;
-    const chat = ensureCoachChat();
-
-    setHintStatus("info");
-    setHintMessage(baselineHint);
-    setHintError("");
-    setHintLoading(true);
-
-    try {
-      const aiHint = await generateLetterHint({
-        targetLetter: uppercaseTarget,
-        detectedLetter: detectedLetter?.toUpperCase(),
-        baselineHint,
-        attemptContext,
-        chat,
-      });
-
-      if (hintRequestIdRef.current === requestId && aiHint) {
-        setHintMessage(aiHint);
-      }
-    } catch (error) {
-      console.error("generateLetterHint error:", error);
-      if (hintRequestIdRef.current === requestId) {
-        setHintError("Chatbot hint is temporarily unavailable. Use the baseline tip above.");
-      }
-    } finally {
-      if (hintRequestIdRef.current === requestId) {
-        setHintLoading(false);
-      }
-    }
-  };
 
   
   //-----------camera handling--------------
@@ -407,7 +210,6 @@ const LandmarkCapture: React.FC = () => {
     setCorrectLetters(new Array(randomWord.length).fill(false));
     setIncorrectLetters(new Array(randomWord.length).fill(false));
     setRecognizedLetter("");
-    resetHint();
   };
 
 
@@ -452,8 +254,6 @@ const LandmarkCapture: React.FC = () => {
           return newArr;
         });
 
-        showSuccessHint(expected);
-
         // if not done, move to next letter
         if (letterIndex < currentPrompt.length - 1) {
           setLetterIndex(letterIndex + 1);
@@ -467,7 +267,6 @@ const LandmarkCapture: React.FC = () => {
 
           // pick a new word
           pickRandomTerm(terms);
-
         }
       } else {
         setIncorrectLetters(prev => {
@@ -475,13 +274,8 @@ const LandmarkCapture: React.FC = () => {
           newArr[letterIndex] = true;
           return newArr;
         });
-        requestLetterHint(
-          expected,
-          letter,
-          "The learner signed a different letter than requested."
-        );
       }
-          } catch (err) {
+    } catch (err) {
       console.error("Server error:", err);
       setRecognizedLetter("Error");
       presentToast({
@@ -510,22 +304,14 @@ const LandmarkCapture: React.FC = () => {
 
   const handleSkip = () => {
     if (!currentPrompt) return;
-    const skippedLetter = currentPrompt[letterIndex];
     finalizeLetterAsIncorrect();
-
-    if (skippedLetter) {
-      requestLetterHint(
-        skippedLetter,
-        undefined,
-        "The learner skipped this letter and would like a reminder for next time."
-      );
-    }
 
     if (letterIndex < currentPrompt.length - 1) {
       setLetterIndex(letterIndex + 1);
     } else {
       pickRandomTerm(terms);
     }
+    setRecognizedLetter("");
   };
 
 
@@ -653,7 +439,6 @@ const LandmarkCapture: React.FC = () => {
                             setIncorrectLetters([]);
                             setRecognizedLetter("");
                             setTermProgress({});
-                            resetHint();
                             await fetchSets(value);
                           }}
                         >
@@ -687,7 +472,6 @@ const LandmarkCapture: React.FC = () => {
                           setCorrectLetters([]);
                           setIncorrectLetters([]);
                           setRecognizedLetter("");
-                          resetHint();
                           await fetchTerms(value);
                         }}
                       >
@@ -711,7 +495,7 @@ const LandmarkCapture: React.FC = () => {
                 </tr>
                 <tr>
                   <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
-                    <div style={{width: '100%', height: '100%', background: '#343434', borderRadius: 39, paddingTop: 55, paddingBottom: 55, paddingLeft: 83, paddingRight: 83}}>
+                    <div style={{ width: "100%", height: "100%", background: '#343434', borderRadius: 39, paddingTop: 55, paddingBottom: 55, paddingLeft: 83, paddingRight: 83 }}>
                       <div className="prompt-container">
                         {selectedSet && currentPrompt && (
                           <>
@@ -737,21 +521,10 @@ const LandmarkCapture: React.FC = () => {
                                 </span>
                               ))}
                             </div>
-                            {(hintLoading || hintMessage || hintError) && (
-                              <div className={`hint-card${hintStatus ? " " + hintStatus : ""}`}>
-                                <p className="hint-label">Chatbot Hint</p>
-                                {hintLoading ? (
-                                  <div className="hint-loading">
-                                    <IonSpinner name="lines" />
-                                    <span>Generating tip...</span>
-                                  </div>
-                                ) : hintError ? (
-                                  <p className="hint-error-text">{hintError}</p>
-                                ) : (
-                                  <p className="hint-message">{hintMessage}</p>
-                                )}
-                              </div>
-                            )}
+                            <LetterHint 
+                              targetLetter={currentPrompt[letterIndex]}
+                              detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
+                            />
                           </>
                         )}
                       </div>

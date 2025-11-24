@@ -469,14 +469,14 @@ const LandmarkCapture: React.FC = () => {
                           const value = e.target.value;
                           setSelectedSet(value);
 
-                          // 🚨 reset all word + letter UI
+                          // reset all word + letter UI
                           setTerms([]);
                           setCurrentPrompt("");
                           setLetterIndex(0);
                           setCorrectLetters([]);
                           setIncorrectLetters([]);
                           setRecognizedLetter("");
-                          setTermProgress({}); // optional wipe, depends if you want progress per-set session fresh
+                          setTermProgress({}); 
 
                           // then load fresh terms
                           await fetchTerms(value);

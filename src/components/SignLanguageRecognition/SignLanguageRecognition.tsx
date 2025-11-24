@@ -20,6 +20,8 @@ import play from '/public/assets/Buttons/playButton.svg';
 import './SignLanguageRecognition.css';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import cirlceIcon from '/public/assets/slr/circle.svg';
+import highlighter from '/public/assets/slr/highlighter.svg';
 
 // backend model apiendpoint and frame count per capture
 const FUNCTION_URL =
@@ -377,7 +379,7 @@ const LandmarkCapture: React.FC = () => {
                   </div>
                     <div style={{ position: "relative", display: "inline-block", minWidth: 64, minHeight: 64 }}>
                       <img
-                        src="public/assets/slr/circle.svg"
+                        src={cirlceIcon}
                         alt="Circle"
                         style={{
                         position: "absolute",
@@ -552,7 +554,7 @@ const LandmarkCapture: React.FC = () => {
                     <td style={{ textAlign: "center" }}>
                     {selectedSet && currentPrompt && (
                       <img
-                      src="public/assets/slr/highlighter.svg"
+                      src={highlighter}
                       alt="Highlight"
                       style={{
                         height: 10,

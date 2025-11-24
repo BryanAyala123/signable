@@ -468,10 +468,17 @@ const LandmarkCapture: React.FC = () => {
                         onChange={async (e) => {
                           const value = e.target.value;
                           setSelectedSet(value);
+
+                          // 🚨 reset all word + letter UI
+                          setTerms([]);
+                          setCurrentPrompt("");
                           setLetterIndex(0);
                           setCorrectLetters([]);
                           setIncorrectLetters([]);
                           setRecognizedLetter("");
+                          setTermProgress({}); // optional wipe, depends if you want progress per-set session fresh
+
+                          // then load fresh terms
                           await fetchTerms(value);
                         }}
                       >
@@ -480,6 +487,7 @@ const LandmarkCapture: React.FC = () => {
                           <option key={s.id} value={s.id}>{s.title}</option>
                         ))}
                       </select>
+
                     </td>
                   </tr>
                   )}

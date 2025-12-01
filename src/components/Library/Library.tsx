@@ -140,7 +140,7 @@ const Library: React.FC = () => {
         </div>
     </IonContent>
     <AppFooter />
-        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)}>
+        <IonModal isOpen={showModal} onDidDismiss={() => setShowModal(false)} className="custom-modal">
         <IonHeader>
             <IonToolbar className='modalToolbar'>
                 <IonTitle className='modalHeader'>Add New Course</IonTitle>
@@ -153,22 +153,24 @@ const Library: React.FC = () => {
         </IonHeader>
         <IonContent className="ion-padding" style={{ '--background': '#EBE7DB' }}>
             <div className='modalContent'>
-                <IonInput
-                    value={newCourse}
-                    placeholder="Course title"
-                    onIonChange={e => setNewCourse(e.detail.value!)}
-                    label="Title"
-                    labelPlacement="stacked"
-                    className='modalInput'
-                />
-                <IonInput
-                    value={newContent}
-                    placeholder="Course content"
-                    onIonChange={e => setNewContent(e.detail.value!)}
-                    label="Description"
-                    labelPlacement="stacked"
-                    className='modalInput'
-                />
+                <div>
+                    <IonInput
+                        value={newCourse}
+                        placeholder="Course title"
+                        onIonChange={e => setNewCourse(e.detail.value!)}
+                        label="Title"
+                        labelPlacement="stacked"
+                        className='modalInput'
+                    />
+                    <IonInput
+                        value={newContent}
+                        placeholder="Course content"
+                        onIonChange={e => setNewContent(e.detail.value!)}
+                        label="Description"
+                        labelPlacement="stacked"
+                        className='modalInput'
+                    />
+                </div>
                 <IonButton 
                     expand="block"
                     className='addButton'

@@ -42,7 +42,7 @@ const StudyPage: React.FC = () => {
                         </div>
                         <div className='mainContentSelectionType'>
                             <h1 className='mainContentSelectionTypeHeader'>Memory Game</h1>
-                            <p className='mainContentSelectionTypeText'>Math your vocab to the hand sign in record time!</p>
+                            <p className='mainContentSelectionTypeText'>Match your vocab to the hand sign in record time!</p>
                             <button className='mainContentSelectionTypeButton' onClick={() => history.push('/games')}>Go!</button>
                         </div>
                     </div>

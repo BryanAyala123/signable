@@ -4,6 +4,7 @@
     border-radius: 40px;
     margin: 0 auto;
     padding: 20px;
+    padding-top: 0px;
     background-color: #343434;
     position: relative;
 }
@@ -13,7 +14,6 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-top: 20px;
     text-align: center;
     color: #EBE7DB;
     font-size: 40px;
@@ -56,8 +56,8 @@
 }
 
 .memory-card {
-    width: 120px;
-    height: 200px;
+    width: 100px;
+    height: 170px;
     background: #EBE7DB;
     border: 1px solid #ccc;
     border-radius: 35px;
@@ -107,4 +107,39 @@ button{
     position: absolute;
     top: 0;
     right: 0;
+}
+
+.chooseLevel{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.chooseLevelHeader{
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+.chooseLevelOptions{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+
+.chooseLevelOptionsButton{
+    width: 100px;
+    height: 30px;
+    background-color: #EBE7DB;
+    color: #343434;
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.chooseLevelOptionsButton:hover{
+    opacity: 0.8;
+}
+
+.chooseLevelOptionsButton:active{
+    opacity: 0.5;
 }

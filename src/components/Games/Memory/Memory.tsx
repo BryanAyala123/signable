@@ -1,9 +1,19 @@
-import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonBackButton, IonButtons } from '@ionic/react';
+import { IonContent, IonHeader, IonPage, IonTitle, IonToolbar } from '@ionic/react';
 import './Memory.css';
 import React, { useState } from 'react';
 import AppHeader from '../../layout/AppHeader';
+import { useParams } from 'react-router-dom';
 
+interface MemoryProps {
+    difficulty?: 'easy' | 'medium' | 'hard';
+}
 
+// Difficulty configuration
+const DIFFICULTY_CONFIG = {
+    easy: { pairs: 4, cols: 4, rows: 2 },
+    medium: { pairs: 6, cols: 4, rows: 3 },
+    hard: { pairs: 9, cols: 6, rows: 3 }
+};
 
 // Function to shuffle array randomly
 const shuffleArray = (array: any[]) => {
@@ -16,15 +26,15 @@ const shuffleArray = (array: any[]) => {
 };
 
 // Function to get random letters for each game
-const getRandomLetters = (count: number = 4) => {
+const getRandomLetters = (count: number) => {
     const allLetters = Array.from({ length: 26 }, (_, i) => String.fromCharCode(65 + i));
     const shuffled = shuffleArray(allLetters);
     return shuffled.slice(0, count);
 };
 
 // Function to create cards data with random letters
-const createCardsData = () => {
-    const randomLetters = getRandomLetters(4); // Get 4 random letters
+const createCardsData = (pairCount: number) => {
+    const randomLetters = getRandomLetters(pairCount);
     
     return shuffleArray([
         ...randomLetters.map((letter, i) => [
@@ -34,27 +44,36 @@ const createCardsData = () => {
     ]);
 };
 
-const Memory: React.FC = () => {
+const Memory: React.FC<MemoryProps> = () => {
+    const { difficulty } = useParams<{ difficulty?: 'easy' | 'medium' | 'hard' }>();
+    const config = DIFFICULTY_CONFIG[difficulty || 'easy'];
+    
     const [flipped, setFlipped] = useState<number[]>([]);
     const [matched, setMatched] = useState<number[]>([]);
     const [disableAll, setDisableAll] = useState(false);
-    const [gameKey, setGameKey] = useState(0); // Key to force re-render with new letters
-    const [currentCardsData, setCurrentCardsData] = useState(() => createCardsData());
+    const [gameKey, setGameKey] = useState(0);
+    const [currentCardsData, setCurrentCardsData] = useState(() => createCardsData(config.pairs));
     const [started, setStarted] = useState(false);
     const [elapsedTime, setElapsedTime] = useState<number>(0);
     
-    // Only create new cards data when gameKey changes (new game)
+    // Create new cards data when gameKey or difficulty changes
     React.useEffect(() => {
-        setCurrentCardsData(createCardsData());
-    }, [gameKey]);
-    
-    // Function to start a new game with different letters
-    const startNewGame = () => {
-        if (started) return; // Prevent starting a new game if one is already in progress
+        setCurrentCardsData(createCardsData(config.pairs));
+        // Reset game state when difficulty changes
         setFlipped([]);
         setMatched([]);
         setDisableAll(false);
-        setGameKey(prev => prev + 1); // This will trigger new random letters
+        setStarted(false);
+        setElapsedTime(0);
+    }, [gameKey, difficulty]);
+    
+    // Function to start a new game with different letters
+    const startNewGame = () => {
+        if (started) return;
+        setFlipped([]);
+        setMatched([]);
+        setDisableAll(false);
+        setGameKey(prev => prev + 1);
         setElapsedTime(0);
         setStarted(true);
     };
@@ -63,7 +82,7 @@ const Memory: React.FC = () => {
         const time = elapsedTime + 100;
         setElapsedTime(time);
         return time;
-    }
+    };
 
     // Check if game is complete
     const isGameComplete = matched.length === currentCardsData.length;
@@ -72,11 +91,12 @@ const Memory: React.FC = () => {
     React.useEffect(() => {
         if (isGameComplete) {
             setStarted(false);
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 if (!started) {
                     startNewGame();
                 }
-            }, 10000); // Wait 10 seconds before starting new game
+            }, 10000);
+            return () => clearTimeout(timeout);
         }
     }, [isGameComplete, started]);
 
@@ -132,62 +152,68 @@ const Memory: React.FC = () => {
                 </IonHeader>
                 <IonContent fullscreen className='ion-padding'>
                     <div className='centeringDiv'>
-                    <div className='outerContainer'>
-                    <div className="timer-container">
-                        <div className="timer-display">
-                            <span>Time: {(elapsedTime / 1000).toFixed(1)}s</span>
-                        </div>
-                    </div>
-                    
-                    {isGameComplete && (
-                        <div className="completion-message">
-                            <h2>🎉 Congratulations! All matches found! 🎉</h2>
-                            <p>Starting new game with different letters in 10 seconds...</p>
-                            <button 
-                                onClick={startNewGame}
-                                className="new-game-button"
-                            >
-                                Start New Game Now
-                            </button>
-                        </div>
-                    )}
-                    
-                    <div className="cards-grid">
-                        {currentCardsData.map((card) => {
-                            const isFlipped = flipped.includes(card.id) || matched.includes(card.id);
-                            return (
-                                <div
-                                    key={card.id}
-                                    onClick={() => handleCardClick(card.id)}
-                                    className={`card ${isFlipped ? 'flipped' : ''} ${isFlipped || disableAll ? 'disabled' : ''}`}
-                                >
-                                    {isFlipped ? (
-                                        <>
-                                            {card.type === 'sign' && card.image && (
-                                                <img
-                                                    src={card.image}
-                                                    className="card-image"
-                                                    onError={(e) => {
-                                                        e.currentTarget.style.display = 'none';
-                                                    }}
-                                                    alt={`ASL sign for ${card.value}`}
-                                                />
-                                            )}
-
-                                            {card.type === 'letter' && (
-                                                <div className="card-letter">
-                                                    {card.value}
-                                                </div>
-                                            )}
-                                        </>
-                                    ) : (
-                                        <div className="card-back">❓</div>
-                                    )}
+                        <div className='outerContainer'>
+                            <div className="timer-container">
+                                <div className="timer-display">
+                                    <span>Time: {(elapsedTime / 1000).toFixed(1)}s</span>
                                 </div>
-                            );
-                        })}
-                    </div>
-                    </div>
+                            </div>
+                            
+                            {isGameComplete && (
+                                <div className="completion-message">
+                                    <h2>Congratulations! All matches found!</h2>
+                                    <p>Starting new game with different letters in 10 seconds...</p>
+                                    <button 
+                                        onClick={startNewGame}
+                                        className="new-game-button"
+                                    >
+                                        Start New Game Now
+                                    </button>
+                                </div>
+                            )}
+                            
+                            <div 
+                                className={`cards-grid cards-grid-${difficulty}`}
+                                style={{
+                                    gridTemplateColumns: `repeat(${config.cols}, 1fr)`,
+                                    gridTemplateRows: `repeat(${config.rows}, 1fr)`
+                                }}
+                            >
+                                {currentCardsData.map((card) => {
+                                    const isFlipped = flipped.includes(card.id) || matched.includes(card.id);
+                                    return (
+                                        <div
+                                            key={card.id}
+                                            onClick={() => handleCardClick(card.id)}
+                                            className={`card card-${difficulty} ${isFlipped ? 'flipped' : ''} ${isFlipped || disableAll ? 'disabled' : ''}`}
+                                        >
+                                            {isFlipped ? (
+                                                <>
+                                                    {card.type === 'sign' && card.image && (
+                                                        <img
+                                                            src={card.image}
+                                                            className={`card-image card-image-${difficulty}`}
+                                                            onError={(e) => {
+                                                                e.currentTarget.style.display = 'none';
+                                                            }}
+                                                            alt={`ASL sign for ${card.value}`}
+                                                        />
+                                                    )}
+
+                                                    {card.type === 'letter' && (
+                                                        <div className={`card-letter card-letter-${difficulty}`}>
+                                                            {card.value}
+                                                        </div>
+                                                    )}
+                                                </>
+                                            ) : (
+                                                <div className={`card-back card-back-${difficulty}`}>❓</div>
+                                            )}
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
                     </div>
                 </IonContent>
             </IonContent>

@@ -1,5 +1,12 @@
-import React, { useState } from 'react';
-import { IonHeader, IonToolbar, IonButton, IonAvatar, useIonRouter } from '@ionic/react';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+    IonHeader,
+    IonToolbar,
+    IonButton,
+    IonAvatar,
+    useIonRouter
+} from '@ionic/react';
+import { createPortal } from "react-dom";
 import logo from '/public/assets/signableLogo.svg';
 import { useHistory } from 'react-router-dom';
 import { personCircle } from 'ionicons/icons';
@@ -14,9 +21,31 @@ interface AppHeaderProps {
 const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
     const history = useHistory();
     const router = useIonRouter();
-    const { currentUser, loading } = useAuth();
+    const { currentUser } = useAuth();
 
     const [headerSearch, setHeaderSearch] = useState("");
+    const [showProfileCard, setShowProfileCard] = useState(false);
+
+    const popupRef = useRef<HTMLDivElement>(null);
+
+    // close popup when clicking outside
+    useEffect(() => {
+        if (!showProfileCard) return;
+
+        const handleClickOutside = (e: Event) => {
+            if (popupRef.current && !popupRef.current.contains(e.target as Node)) {
+                setShowProfileCard(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        document.addEventListener("touchstart", handleClickOutside);
+
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+            document.removeEventListener("touchstart", handleClickOutside);
+        };
+    }, [showProfileCard]);
 
     const handleLogout = async () => {
         try {
@@ -27,26 +56,19 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
         }
     };
 
-    const navigateHome = () => {
-        history.push('/home');
+    const toggleProfileCard = () => {
+        setShowProfileCard(prev => !prev);
     };
 
-    const handleLogoKey = (e: React.KeyboardEvent<HTMLImageElement>) => {
-        if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            navigateHome();
-        }
+    const navigateHome = () => {
+        history.push('/home');
     };
 
     const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
             const trimmed = headerSearch.trim();
             if (!trimmed) return;
-
-            // Redirect to ASL-Lex page with query parameter
             router.push(`/asl-lex?query=${encodeURIComponent(trimmed)}`, "forward", "replace");
-
-            // If ASL-Lex passed a handler, call it
             if (onSearch) onSearch(trimmed);
         }
     };
@@ -55,6 +77,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
         <IonHeader className="IonHeader">
             <IonToolbar className="mainToolbar">
                 <div className="mainLayoutDiv">
+
+                    {/* Logo */}
                     <img
                         src={logo}
                         alt="Signable home"
@@ -63,9 +87,9 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                         role="button"
                         tabIndex={0}
                         onClick={navigateHome}
-                        onKeyDown={handleLogoKey}
                     />
 
+                    {/* Search */}
                     <input
                         type="text"
                         placeholder="Search for Vocab..."
@@ -75,6 +99,7 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                         onKeyDown={handleSearchKey}
                     />
 
+                    {/* Tabs */}
                     <div className="tabsContainer">
                         <IonButton fill="clear" onClick={() => history.push('/asl-lex')}>
                             <span className="tabText"><u>ASL-Lex</u></span>
@@ -92,14 +117,56 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                             <span className="tabText"><u>My Account</u></span>
                         </IonButton>
 
-                        <IonAvatar className="profileIcon">
-                            <IonButton fill="clear" onClick={handleLogout}>
-                                <img src={personCircle} alt="Profile" className="profilePicture" />
-                            </IonButton>
-                        </IonAvatar>
+                        {/* Profile Icon */}
+                        <div className="profileWrapper">
+                            <IonAvatar className="profileIcon" onClick={toggleProfileCard}>
+                                <img
+                                    src={personCircle}
+                                    alt="Profile"
+                                    className="profilePicture"
+                                />
+                            </IonAvatar>
+                        </div>
                     </div>
                 </div>
             </IonToolbar>
+
+            {/* PORTAL POPUP (floats above everything) */}
+            {showProfileCard &&
+                createPortal(
+                    <div ref={popupRef} className="profilePopupCardBlue portalPopup">
+
+                        <div className="profilePopupAvatar">
+                            <img src={personCircle} alt="Profile" />
+                        </div>
+
+                        <p className="profilePopupName">
+                            {currentUser?.displayName || "User"}
+                        </p>
+
+                        <div className="profilePopupDivider"></div>
+
+                        <p
+                            className="profilePopupLink"
+                            onClick={() => {
+                                history.push('/settings');
+                                setShowProfileCard(false);
+                            }}
+                        >
+                            My Account
+                        </p>
+
+                        <p
+                            className="profilePopupLink"
+                            onClick={handleLogout}
+                        >
+                            Sign Out
+                        </p>
+
+                    </div>,
+                    document.getElementById("popup-root")!
+                )
+            }
         </IonHeader>
     );
 };

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import exitbttn from '/public/assets/exitButton.svg';
 import './MemoryContainer.css';
+import { useHistory } from "react-router";
 
 const sampleCards = [
     { id: 1, value: "🍎" },
@@ -21,8 +22,10 @@ const MemoryContainer: React.FC = () => {
         );
     };
 
-    const handlePlay = () => {
-        window.location.href = '/games/memory';
+    const history = useHistory();
+
+    const handleDifficultySelect = (difficulty: 'easy' | 'medium' | 'hard') => {
+        history.push(`/games/memory/${difficulty}`);
     };
 
     return (
@@ -32,11 +35,6 @@ const MemoryContainer: React.FC = () => {
             <div className="memory-header">
                 <div className="topPortion">
                     <p className="headerTextMain">Tutorial</p>
-                    <div className="exit-buttondiv">
-                        <button className="exit-button" onClick={handlePlay}>
-                        <img src={exitbttn} className="exitbutton"/>
-                        </button>
-                    </div>
                 </div>
                 <p className="headerText">Match two cards with the same symbol to keep them face up</p>
                 <p className="headerText">Try to remember their positions!</p>
@@ -51,6 +49,20 @@ const MemoryContainer: React.FC = () => {
                         <span>{previewFlipped.includes(card.id) ? card.value : "?"}</span>
                     </div>
                 ))}
+            </div>
+            <div className="chooseLevel">
+                <p className="chooseLevelHeader">Choose Difficulty!</p>
+                <div className="chooseLevelOptions">
+                    <button className="chooseLevelOptionsButton" onClick={() => handleDifficultySelect('easy')}>
+                        Easy
+                    </button>
+                    <button className="chooseLevelOptionsButton" onClick={() => handleDifficultySelect('medium')}>
+                        Medium
+                    </button>
+                    <button className="chooseLevelOptionsButton" onClick={() => handleDifficultySelect('hard')}>
+                        Hard
+                    </button>
+                </div>
             </div>
         </div>
     );

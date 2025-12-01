@@ -14,6 +14,8 @@ import AppHeader from '../components/layout/AppHeader';
 import AppFooter from '../components/layout/AppFooter';
 import './Sets.css'
 import CourseSidebar from '../components/Library/CourseSideBar';
+import setTerm from '/public/assets/sets/addTerm.svg';
+import { set } from 'firebase/database';
 
 type VocabTerm = {
     term: string;
@@ -67,6 +69,9 @@ const Sets: React.FC = () => {
     
     const [selectedTermIndex, setSelectedTermIndex] = useState<number | null>(null);
     const [isAddingNewTerm, setIsAddingNewTerm] = useState(false);
+    const [isEditingTerm, setIsEditingTerm] = useState(false);
+    const [displayEditVideo, setDisplayEditVideo] = useState(false);
+    const [updatedVideo, setUpdatedVideo] = useState(false);
     const [newTermName, setNewTermName] = useState<string>('');
     const [newTermDataType, setNewTermDataType] = useState<string>('');
 
@@ -80,7 +85,7 @@ const Sets: React.FC = () => {
                 const db = getFirestore();
                 const newSetRef = doc(db, "users", user.uid, "courses", course_id, "sets", Math.random().toString(36).substr(2, 9));
                 const newSet = {
-                    title: 'New Vocabulary Set',
+                    title: 'Untitled Vocab Set',
                     vocabTerms: [],
                     creationDate: Date.now()
                 };
@@ -282,13 +287,58 @@ const Sets: React.FC = () => {
         }
     };
 
-    const updateVocabTerm = (index: number, updatedTerm: VocabTerm) => {
-        setVocabTerms(prevTerms => {
-            const updatedTerms = prevTerms.map((t, i) => (i === index ? updatedTerm : t));
-            persistVocabTerms(updatedTerms);
-            return updatedTerms;
-        });
+    const updateVocabTerm = async (index: number) => {
+        if (!updatedVideo) {
+            setVocabTerms(prevTerms => {
+                const updatedTerms = prevTerms.map((t, i) => i === index ? { ...t, term: newTermName } : t);
+                persistVocabTerms(updatedTerms);
+                return updatedTerms;
+            });
+        }
+        else {
+            const videoId = Math.random().toString(36).substr(2, 9);
+            
+            let url = '';
+            if (newTermDataType === "video") {
+                if (!set_id) return;
+                const auth = getAuth();
+                const user = auth.currentUser;
+                if (!user) return;
+                url = await uploadVideoBase64ToFirebase(video, user.uid, set_id, videoId);
+
+                const oldVideoId = vocabTerms[index].videoId;
+                if (user && set_id && oldVideoId) {
+                    const storage = getStorage();
+                    const oldVideoRef = ref(storage, `users/${user.uid}/sets/${set_id}/videos/${oldVideoId}.webm`);
+                    try {
+                        await (await import("firebase/storage")).deleteObject(oldVideoRef);
+                    } catch (error) {
+                        if ((error as any)?.code !== "storage/object-not-found") {
+                            throw error;
+                        }
+                    }
+                }
+            }
+            setVocabTerms(prevTerms => {
+                const updatedTerms = prevTerms.map((t, i) => 
+                    i === index ? { ...t, term: newTermName, url, videoId, dataType: newTermDataType } : t
+                );
+                persistVocabTerms(updatedTerms);
+                return updatedTerms;
+            });
+        }
+
+        setUpdatedVideo(false);
+        setIsAddingNewTerm(false);
+        setIsEditingTerm(false);
+        setNewTermName('');
+        setVideo('');
+        setNewTermDataType('');
     };
+    // setIsAddingNewTerm(true);
+    // setNewTermName(vocabTerms[selectedTermIndex].term);
+    // setVideo(vocabTerms[selectedTermIndex].url);
+    // setNewTermDataType(vocabTerms[selectedTermIndex].dataType);
 
     const deleteVocabTerm = async (index: number) => {
         const videoId = vocabTerms[index].videoId;
@@ -340,9 +390,9 @@ const Sets: React.FC = () => {
                     </div>
                     
                     {/* Main Content Area */}
-                    <div className='mainSetContent'>
+                    <div className='mainSetContent' style={{ paddingLeft: 32, paddingRight: 32 }}>
                         {/* Left Side - Term List */}
-                        <div className='mainSetContentLeftSide'>
+                        <div className='mainSetContentLeftSide' style={{ display: 'flex', width: '40%' }}>
                             <div className='courseTitle'>
                                 <h1>{selectedCourse?.title || "Loading Course..."}</h1>
                             </div>
@@ -376,7 +426,7 @@ const Sets: React.FC = () => {
                                             setIsAddingNewTerm(false);
                                         }}
                                     >
-                                        <span className='termName'>{term.term}</span>
+                                        <span className='termName' style={{ display: 'block', width: '100%', textAlign: 'center' }}>{term.term}</span>
                                     </div>
                                 ))}
                             </div>
@@ -396,35 +446,60 @@ const Sets: React.FC = () => {
                                         }
                                     }}
                                 >
-                                    <u>New Term</u>
+                                    <p style={{ fontSize: '17px' }}><u>New Term</u></p>
+                                    <img src={setTerm} alt="New Term" style={{ height: 32, width: 32 }} />
                                 </IonButton>
                             </div>
                         </div>
 
                         {/* Right Side - Term Card or Add Form */}
-                        <div className='mainSetContentRightSide'>
+                        <div className='mainSetContentRightSide' style={{ display: 'flex', width: '40%' }}>
                             {isAddingNewTerm ? (
                                 <div className='termCard'>
                                     <div className='termCardHeader'>
-                                        <h1 className='newTermHeader'>New Term</h1>
+                                        <h1 className='newTermHeader'>
+                                            {isEditingTerm ? 'Edit Term' : 'New Term'}
+                                        </h1>
                                         <div>
-                                            <button 
-                                            className='newTermButton'
-                                                onClick={saveNewTerm}
-                                            >
-                                                <p><u>Save</u></p>
-                                            </button>
-                                            <button 
-                                            className='newTermButton'
-                                                onClick={() => {
-                                                    setIsAddingNewTerm(false);
-                                                    setNewTermName('');
-                                                    setVideo('');
-                                                    setNewTermDataType('');
-                                                }}
-                                            >
-                                                <p><u>Cancel</u></p>
-                                            </button>
+                                            {!isEditingTerm ? (
+                                            <>
+                                                <button className='newTermButton' onClick={saveNewTerm}>
+                                                    <p style={{ fontSize: '17px' }}><u>Save</u></p>
+                                                </button>
+                                                <button 
+                                                className='newTermButton'
+                                                    onClick={() => {
+                                                        setIsAddingNewTerm(false);
+                                                        setNewTermName('');
+                                                        setVideo('');
+                                                        setNewTermDataType('');
+                                                    }}
+                                                >
+                                                    <p style={{ fontSize: '17px' }}><u>Cancel</u></p>
+                                                </button>
+                                            </>
+                                            ) : (
+                                            <>
+                                                <button className='newTermButton' onClick={() => {
+                                                    updateVocabTerm(selectedTermIndex!);
+                                                    }}>
+                                                    <p style={{ fontSize: '17px' }}><u>Save Edit</u></p>
+                                                </button>
+                                                <button 
+                                                className='newTermButton'
+                                                    onClick={() => {
+                                                        setIsAddingNewTerm(false);
+                                                        setIsEditingTerm(false);
+                                                        setUpdatedVideo(false);
+                                                        setNewTermName('');
+                                                        setVideo('');
+                                                        setNewTermDataType('');
+                                                    }}
+                                                >
+                                                    <p style={{ fontSize: '17px' }}><u>Cancel</u></p>
+                                                </button>
+                                            </>
+                                            )}
                                         </div>
                                     </div>
                                     <div className='termCardContent'>
@@ -444,6 +519,31 @@ const Sets: React.FC = () => {
                                             <label className='newTermFormLabel'>
                                                 <p>Video:</p>
                                             </label>
+                                            {selectedTermIndex !== null && vocabTerms[selectedTermIndex]?.url && displayEditVideo && (
+                                                (() => {
+                                                    // Wait until videoRef.current exists before setting video for edit
+                                                    if (!videoRef.current) {
+                                                        setTimeout(() => {
+                                                            if (videoRef.current) {
+                                                                videoRef.current.srcObject = null;
+                                                                videoRef.current.src = vocabTerms[selectedTermIndex].url;
+                                                                videoRef.current.controls = true;
+                                                                videoRef.current.muted = false;
+                                                                videoRef.current.load();
+                                                                setDisplayEditVideo(false);
+                                                            }
+                                                        }, 0);
+                                                        return null;
+                                                    }
+                                                    videoRef.current.srcObject = null;
+                                                    videoRef.current.src = vocabTerms[selectedTermIndex].url;
+                                                    videoRef.current.controls = true;
+                                                    videoRef.current.muted = false;
+                                                    videoRef.current.load();
+                                                    setDisplayEditVideo(false);
+                                                    return null;
+                                                })()
+                                            )}
                                             <div className="videoPreviewContainer">
                                                 <video ref={videoRef} width="100%" height="240" autoPlay muted />
                                             </div>
@@ -464,9 +564,10 @@ const Sets: React.FC = () => {
                                                             }
                                                             setNewTermDataType('video');
                                                         }
+                                                        setUpdatedVideo(true);
                                                     }}
                                                 >
-                                                    <p className='recordingVid'>{recording ? 'Stop Recording' : 'Record Video'}</p>
+                                                    <p style={{ fontSize: '17px' }} className='recordingVid'>{recording ? 'Stop Recording' : 'Record Video'}</p>
                                                 </button>
                                                 <label className='videoUploadLabel'>
                                                     <input
@@ -502,7 +603,7 @@ const Sets: React.FC = () => {
                                                             (e.currentTarget.previousElementSibling as HTMLInputElement)?.click();
                                                         }}
                                                     >
-                                                        <p>Upload Video</p>
+                                                        <p style={{ fontSize: '17px' }}>Upload Video</p>
                                                     </button>
                                                 </label>
                                             </div>
@@ -512,6 +613,19 @@ const Sets: React.FC = () => {
                             ) : selectedTermIndex !== null && vocabTerms[selectedTermIndex] ? (
                                 <div className='termCard'>
                                     <div className='termCardHeader'>
+                                        <button
+                                            className='editButton'
+                                            onClick={() => {
+                                                setIsAddingNewTerm(true);
+                                                setIsEditingTerm(true);
+                                                setNewTermName(vocabTerms[selectedTermIndex].term);
+                                                setVideo(vocabTerms[selectedTermIndex].url);
+                                                setNewTermDataType(vocabTerms[selectedTermIndex].dataType);
+                                                setDisplayEditVideo(true);
+                                            }}
+                                        >
+                                            Edit
+                                        </button>
                                         <button 
                                             className='deleteButton'
                                             onClick={() => {

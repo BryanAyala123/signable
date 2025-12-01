@@ -377,7 +377,7 @@ const Sets: React.FC = () => {
                                             setIsAddingNewTerm(false);
                                         }}
                                     >
-                                        <span className='termName'>{term.term}</span>
+                                        <span className='termName' style={{ display: 'block', width: '100%', textAlign: 'center' }}>{term.term}</span>
                                     </div>
                                 ))}
                             </div>

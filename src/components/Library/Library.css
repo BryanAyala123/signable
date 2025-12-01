@@ -74,6 +74,8 @@ h1{
     display: flex;
     gap: 16px;
     flex-direction: column;
+    height: 100%; 
+    justify-content: space-between; 
 }
 
 .addButton {
@@ -176,13 +178,6 @@ h1{
     gap: 12px;
 }
 
-.modalInputLabel {
-    color: #353534;
-    font-size: 18px;
-    font-weight: 400;
-    letter-spacing: 0.8px;
-    margin-bottom: 8px;
-}
 
 .modalInput {
     --background: #EBE7DB;
@@ -197,9 +192,13 @@ h1{
     --highlight-color-valid: #343434;
     --highlight-color-invalid: #343434;
     --color: #343434;
+    --placeholder-color: #888888;
+    --placeholder-opacity: 0.6; 
     font-size: 20px;
     font-weight: 300;
     letter-spacing: 0.8px;
+    margin-bottom: 10px;
+    color: #353534 !important;
 }
 
 .addButton {
@@ -224,6 +223,7 @@ h1{
 .modalToolbar {
     --background: #EBE7DB;
     --border-color: #353534;
+    --padding-top: 45px;
 }
 
 .closeButton {
@@ -231,4 +231,10 @@ h1{
     color: #343434;
     font-size: 16px;
     letter-spacing: 0.8px;
+    margin-top: 45px;
 }
+
+.custom-modal{
+    --border-radius: 40px;
+}
+

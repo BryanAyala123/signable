@@ -397,7 +397,7 @@ const Sets: React.FC = () => {
                                         }
                                     }}
                                 >
-                                    <u>New Term</u>
+                                    <p style={{ fontSize: '17px' }}><u>New Term</u></p>
                                     <img src={setTerm} alt="New Term" style={{ height: 32, width: 32 }} />
                                 </IonButton>
                             </div>
@@ -414,7 +414,7 @@ const Sets: React.FC = () => {
                                             className='newTermButton'
                                                 onClick={saveNewTerm}
                                             >
-                                                <p><u>Save</u></p>
+                                                <p style={{ fontSize: '17px' }}><u>Save</u></p>
                                             </button>
                                             <button 
                                             className='newTermButton'
@@ -425,7 +425,7 @@ const Sets: React.FC = () => {
                                                     setNewTermDataType('');
                                                 }}
                                             >
-                                                <p><u>Cancel</u></p>
+                                                <p style={{ fontSize: '17px' }}><u>Cancel</u></p>
                                             </button>
                                         </div>
                                     </div>
@@ -468,7 +468,7 @@ const Sets: React.FC = () => {
                                                         }
                                                     }}
                                                 >
-                                                    <p className='recordingVid'>{recording ? 'Stop Recording' : 'Record Video'}</p>
+                                                    <p style={{ fontSize: '17px' }} className='recordingVid'>{recording ? 'Stop Recording' : 'Record Video'}</p>
                                                 </button>
                                                 <label className='videoUploadLabel'>
                                                     <input
@@ -504,7 +504,7 @@ const Sets: React.FC = () => {
                                                             (e.currentTarget.previousElementSibling as HTMLInputElement)?.click();
                                                         }}
                                                     >
-                                                        <p>Upload Video</p>
+                                                        <p style={{ fontSize: '17px' }}>Upload Video</p>
                                                     </button>
                                                 </label>
                                             </div>

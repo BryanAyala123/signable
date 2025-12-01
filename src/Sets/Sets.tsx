@@ -14,6 +14,7 @@ import AppHeader from '../components/layout/AppHeader';
 import AppFooter from '../components/layout/AppFooter';
 import './Sets.css'
 import CourseSidebar from '../components/Library/CourseSideBar';
+import setTerm from '/public/assets/sets/addTerm.svg';
 
 type VocabTerm = {
     term: string;
@@ -397,6 +398,7 @@ const Sets: React.FC = () => {
                                     }}
                                 >
                                     <u>New Term</u>
+                                    <img src={setTerm} alt="New Term" style={{ height: 32, width: 32 }} />
                                 </IonButton>
                             </div>
                         </div>

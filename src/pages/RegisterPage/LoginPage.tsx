@@ -10,6 +10,8 @@ import { doPasswordReset, doSignInWithEmailAndPassword, doSignInWithGoogle} from
 import { useAuth } from '../../contexts/authContext';
 import './RegisterPage.css';
 import { useState, useEffect } from 'react';
+import { setPersistence, browserLocalPersistence, browserSessionPersistence } from "firebase/auth";
+import { auth } from "../../firebase/firebaseConfig";
 
 /**
  * Login Page
@@ -28,6 +30,8 @@ const LoginPage: React.FC = () => {
     const [resetMessage, setResetMessage] = useState("");
     const [showWelcome, setShowWelcome] = useState(false);
     const [showSubtext, setShowSubtext] = useState(false);
+    const [rememberMe, setRememberMe] = useState(false);
+
     const router = useIonRouter();
     const history = useHistory();
 
@@ -46,8 +50,15 @@ const LoginPage: React.FC = () => {
         if (isSigninIn) return;
         setIsSigningIn(true);
         setErrorMessage("");
+
         try {
+            await setPersistence(
+                auth,
+                rememberMe ? browserLocalPersistence : browserSessionPersistence
+            );
+
             await doSignInWithEmailAndPassword(email, password);
+
         } catch (err: any) {
             console.error(err);
             setErrorMessage("Failed to sign in");
@@ -132,7 +143,14 @@ const LoginPage: React.FC = () => {
 
                             <div className="RightSideDivBottomInfo">
                             <div className="RightSideDivBottomInfoDiv">
-                                <input type="checkbox" id="rememberMe" className="RightSideDivBottomInfoCheck" />
+                                <input 
+                                    type="checkbox" 
+                                    id="rememberMe" 
+                                    className="RightSideDivBottomInfoCheck"
+                                    checked={rememberMe}
+                                    onChange={(e) => setRememberMe(e.target.checked)}
+                                />
+
                                 <label htmlFor="rememberMe">Remember me</label>
                             </div>
                             <p className="RightSideDivBottomInfoForgot"> <span className="forgotLink" onClick={handlePasswordReset}>Forgot Password? </span></p>

@@ -81,7 +81,7 @@ const Sets: React.FC = () => {
                 const db = getFirestore();
                 const newSetRef = doc(db, "users", user.uid, "courses", course_id, "sets", Math.random().toString(36).substr(2, 9));
                 const newSet = {
-                    title: 'New Vocabulary Set',
+                    title: 'Untitled Vocab Set',
                     vocabTerms: [],
                     creationDate: Date.now()
                 };

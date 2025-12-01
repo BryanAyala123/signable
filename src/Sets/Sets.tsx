@@ -340,9 +340,9 @@ const Sets: React.FC = () => {
                     </div>
                     
                     {/* Main Content Area */}
-                    <div className='mainSetContent'>
+                    <div className='mainSetContent' style={{ paddingLeft: 32, paddingRight: 32 }}>
                         {/* Left Side - Term List */}
-                        <div className='mainSetContentLeftSide'>
+                        <div className='mainSetContentLeftSide' style={{ display: 'flex', width: '40%' }}>
                             <div className='courseTitle'>
                                 <h1>{selectedCourse?.title || "Loading Course..."}</h1>
                             </div>
@@ -402,7 +402,7 @@ const Sets: React.FC = () => {
                         </div>
 
                         {/* Right Side - Term Card or Add Form */}
-                        <div className='mainSetContentRightSide'>
+                        <div className='mainSetContentRightSide' style={{ display: 'flex', width: '40%' }}>
                             {isAddingNewTerm ? (
                                 <div className='termCard'>
                                     <div className='termCardHeader'>

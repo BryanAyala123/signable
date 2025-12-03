@@ -38,22 +38,6 @@ Next, simply run with ionic serve.\
 ```ionic serve```\
 A window should appear in your browser that displays your local version of the project. A link is available in the terminal if it does not open automatically.
 
-### Running ASL_Real-Time (deprecated)
-
-Create venv
-``` python -m venv test ```
-
-Activate it
-``` .\test\Scripts\activate ```
-
-Pip install requirements
-``` pip3 install -r requirements.txt ```
-
-Jupyter Notebook
-``` jupyter notebook```
-
-Run all on ASL_Real-Time. When prompted to give the url to a jupyter notebook use the one in the terminal, pick a name, etc. Once you do so the file should run and create a camera and gray scale display to test it out with. Note, it takes a while to run the file.
-
 ## Routes
 ```/``` redirects to /welcome.\
 ```/welcome``` Project landing page.\

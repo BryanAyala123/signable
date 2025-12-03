@@ -101,6 +101,16 @@ return (
                             </div>
                         </div>
 
+                        <div className='learnToSignNameBlockDiv'>
+                            <div className='learnToSignNameBlockDivHeader'>
+                                <h1 className='learnToSignNameBlockDivHeaderText'>Learn to sign your name- no account needed!</h1>
+                            </div>
+                            <div className='learnToSignNameBlockDivContent'>
+                                <input type='text' placeholder='Enter Your Name' className='leanToSignNameBlockDivContentSearch'/>
+                                <a><p className='learnToSignNameBlockDivContentGo'><u>Go!</u></p></a>
+                            </div>
+                        </div>
+
 
                         <div className='SecondBlockDiv'>
                             <div className='SecondBlockDivLargerHeader'>

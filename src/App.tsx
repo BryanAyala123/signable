@@ -51,6 +51,7 @@ import MemoryContainer from './components/Games/Memory/MemoryContainer';
 import LandingPage from './pages/LandingPage/LandingPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import LoginPage from './pages/RegisterPage/LoginPage';
+import Settings from './pages/SettingsPage/Settings';
 import PrivateRoute from './components/routes/ProtectedRoute';
 import studyPage from './pages/studyPage/studyPage';
 import StudyPage from './pages/studyPage/studyPage';
@@ -119,6 +120,12 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/login">
           <LoginPage />
+        </Route>
+        <Route exact path="/login">
+          <LoginPage />
+        </Route>
+        <Route exact path="/settings">
+          <Settings />
         </Route>
         <Route exact path="/study">
           <StudyPage/>

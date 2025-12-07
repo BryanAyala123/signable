@@ -16,7 +16,8 @@ import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import AppHeader from '../layout/AppHeader';
 import AppFooter from '../layout/AppFooter';
 import LetterHint from '../LetterHint/letterHint';
-import play from '/public/assets/Buttons/playButton.svg';
+import play from '/public/assets/RecordSign.svg';
+import skip from '/public/assets/skipSign.svg';
 import './SignLanguageRecognition.css';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
@@ -54,6 +55,8 @@ const LandmarkCapture: React.FC = () => {
   const [correctLetters, setCorrectLetters] = useState<boolean[]>([]);
   const [incorrectLetters, setIncorrectLetters] = useState<boolean[]>([]);
   const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
+  const [hintsOn, sethintsOn] = useState(false);
+
 
   // split into learning v. mastered 
   const masteredTerms = Object.keys(termProgress).filter(
@@ -360,62 +363,11 @@ const LandmarkCapture: React.FC = () => {
       <IonHeader>
         <AppHeader />
       </IonHeader>
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding-SLRPage">
         <div className="MainContent">
-          <div className="LeftContent">
-            <IonCard className="ionCard">
-              <IonCardContent className="video-container">
-                <video
-                  ref={videoRef}
-                  className="video-preview"
-                  autoPlay
-                  muted
-                  playsInline
-                />
-                {/* Overlay letters */}
-                <div className="video-letter-overlay" style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                  <div style={{ color: '#EBE7DB', fontSize: 40, fontFamily: 'Figtree', fontWeight: '400', letterSpacing: 1.60, wordWrap: 'break-word', whiteSpace: 'pre-line' }}>
-                    Letter<br />signed:
-                  </div>
-                    <div style={{ position: "relative", display: "inline-block", minWidth: 64, minHeight: 64 }}>
-                      <img
-                        src={cirlceIcon}
-                        alt="Circle"
-                        style={{
-                        position: "absolute",
-                        left: "50%",
-                        top: "50%",
-                        transform: "translate(-50%, -50%) scale(1.4)",
-                        height: 76,
-                        width: 76,
-                        zIndex: 1,
-                        pointerEvents: "none",
-                        }}
-                      />
-                      <div className="result-container-text" style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 64, minWidth: 64 }}>
-                        {processing ? (
-                        <>
-                          <IonSpinner name="dots" />
-                          <IonText>
-                          <h3>...</h3>
-                          </IonText>
-                        </>
-                        ) : recognizedLetter ? (
-                        <IonText>
-                          <h2 className="letterSigned" style={{ color: '#EBE7DB', fontSize: 64, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 2.56, wordWrap: 'break-word', margin: 0 }}>{recognizedLetter}</h2>
-                        </IonText>
-                        ) : null}
-                      </div>
-                    </div>
-                </div>
-              </IonCardContent>
-            </IonCard>
-          </div>
-
-          <div className="RightContent">
-            <div className="set-picker">
+        <div className="set-picker">
               <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
-                <tbody>
+                <tbody className="HeaderSetPicker">
                   <tr>
                     <td style={{ textAlign: "right", width: "33%" }}>
                       <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
@@ -429,7 +381,8 @@ const LandmarkCapture: React.FC = () => {
                       <div style={{ flex: 0 }}>
                         <select
                           className="dropdown"
-                          value=""
+                          disabled={!!selectedCourse}
+                          value={selectedCourse || ""}
                           onChange={async (e) => {
                             const value = e.target.value;
                             setSelectedCourse(value);
@@ -444,8 +397,11 @@ const LandmarkCapture: React.FC = () => {
                             await fetchSets(value);
                           }}
                         >
-                          <option value="" disabled>Change</option>
-                          {courses.map(c => (
+                          {!selectedCourse && (
+                            <option value="" disabled>Change</option>
+                          )}
+
+                          {!selectedCourse && courses.map(c => (
                             <option key={c.id} value={c.id}>{c.title}</option>
                           ))}
                         </select>
@@ -496,140 +452,151 @@ const LandmarkCapture: React.FC = () => {
                 </tbody>
               </table>
             </div>
-            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: "100%" }}>
-                    <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
-                    <div style={{ width: "100%", height: "100%", background: '#343434', borderRadius: 39, paddingTop: 55, paddingBottom: 55, paddingLeft: 83, paddingRight: 83 }}>
-                      <div className="prompt-container">
-                        {selectedSet && currentPrompt && (
-                          <>
-                            <p>Finger Spell:</p>
-                            <div className="letter-progress" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                              {currentPrompt.split("").map((ch, idx) => (
-                                <span
-                                  key={idx}
-                                  className={(() => {
-                                    if (correctLetters[idx]) return "correct-letter";
-                                    if (incorrectLetters[idx]) {
-                                      return idx === letterIndex
-                                        ? "incorrect-letter current-letter"
-                                        : "incorrect-letter";
-                                    }
-                                    if (idx === letterIndex) return "current-letter";
-                                    return "pending-letter";
-                                  })()}
-                                  style={{ textAlign: "center" }}
-                                >
-                                  {ch}
-                                  {idx < currentPrompt.length - 1 && " - "}
-                                </span>
-                              ))}
+          <div className="SLRMainContent">  
+            <div className="LeftContent">
+                <IonCardContent className="video-container">
+                <div className="video-wrapper">
+                  <video
+                    ref={videoRef}
+                    className="video-preview"
+                    autoPlay
+                    muted
+                    playsInline
+                  />
+                </div>
+                  {/* Overlay letters */}
+                </IonCardContent>
+                <div className="video-letter-overlay" style={{ display: "flex", alignItems: "center", gap: 30 }}>
+                        <div className="button-container">
+                          <div className="button-row">
+                            <div className="RecordSignDiv">
+                              <IonButton
+                                disabled={!selectedSet || !currentPrompt}
+                                onClick={captureFrames}
+                                className="ionButton"
+                              >
+                                <img className="playImage" src={play} alt="Start" />
+                              </IonButton>
+                              <h2 className="buttonNameRecord">Record Sign</h2>
                             </div>
-                            <LetterHint 
-                              targetLetter={currentPrompt[letterIndex]}
-                              detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
-                            />
-                          </>
-                        )}
-                      </div>
+                            <div className="RecordSignDiv">
+                            <IonButton
+                              disabled={!selectedSet || !currentPrompt}
+                              onClick={handleSkip}
+                              className="ionButton"
+                            >
+                              <img className="skipImage" src={skip} alt="Skip" />
+                            </IonButton>
+                            <h2 className="buttonName">Skip Letter</h2>
+                            </div>
+                          </div>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
-                    {selectedSet && (
-                      <div className="remaining-terms">
-                        <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>{learningTerms.length} Terms Remaining!</p>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                    <td style={{ textAlign: "center" }}>
-                    {selectedSet && currentPrompt && (
-                      <img
-                      src={highlighter}
-                      alt="Highlight"
-                      style={{
-                        height: 10,
-                        marginRight: 8,
-                        display: "inline-block",
-                        position: "relative",
-                        top: "-18px"
-                      }}
-                      />
-                    )}
-                    </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style={{ border: "2px solid black", borderRadius: 40, overflow: "hidden",}}>
-                      <table style={{ width: "100%", marginBottom: 16}}>
-                        <tbody>
-                        <tr>
-                          <td style={{ textAlign: "center" }}>
-                          <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Still Learning</p>
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Mastered</p>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
-                            <ul style={{ paddingLeft: 0, marginTop: 0 }}>
-                              {learningTerms.map(term => (
-                                  <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
-                              ))}
-                            </ul>
-                          </td>
-                          <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
-                            <ul style={{ paddingLeft: 0, marginTop: 0 }}>
-                              {masteredTerms.map(term => (
-                                <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
-                              ))} 
-                            </ul>
-                          </td>
-                          
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div className="button-container">
-              <p>Controls</p>
-              <div className="button-row">
-                <IonButton
-                  disabled={!selectedSet || !currentPrompt}
-                  onClick={captureFrames}
-                >
-                  <img className="playImage" src={play} alt="Start" />
-                </IonButton>
-                <IonButton
-                  color="medium"
-                  fill="outline"
-                  disabled={!selectedSet || !currentPrompt}
-                  onClick={handleSkip}
-                >
-                  Skip Letter
-                </IonButton>
-              </div>
-              {capturing && (
-                <p color="medium">
-                  Processing...
-                </p>
-              )}
+                  </div>
             </div>
-          </div>
+
+
+            {selectedSet && (
+              <div className="RightContent">
+                <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
+                        <div>
+                          <div className="prompt-container">
+                            {currentPrompt && (
+                              <>
+                                <div className="letter-progress" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                  {currentPrompt.split("").map((ch, idx) => (
+                                    <span
+                                      key={idx}
+                                      className={(() => {
+                                        if (correctLetters[idx]) return "correct-letter";
+                                        if (incorrectLetters[idx]) {
+                                          return idx === letterIndex
+                                            ? "incorrect-letter current-letter"
+                                            : "incorrect-letter";
+                                        }
+                                        if (idx === letterIndex) return "current-letter";
+                                        return "pending-letter";
+                                      })()}
+                                      style={{ textAlign: "center" }}
+                                    >
+                                      {ch}
+                                    </span>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
+                        <div className="remaining-terms">
+                          <p className="remainTermsText" style={{color: '#343434', fontSize: 15, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>{learningTerms.length} Terms Remaining! Keep it up!</p>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="masteryTable">
+                          <table style={{ width: "100%", marginBottom: 16}}>
+                            <tbody>
+                            <tr>
+                              <td style={{ textAlign: "center" }}>
+                              <p className="tableHeader" style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Still Learning</p>
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                <p  className="tableHeader" style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Mastered</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
+                                <ul style={{ paddingLeft: 0, marginTop: 0 }}>
+                                  {learningTerms.map(term => (
+                                      <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
+                                  ))}
+                                </ul>
+                              </td>
+                              <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
+                                <ul style={{ paddingLeft: 0, marginTop: 0 }}>
+                                  {masteredTerms.map(term => (
+                                    <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
+                                  ))} 
+                                </ul>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="letter-signed-text">
+                  <div className="letter-signed-text-result">
+                    <p>
+                      Letter Signed:
+                      {processing ? (
+                        <>
+                          <IonSpinner name="dots" className="dotLoad"/>
+                        </>
+                      ) : recognizedLetter ? (
+                        <IonText>
+                          <h2 className="letterSigned">{recognizedLetter}</h2>
+                        </IonText>
+                      ) : null}
+                    </p>
+                  </div>
+                </div>
+                <LetterHint 
+                  targetLetter={currentPrompt[letterIndex]}
+                  detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
+                />
+              </div>
+            )} 
+          </div>  
         </div>
       </IonContent>
       <IonFooter>
@@ -640,3 +607,5 @@ const LandmarkCapture: React.FC = () => {
 };
 
 export default LandmarkCapture;
+
+

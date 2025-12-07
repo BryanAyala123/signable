@@ -250,11 +250,10 @@ import './letterHint.css';
 
     return (
         <div className={`hint-card${hintStatus ? " " + hintStatus : ""}`}>
-        <p className="hint-label">Chatbot Hint</p>
         {hintLoading ? (
             <div className="hint-loading">
-            <IonSpinner name="lines" />
-            <span>Generating tip...</span>
+            <IonSpinner name="lines" className='lineLoad'/>
+            <span>Generating Hint...</span>
             </div>
         ) : hintError ? (
             <p className="hint-error-text">{hintError}</p>

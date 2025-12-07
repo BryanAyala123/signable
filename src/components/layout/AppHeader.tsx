@@ -113,10 +113,6 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                             <span className="tabText"><u>Study</u></span>
                         </IonButton>
 
-                        <IonButton fill="clear" onClick={() => history.push('/settings')}>
-                            <span className="tabText"><u>My Account</u></span>
-                        </IonButton>
-
                         {/* Profile Icon */}
                         <div className="profileWrapper">
                             <IonAvatar className="profileIcon" onClick={toggleProfileCard}>

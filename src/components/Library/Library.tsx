@@ -122,11 +122,12 @@ const Library: React.FC = () => {
                                     <p>{course.content}</p>
                                 </div>
                                 <IonButton
+                                    className="delete-course-btn"
                                     slot="end"
-                                    color="danger"
-                                    fill="clear"
+                                    fill = "clear"
                                     onClick={e => {
                                         e.stopPropagation();
+                                        if (!window.confirm("Are you sure you want to delete this course?")) return;
                                         handleDeleteCourse(course.id);
                                     }}
                                 >

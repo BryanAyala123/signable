@@ -151,7 +151,7 @@ return (
 
                         <div className='ThirdBlockDiv'>
                             <div className='ThirdBlockDivTitle'>
-                                <h1>What sets us apart</h1>
+                                <h1 className='thirdDivText'>What sets us apart</h1>
                             </div>
                             <div className='ThirdBlockDivContent'>
                                 <div className='ThirdBlockDivContentBlock'>

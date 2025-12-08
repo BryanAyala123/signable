@@ -38,8 +38,8 @@
 }
 
 .RightSideDiv{
-    width: 674px;
-    height: 721px;
+    width: 560px;
+    height: 600px;
     display: flex;
     flex-direction: column;
     background-color: #343434;
@@ -56,7 +56,7 @@
     font-weight: 400;
     position: relative;
     display: inline-block; 
-    margin-bottom: 90px;
+    margin-bottom: 60px;
 }
 
 .RightSideDivHeaderText::after {

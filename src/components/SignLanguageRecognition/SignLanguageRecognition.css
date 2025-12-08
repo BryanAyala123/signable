@@ -60,7 +60,7 @@
     object-fit: cover;
     display: block;
     background: transparent; 
-    background-color: transparent;
+    background-color: #EBE7DB;
 }
 
 .button-container {

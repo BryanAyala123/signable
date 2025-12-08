@@ -734,3 +734,8 @@ ion-button.ionButton:active .skipImage {
   opacity: 0;
   pointer-events: none;
 }
+
+.completion-modal {
+  --background: #EBE7DB;
+  border-radius: 20px;
+}

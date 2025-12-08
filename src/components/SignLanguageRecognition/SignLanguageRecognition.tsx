@@ -1,17 +1,19 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, } from "react";
 import {
   IonPage,
   IonHeader,
   IonContent,
   IonButton,
   IonText,
-  IonCard,
   IonCardContent,
   useIonToast,
   IonSpinner,
   IonFooter,
-  IonToggle
+  IonToggle,
+  IonModal,
+  useIonRouter,
 } from "@ionic/react";
+
 import axios from "axios";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import AppHeader from '../layout/AppHeader';
@@ -22,8 +24,6 @@ import skip from '/public/assets/skipSign.svg';
 import './SignLanguageRecognition.css';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import cirlceIcon from '/public/assets/slr/circle.svg';
-import highlighter from '/public/assets/slr/highlighter.svg';
 
 // backend model apiendpoint and frame count per capture
 const FUNCTION_URL =
@@ -42,6 +42,7 @@ const LandmarkCapture: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [recognizedLetter, setRecognizedLetter] = useState<string>("");
   const [presentToast] = useIonToast();
+  const router = useIonRouter();
 
   // Firebase data
   const [courses, setCourses] = useState<any[]>([]);
@@ -57,6 +58,7 @@ const LandmarkCapture: React.FC = () => {
   const [incorrectLetters, setIncorrectLetters] = useState<boolean[]>([]);
   const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
   const [hintsOn, setHintsOn] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
 
 
   // split into learning v. mastered 
@@ -66,6 +68,21 @@ const LandmarkCapture: React.FC = () => {
   const learningTerms = Object.keys(termProgress).filter(
     term => termProgress[term] < 2
   );
+
+  useEffect(() => {
+    if (terms.length > 0 && masteredTerms.length === terms.length) {
+      setShowCompletionModal(true);
+      stopCamera(); // optional: stops video input when done
+    }
+  }, [masteredTerms, terms]);
+
+  const restartSet = () => {
+    setShowCompletionModal(false);
+    setTermProgress({});
+    pickRandomTerm(terms);
+    startCamera();
+  };
+
 
   
   //-----------camera handling--------------
@@ -271,10 +288,10 @@ const LandmarkCapture: React.FC = () => {
             return newProgress;
           });
 
-          // freeze UI, give the user a second to vibe
+          // 2 second wait
           await new Promise(res => setTimeout(res, 2000));
 
-          // THEN pick the next word
+          // pick the next word
           pickRandomTerm(terms);
         }
       } else {
@@ -621,6 +638,68 @@ const LandmarkCapture: React.FC = () => {
           </div>  
         </div>
       </IonContent>
+      <IonModal
+  isOpen={showCompletionModal}
+  onDidDismiss={() => setShowCompletionModal(false)}
+  className="completion-modal"
+>
+  <IonContent className="ion-padding" style={{ textAlign: "center" }}>
+    <h2>Congrats</h2>
+    <p>You've mastered this set.</p>
+
+    {/* DROPDOWN HERE */}
+    <div style={{ marginTop: 24 }}>
+      <h3>Select a new set</h3>
+      <select
+        className="dropdown"
+        value={selectedSet || ""}
+        onChange={async (e) => {
+          const value = e.target.value;
+          setShowCompletionModal(false);      // close modal
+          setSelectedSet(value);
+
+          // reset UI 
+          setTerms([]);
+          setCurrentPrompt("");
+          setLetterIndex(0);
+          setCorrectLetters([]);
+          setIncorrectLetters([]);
+          setRecognizedLetter("");
+          setTermProgress({});
+
+          await fetchTerms(value);     // load terms
+        }}
+      >
+        {!selectedSet && <option value="">Select</option>}
+        {sets.map(s => (
+          <option key={s.id} value={s.id}>
+            {s.title}
+          </option>
+        ))}
+      </select>
+    </div>
+    
+    <IonButton expand="block" onClick={restartSet}>
+      Start over with this set
+    </IonButton>
+
+    <IonButton
+      expand="block"
+      fill="outline"
+      onClick={() => {
+        setShowCompletionModal(false);
+        setSelectedSet("");
+        setTerms([]);
+        setCurrentPrompt("");
+        router.push('/library', 'forward');
+      }}
+    >
+      Return to your library
+    </IonButton>
+  </IonContent>
+</IonModal>
+
+
       <IonFooter>
         <AppFooter/>
       </IonFooter>

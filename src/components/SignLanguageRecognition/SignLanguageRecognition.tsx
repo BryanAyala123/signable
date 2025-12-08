@@ -10,6 +10,7 @@ import {
   useIonToast,
   IonSpinner,
   IonFooter,
+  IonToggle
 } from "@ionic/react";
 import axios from "axios";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
@@ -55,7 +56,7 @@ const LandmarkCapture: React.FC = () => {
   const [correctLetters, setCorrectLetters] = useState<boolean[]>([]);
   const [incorrectLetters, setIncorrectLetters] = useState<boolean[]>([]);
   const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
-  const [hintsOn, sethintsOn] = useState(false);
+  const [hintsOn, setHintsOn] = useState(false);
 
 
   // split into learning v. mastered 
@@ -270,7 +271,10 @@ const LandmarkCapture: React.FC = () => {
             return newProgress;
           });
 
-          // pick a new word
+          // freeze UI, give the user a second to vibe
+          await new Promise(res => setTimeout(res, 2000));
+
+          // THEN pick the next word
           pickRandomTerm(terms);
         }
       } else {
@@ -370,23 +374,58 @@ const LandmarkCapture: React.FC = () => {
                 <tbody className="HeaderSetPicker">
                   <tr>
                     <td style={{ textAlign: "right", width: "33%" }}>
-                      <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
-                        Current Course: {selectedCourse && courses.find(c => c.id === selectedCourse)?.title}
+                      <div className="current-select-row">
+                        <span>Current Course:</span>
+
+                        <select
+                          className="dropdown"
+                          value={selectedCourse || ""}
+                          onChange={async (e) => {
+                            const value = e.target.value;
+                            setSelectedCourse(value);
+                            setSelectedSet("");       // reset set
+                            setTerms([]);             // reset terms
+                            setCurrentPrompt("");
+                            setLetterIndex(0);
+                            setCorrectLetters([]);
+                            setIncorrectLetters([]);
+                            setRecognizedLetter("");
+                            setTermProgress({});
+                            await fetchSets(value);    // fetch new sets+terms for this course
+                          }}
+                        >
+                          {/* If no selection */}
+                          {!selectedCourse && <option value="">Select</option>}
+
+                          {/* All options always show */}
+                          {courses.map(c => (
+                            <option key={c.id} value={c.id}>
+                              {c.title}
+                            </option>
+                          ))}
+                        </select>
                       </div>
                     </td>
                     <td style={{ textAlign: "center", width: "34%" }}>
                       <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
                     </td>
-                    <td style={{ textAlign: "left", width: "33%" }}>
-                      <div style={{ flex: 0 }}>
+
+                  </tr>
+                  <br></br>
+                  {sets.length > 0 && (
+                  <tr>
+                    <td style={{ textAlign: "right", width: "33%" }}>
+                      <div className="current-select-row">
+                        <span>Current Set:</span>
+
                         <select
                           className="dropdown"
-                          disabled={!!selectedCourse}
-                          value={selectedCourse || ""}
+                          value={selectedSet || ""}
                           onChange={async (e) => {
                             const value = e.target.value;
-                            setSelectedCourse(value);
-                            setSelectedSet("");
+                            setSelectedSet(value);
+
+                            // reset all word / letter UI
                             setTerms([]);
                             setCurrentPrompt("");
                             setLetterIndex(0);
@@ -394,59 +433,37 @@ const LandmarkCapture: React.FC = () => {
                             setIncorrectLetters([]);
                             setRecognizedLetter("");
                             setTermProgress({});
-                            await fetchSets(value);
+
+                            // load the new set's terms
+                            await fetchTerms(value);
                           }}
                         >
-                          {!selectedCourse && (
-                            <option value="" disabled>Change</option>
-                          )}
+                          {/* show Select only if no set selected */}
+                          {!selectedSet && <option value="">Select</option>}
 
-                          {!selectedCourse && courses.map(c => (
-                            <option key={c.id} value={c.id}>{c.title}</option>
+                          {sets.map(s => (
+                            <option key={s.id} value={s.id}>
+                              {s.title}
+                            </option>
                           ))}
                         </select>
                       </div>
                     </td>
-                  </tr>
-                  <br></br>
-                  {sets.length > 0 && (
-                  <tr>
-                    <td style={{ textAlign: "right" }}>
-                      <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
-                        Current Set: {selectedSet && sets.find(s => s.id === selectedSet)?.title}
-                      </div>        
-                    </td>
                     <td style={{ textAlign: "center" }}>
                       <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
                     </td>
-                    <td style={{ textAlign: "left" }}>
-                      <select
-                        className="dropdown"
-                        value={""}
-                        onChange={async (e) => {
-                          const value = e.target.value;
-                          setSelectedSet(value);
 
-                          // reset all word + letter UI
-                          setTerms([]);
-                          setCurrentPrompt("");
-                          setLetterIndex(0);
-                          setCorrectLetters([]);
-                          setIncorrectLetters([]);
-                          setRecognizedLetter("");
-                          setTermProgress({}); 
-
-                          // then load fresh terms
-                          await fetchTerms(value);
-                        }}
+                    <td style={{ textAlign: "left", width: "33%" }}>
+                      <IonToggle
+                        checked={hintsOn}
+                        onIonChange={(e) => setHintsOn(e.detail.checked)}
+                        color="primary"
                       >
-                        <option value="" disabled>Change</option>
-                        {sets.map(s => (
-                          <option key={s.id} value={s.id}>{s.title}</option>
-                        ))}
-                      </select>
+                        Feedback
+                      </IonToggle>
 
                     </td>
+
                   </tr>
                   )}
                 </tbody>
@@ -590,10 +607,15 @@ const LandmarkCapture: React.FC = () => {
                     </p>
                   </div>
                 </div>
-                <LetterHint 
-                  targetLetter={currentPrompt[letterIndex]}
-                  detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
-                />
+                <div className={`hint-container ${!hintsOn ? "hint-hidden" : ""}`}>
+                {hintsOn && (
+                  <LetterHint
+                    targetLetter={currentPrompt[letterIndex]}
+                    detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
+                  />
+                )}
+                </div>
+
               </div>
             )} 
           </div>  

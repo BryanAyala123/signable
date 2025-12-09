@@ -417,12 +417,7 @@ ion-button.ionButton:active .skipImage {
     transform: scale(0.9);
 }
 
-.hintDiv{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
+
 
 .hintText{
     color: #343434;
@@ -432,6 +427,7 @@ ion-button.ionButton:active .skipImage {
     line-height: normal;
     letter-spacing: 0.8px;
     margin: 0;
+    padding-right: 15px;
 }
 
 .HeaderSetPicker td {
@@ -460,6 +456,8 @@ ion-button.ionButton:active .skipImage {
     border-radius: 29.5px;
     padding: 0px 5px;
 }
+
+
 
 /* ============================================
    RESPONSIVE BREAKPOINTS

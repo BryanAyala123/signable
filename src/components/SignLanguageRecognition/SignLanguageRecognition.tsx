@@ -388,102 +388,95 @@ const LandmarkCapture: React.FC = () => {
         <div className="MainContent">
         <div className="set-picker">
               <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
-                <tbody className="HeaderSetPicker">
-                  <tr>
-                    <td style={{ textAlign: "right", width: "33%" }}>
-                      <div className="current-select-row">
-                        <span>Current Course:</span>
-
-                        <select
-                          className="dropdown"
-                          value={selectedCourse || ""}
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            setSelectedCourse(value);
-                            setSelectedSet("");       // reset set
-                            setTerms([]);             // reset terms
-                            setCurrentPrompt("");
-                            setLetterIndex(0);
-                            setCorrectLetters([]);
-                            setIncorrectLetters([]);
-                            setRecognizedLetter("");
-                            setTermProgress({});
-                            await fetchSets(value);    // fetch new sets+terms for this course
-                          }}
-                        >
-                          {/* If no selection */}
-                          {!selectedCourse && <option value="">Select</option>}
-
-                          {/* All options always show */}
-                          {courses.map(c => (
-                            <option key={c.id} value={c.id}>
-                              {c.title}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </td>
-                    <td style={{ textAlign: "center", width: "34%" }}>
-                      <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
-                    </td>
-
-                  </tr>
-                  <br></br>
-                  {sets.length > 0 && (
-                  <tr>
-                    <td style={{ textAlign: "right", width: "33%" }}>
-                      <div className="current-select-row">
-                        <span>Current Set:</span>
-
-                        <select
-                          className="dropdown"
-                          value={selectedSet || ""}
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            setSelectedSet(value);
-
-                            // reset all word / letter UI
-                            setTerms([]);
-                            setCurrentPrompt("");
-                            setLetterIndex(0);
-                            setCorrectLetters([]);
-                            setIncorrectLetters([]);
-                            setRecognizedLetter("");
-                            setTermProgress({});
-
-                            // load the new set's terms
-                            await fetchTerms(value);
-                          }}
-                        >
-                          {/* show Select only if no set selected */}
-                          {!selectedSet && <option value="">Select</option>}
-
-                          {sets.map(s => (
-                            <option key={s.id} value={s.id}>
-                              {s.title}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
-                    </td>
-
-                    <td style={{ textAlign: "left", width: "33%" }}>
-                      <IonToggle
-                        checked={hintsOn}
-                        onIonChange={(e) => setHintsOn(e.detail.checked)}
-                        color="primary"
-                      >
-                        Feedback
-                      </IonToggle>
-
-                    </td>
-
-                  </tr>
-                  )}
-                </tbody>
+              <tbody className="HeaderSetPicker">
+  <tr>
+    <td style={{ textAlign: "right", width: "33%", verticalAlign: "middle" }}>
+      <div className="current-select-row">
+        <span>Current Course:</span>
+        <select
+          className="dropdown"
+          value={selectedCourse || ""}
+          onChange={async (e) => {
+            const value = e.target.value;
+            setSelectedCourse(value);
+            setSelectedSet("");
+            setTerms([]);
+            setCurrentPrompt("");
+            setLetterIndex(0);
+            setCorrectLetters([]);
+            setIncorrectLetters([]);
+            setRecognizedLetter("");
+            setTermProgress({});
+            await fetchSets(value);
+          }}
+        >
+          {!selectedCourse && <option value="">Select</option>}
+          {courses.map(c => (
+            <option key={c.id} value={c.id}>
+              {c.title}
+            </option>
+          ))}
+        </select>
+      </div>
+    </td>
+    
+    <td style={{ textAlign: "center", width: "34%", verticalAlign: "middle" }}>
+      {selectedCourse && (
+        <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
+      )}
+    </td>
+    
+    <td style={{ textAlign: "center", width: "33%", verticalAlign: "middle" }}>
+      {sets.length > 0 && (
+        <div className="current-select-row">
+          <span>Current Set:</span>
+          <select
+            className="dropdown"
+            value={selectedSet || ""}
+            onChange={async (e) => {
+              const value = e.target.value;
+              setSelectedSet(value);
+              setTerms([]);
+              setCurrentPrompt("");
+              setLetterIndex(0);
+              setCorrectLetters([]);
+              setIncorrectLetters([]);
+              setRecognizedLetter("");
+              setTermProgress({});
+              await fetchTerms(value);
+            }}
+          >
+            {!selectedSet && <option value="">Select</option>}
+            {sets.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+    </td>
+    
+    <td style={{ textAlign: "center", width: "34%", verticalAlign: "middle" }}>
+      {selectedSet && (
+        <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
+      )}
+    </td>
+    
+    <td className="hintDiv" style={{ textAlign: "left", width: "33%", verticalAlign: "middle" }}>
+      {selectedSet && (
+        <>
+          <p className="hintText">Hints</p>
+          <IonToggle
+            checked={hintsOn}
+            onIonChange={(e) => setHintsOn(e.detail.checked)}
+            className="feedbackToggle"
+          />
+        </>
+      )}
+    </td>
+  </tr>
+</tbody>
               </table>
             </div>
           <div className="SLRMainContent">  

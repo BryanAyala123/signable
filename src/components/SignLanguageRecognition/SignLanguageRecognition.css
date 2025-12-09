@@ -277,6 +277,7 @@ ion-button {
     text-decoration: underline;
     letter-spacing: 0.8px;
     word-wrap: break-word;
+    text-align: center;
 }
 
 .video-container {
@@ -298,7 +299,6 @@ ion-button {
 }
 
 .HeaderSetPicker{
-    display: flex;
     border-bottom: 2px solid #343434;
 }
 
@@ -415,6 +415,50 @@ ion-button.ionButton:active .playImage {
 
 ion-button.ionButton:active .skipImage {
     transform: scale(0.9);
+}
+
+.hintDiv{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.hintText{
+    color: #343434;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    letter-spacing: 0.8px;
+    margin: 0;
+}
+
+.HeaderSetPicker td {
+    vertical-align: middle;
+}
+
+
+.feedbackToggle{
+    color: #343434;
+    font-size: 20px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+    width: 35px;
+    height: 25px;
+    --handle-width: 15px;
+    --handle-height: 15px;
+    --track-background: #EBE7DB;
+    --track-background-checked: #EBE7DB;
+    --handle-spacing: 1px;
+
+    --handle-background: #F05248;
+    --handle-background-checked: #62AE8A;
+    border: solid 2px #343434;
+    --handle-box-shadow: none;
+    border-radius: 29.5px;
+    padding: 0px 5px;
 }
 
 /* ============================================
@@ -738,4 +782,46 @@ ion-button.ionButton:active .skipImage {
 .completion-modal {
   --background: #EBE7DB;
   border-radius: 20px;
+}
+
+@media screen and (min-width: 1600px) {
+    .video-wrapper {
+        width: 481.25px;  
+        height: 460px;    
+    }
+
+    .video-letter-overlay {
+        padding: 7.5px 12.5px;  
+        font-size: 17.5px;     
+        border-bottom-left-radius: 48.75px;  
+        border-bottom-right-radius: 48.75px;
+    }
+
+    .video-container {
+        border-top-left-radius: 48.75px !important;  
+        border-top-right-radius: 48.75px !important;
+    }
+
+    .video-wrapper {
+        border-top-left-radius: 48.75px !important;
+        border-top-right-radius: 48.75px !important;
+        border-width: 2.5px; 
+    }
+
+    .button-row {
+        gap: 93.75px;  
+    }
+
+    .buttonName, .buttonNameRecord {
+        font-size: 25px;  
+    }
+
+    .buttonNameRecord {
+        margin-top: 8.125px; 
+    }
+
+    .playImage {
+        width: 37px;
+        height: 45px;
+    }
 }

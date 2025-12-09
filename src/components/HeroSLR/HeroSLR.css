@@ -417,6 +417,23 @@ ion-button.ionButton:active .skipImage {
     transform: scale(0.9);
 }
 
+.nameSLRinput{
+    font-size: 20px;
+    color: #EBE7DB;
+    width: 205px;
+    height: 36px;
+    border-radius: 29.5px;
+    background: #343434;
+    text-align: center;
+    border: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.nameSLRinput:active{
+    border: none;
+}
+
 /* ============================================
    RESPONSIVE BREAKPOINTS
    ============================================ */
@@ -737,5 +754,4 @@ ion-button.ionButton:active .skipImage {
 
 .completion-modal {
   --background: #EBE7DB;
-  border-radius: 20px;
 }

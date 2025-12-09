@@ -382,35 +382,42 @@ const LandmarkCapture: React.FC = () => {
         onDidDismiss={() => setShowCompletionModal(false)}
         className="completion-modal"
       >
-        <IonContent className="ion-padding" style={{ textAlign: "center" }}>
-          <h2>Congrats</h2>
-          <p>You've mastered this set.</p>
+        <IonContent className="ion-padding-modal" style={{ textAlign: "center" }}>
+          <div className="mainContentModal">
+            <div className="mainContentLeftSideModal">
+            <h2 className="mainContentLeftSideModalLeftSideHeader"><span className="modal-dash-third"></span>Congrats</h2>
+            <p className="mainContentLeftSideModalLeftSideText">You've <span className="underlineMasteryText">mastered</span> this set.</p>
+            </div>
 
-          {/* DROPDOWN HERE */}
-          <div style={{ marginTop: 24 }}>
-            <h3>Start with a new name:</h3>
-            <input
-              type='text'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder='Enter Your Name'
-            />
-          </div>
-          
-          <IonButton expand="block" onClick={restartSet}>
-            Start over with this name
-          </IonButton>
+            <div className="mainContentRightSideModal">
+              <div className="mainContentRightSideModalSetSelectionDiv">
+                <h3 className="mainContentRightSideModalSetSelectionDivHeader">Start with a new name:</h3>
+                {/* DROPDOWN HERE */}
+                <div>
+                  <input
+                    type='text'
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder='Enter Your Name'
+                    className="nameSLRinput"
+                  />
+                </div>
+              </div>
+              <IonButton expand="block" onClick={restartSet} className="modalStartNewSetBtn">
+                Start over with this name
+              </IonButton>
 
-          <IonButton
-            expand="block"
-            fill="outline"
-            onClick={() => {
-              setShowCompletionModal(false);
-              router.push('/register', 'forward');
-            }}
-          >
-            Sign Up
-          </IonButton>
+              <button
+                className="modalBackToLibraryBtn"
+                onClick={() => {
+                  setShowCompletionModal(false);
+                  router.push('/register', 'forward');
+                }}
+              >
+                <u>Sign Up</u>
+              </button>
+                </div>
+              </div>
         </IonContent>
     </IonModal>
     <IonFooter>

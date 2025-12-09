@@ -17,6 +17,8 @@ import AslLex from './components/AslLex/asl-lex';
 import Library from './components/Library/Library';
 import Course from './components/Library/Course';
 import Sets from './Sets/Sets';
+import HeroSLR from './components/HeroSLR/HeroSLR';
+
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -122,6 +124,9 @@ const App: React.FC = () => (
         </Route>
         <Route exact path="/study">
           <StudyPage/>
+        </Route>
+        <Route exact path="/heroslr">
+          <HeroSLR/>
         </Route>
       </IonRouterOutlet>
     </IonReactRouter>

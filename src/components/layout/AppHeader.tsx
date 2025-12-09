@@ -61,7 +61,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
     };
 
     const navigateHome = () => {
-        history.push('/home');
+        if (currentUser) {
+            history.push('/study');
+        } else {
+            history.push('/welcome');
+        }
     };
 
     const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {

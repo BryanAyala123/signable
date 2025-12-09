@@ -55,9 +55,22 @@ const LandmarkCapture: React.FC = () => {
 
 
   const restartSet = () => {
-    setShowCompletionModal(false);
-    startCamera();
-  };
+  setCapturing(false);
+  setProcessing(false);
+
+  setRecognizedLetter("");
+  setHintsOn(true);
+
+  setLetterIndex(0);
+  setCorrectLetters([]);
+  setIncorrectLetters([]);
+
+  setShowCompletionModal(false);
+
+  stopCamera();   // you MUST stop old stream or you get duplicates
+  startCamera();  // then fresh init
+
+};
 
   useEffect(() => {
     if (!name) return;

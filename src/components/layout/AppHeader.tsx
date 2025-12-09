@@ -69,11 +69,23 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
     };
 
     const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            const trimmed = headerSearch.trim();
-            if (!trimmed) return;
-            router.push(`/asl-lex?query=${encodeURIComponent(trimmed)}`, "forward", "replace");
-            if (onSearch) onSearch(trimmed);
+        if (e.key !== "Enter") return;
+
+        const trimmed = headerSearch.trim();
+        if (!trimmed) return;
+
+        if (!currentUser) return guardRoute('/asl-lex');
+
+        router.push(`/asl-lex?query=${encodeURIComponent(trimmed)}`, "forward", "replace");
+        if (onSearch) onSearch(trimmed);
+    };
+
+
+    const guardRoute = (path: string) => {
+        if (!currentUser) {
+            history.push('/welcome');
+        } else {
+            history.push(path);
         }
     };
 
@@ -105,15 +117,15 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
 
                     {/* Tabs */}
                     <div className="tabsContainer">
-                        <IonButton fill="clear" onClick={() => history.push('/asl-lex')}>
+                        <IonButton fill="clear" onClick={() => guardRoute('/asl-lex')}>
                             <span className="tabText"><u>ASL-Lex</u></span>
                         </IonButton>
 
-                        <IonButton fill="clear" onClick={() => history.push('/library')}>
+                        <IonButton fill="clear" onClick={() => guardRoute('/library')}>
                             <span className="tabText"><u>Library</u></span>
                         </IonButton>
 
-                        <IonButton fill="clear" onClick={() => history.push('/study')}>
+                        <IonButton fill="clear" onClick={() => guardRoute('/study')}>
                             <span className="tabText"><u>Study</u></span>
                         </IonButton>
 

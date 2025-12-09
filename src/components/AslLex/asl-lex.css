@@ -198,7 +198,7 @@
   left: -35px;
   width: 30px;
   height: 10px;
-  background: url('/public/assets/drawnDashes.svg') no-repeat center;
+  background: url('/public/assets/greendrawnDashes.svg') no-repeat center;
   background-size: contain;
   transform: rotate(0deg);
 }

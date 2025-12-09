@@ -21,6 +21,7 @@ import AppFooter from '../layout/AppFooter';
 import LetterHint from '../LetterHint/letterHint';
 import play from '/public/assets/RecordSign.svg';
 import skip from '/public/assets/skipSign.svg';
+import timeIcon from '/public/assets/timeIcon.svg';
 import './SignLanguageRecognition.css';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
@@ -636,59 +637,67 @@ const LandmarkCapture: React.FC = () => {
   onDidDismiss={() => setShowCompletionModal(false)}
   className="completion-modal"
 >
-  <IonContent className="ion-padding" style={{ textAlign: "center" }}>
-    <h2>Congrats</h2>
-    <p>You've mastered this set.</p>
+  <IonContent className="ion-padding-modal" style={{ textAlign: "center" }}>
+    <div className="mainContentModal">
 
-    {/* DROPDOWN HERE */}
-    <div style={{ marginTop: 24 }}>
-      <h3>Select a new set</h3>
-      <select
-        className="dropdown"
-        value={selectedSet || ""}
-        onChange={async (e) => {
-          const value = e.target.value;
-          setShowCompletionModal(false);      // close modal
-          setSelectedSet(value);
+      <div className="mainContentLeftSideModal">
+        <h2 className="mainContentLeftSideModalLeftSideHeader"><span className="modal-dash-third"></span>Congrats</h2>
+        <p className="mainContentLeftSideModalLeftSideText">You've <span className="underlineMasteryText">mastered</span> this set.</p>
+      </div>
 
-          // reset UI 
+      <div className="mainContentRightSideModal">
+        <div className="mainContentRightSideModalSetSelectionDiv">
+        <h3 className="mainContentRightSideModalSetSelectionDivHeader">Select a new set</h3>
+        <div className="mainContentRightSideModalSetSelectionDivHeaderSelect">
+          <img src={timeIcon}/>
+          <select
+            className="dropdown"
+            value={selectedSet || ""}
+            onChange={async (e) => {
+              const value = e.target.value;
+              setShowCompletionModal(false);      // close modal
+              setSelectedSet(value);
+
+              // reset UI 
+              setTerms([]);
+              setCurrentPrompt("");
+              setLetterIndex(0);
+              setCorrectLetters([]);
+              setIncorrectLetters([]);
+              setRecognizedLetter("");
+              setTermProgress({});
+
+              await fetchTerms(value);     // load terms
+            }}
+          >
+            {!selectedSet && <option value="">Select</option>}
+            {sets.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      
+      <IonButton expand="block" onClick={restartSet} className="modalStartNewSetBtn">
+        Start over with this set
+      </IonButton>
+
+      <button
+        onClick={() => {
+          setShowCompletionModal(false);
+          setSelectedSet("");
           setTerms([]);
           setCurrentPrompt("");
-          setLetterIndex(0);
-          setCorrectLetters([]);
-          setIncorrectLetters([]);
-          setRecognizedLetter("");
-          setTermProgress({});
-
-          await fetchTerms(value);     // load terms
+          router.push('/library', 'forward');
         }}
+        className="modalBackToLibraryBtn"
       >
-        {!selectedSet && <option value="">Select</option>}
-        {sets.map(s => (
-          <option key={s.id} value={s.id}>
-            {s.title}
-          </option>
-        ))}
-      </select>
+        <u>Return to your library</u>
+      </button>
+      </div>
     </div>
-    
-    <IonButton expand="block" onClick={restartSet}>
-      Start over with this set
-    </IonButton>
-
-    <IonButton
-      expand="block"
-      fill="outline"
-      onClick={() => {
-        setShowCompletionModal(false);
-        setSelectedSet("");
-        setTerms([]);
-        setCurrentPrompt("");
-        router.push('/library', 'forward');
-      }}
-    >
-      Return to your library
-    </IonButton>
   </IonContent>
 </IonModal>
 

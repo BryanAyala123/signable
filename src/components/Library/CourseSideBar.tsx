@@ -109,16 +109,19 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courses }) => {
                                             </div>
                                             <div className="items-list">
                                                 {course.notes.length > 0 ? (
-                                                    course.notes.map(note => (
-                                                        <IonItem 
-                                                            key={note.id}
-                                                            button
-                                                            onClick={() => handleNoteClick(note.url)}
-                                                            className="nested-item"
-                                                        >
-                                                            <IonLabel>{note.title}</IonLabel>
-                                                        </IonItem>
-                                                    ))
+                                                    course.notes
+                                                        .slice()
+                                                        .sort((a, b) => b.creationDate - a.creationDate)
+                                                        .map(note => (
+                                                            <IonItem 
+                                                                key={note.id}
+                                                                button
+                                                                onClick={() => handleNoteClick(note.url)}
+                                                                className="nested-item"
+                                                            >
+                                                                <IonLabel>{note.title}</IonLabel>
+                                                            </IonItem>
+                                                        ))
                                                 ) : (
                                                     <div className="empty-message">No notes yet</div>
                                                 )}
@@ -140,7 +143,7 @@ const CourseSidebar: React.FC<CourseSidebarProps> = ({ courses }) => {
                                             </div>
                                             <div className="items-list">
                                                 {course.sets.length > 0 ? (
-                                                    course.sets.map(set => (
+                                                    course.sets.slice().sort((a, b) => a.creationDate - b.creationDate).map(set => (
                                                         <IonItem 
                                                             key={set.id}
                                                             button

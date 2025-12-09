@@ -1,0 +1,39 @@
+.settingsTextName{
+    position: relative;
+    color: #353534;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 3.84px;
+    margin: 0;
+}
+.settingsTextRegular{
+    position: relative;
+    color: #343434;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 4%;
+    margin: 0;
+}
+
+.settingsCommandText{
+    position: relative;
+    color: #353534;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    letter-spacing: 1.92px;
+    margin: 0;
+    text-decoration: underline;
+}
+
+.settingsPopupInput {
+    --background: #EBE7DB;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

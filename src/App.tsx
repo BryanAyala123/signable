@@ -49,12 +49,10 @@ import '@ionic/react/css/palettes/dark.system.css';
 
 /* Theme variables */
 import './theme/variables.css';
-import MemoryContainer from './components/Games/Memory/MemoryContainer';
 import LandingPage from './pages/LandingPage/LandingPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import LoginPage from './pages/RegisterPage/LoginPage';
 import PrivateRoute from './components/routes/ProtectedRoute';
-import studyPage from './pages/studyPage/studyPage';
 import StudyPage from './pages/studyPage/studyPage';
 
 setupIonicReact();

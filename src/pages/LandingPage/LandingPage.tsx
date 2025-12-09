@@ -1,5 +1,5 @@
 import { IonContent, IonPage} from '@ionic/react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../../components/layout/AppHeader';
 import AppFooter from '../../components/layout/AppFooter';
@@ -21,6 +21,12 @@ import './LandingPage.css';
 
 const LandingPage: React.FC = () => {
     const history = useHistory();
+    const [name, setName] = useState("");
+
+    const goToHero = () => {
+        history.push(`/heroslr?name=${encodeURIComponent(name)}`);
+    };
+    
     useEffect(() => {
         const observerOptions = {
             threshold: 0.2,
@@ -60,7 +66,7 @@ const LandingPage: React.FC = () => {
         if (thirdBlockContent) {
             thirdBlockObserver.observe(thirdBlockContent);
         }
-    
+
         return () => {
             if (targetSection) {
                 observer.unobserve(targetSection);
@@ -101,6 +107,27 @@ return (
                             </div>
                         </div>
 
+                        <div className='learnToSignNameBlockDiv'>
+                            <div className='learnToSignNameBlockDivHeader'>
+                                <h1 className='learnToSignNameBlockDivHeaderText'>Learn to sign your name- no account needed!</h1>
+                            </div>
+                            <div className='learnToSignNameBlockDivContent'>
+                                <input
+                                type='text'
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                placeholder='Enter Your Name'
+                                />
+
+                                <p 
+                                    onClick={name ? goToHero : undefined} 
+                                    style={{ opacity: name ? 1 : 0.4, pointerEvents: name ? "auto" : "none" }}
+                                    className='learnToSignNameBlockDivContentGo'>
+                                    <u>Go!</u>
+                                </p>
+
+                            </div>
+                        </div>
 
                         <div className='SecondBlockDiv'>
                             <div className='SecondBlockDivLargerHeader'>
@@ -141,7 +168,7 @@ return (
 
                         <div className='ThirdBlockDiv'>
                             <div className='ThirdBlockDivTitle'>
-                                <h1>What sets us apart</h1>
+                                <h1 className='thirdDivText'>What sets us apart</h1>
                             </div>
                             <div className='ThirdBlockDivContent'>
                                 <div className='ThirdBlockDivContentBlock'>

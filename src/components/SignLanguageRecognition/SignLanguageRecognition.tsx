@@ -1,27 +1,30 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, } from "react";
 import {
   IonPage,
   IonHeader,
   IonContent,
   IonButton,
   IonText,
-  IonCard,
   IonCardContent,
   useIonToast,
   IonSpinner,
   IonFooter,
+  IonToggle,
+  IonModal,
+  useIonRouter,
 } from "@ionic/react";
+
 import axios from "axios";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import AppHeader from '../layout/AppHeader';
 import AppFooter from '../layout/AppFooter';
 import LetterHint from '../LetterHint/letterHint';
-import play from '/public/assets/Buttons/playButton.svg';
+import play from '/public/assets/RecordSign.svg';
+import skip from '/public/assets/skipSign.svg';
+import timeIcon from '/public/assets/timeIcon.svg';
 import './SignLanguageRecognition.css';
 import { getFirestore, collection, getDocs, doc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
-import cirlceIcon from '/public/assets/slr/circle.svg';
-import highlighter from '/public/assets/slr/highlighter.svg';
 
 // backend model apiendpoint and frame count per capture
 const FUNCTION_URL =
@@ -40,6 +43,7 @@ const LandmarkCapture: React.FC = () => {
   const [processing, setProcessing] = useState(false);
   const [recognizedLetter, setRecognizedLetter] = useState<string>("");
   const [presentToast] = useIonToast();
+  const router = useIonRouter();
 
   // Firebase data
   const [courses, setCourses] = useState<any[]>([]);
@@ -54,6 +58,9 @@ const LandmarkCapture: React.FC = () => {
   const [correctLetters, setCorrectLetters] = useState<boolean[]>([]);
   const [incorrectLetters, setIncorrectLetters] = useState<boolean[]>([]);
   const [termProgress, setTermProgress] = useState<{ [term: string]: number }>({});
+  const [hintsOn, setHintsOn] = useState(false);
+  const [showCompletionModal, setShowCompletionModal] = useState(false);
+
 
   // split into learning v. mastered 
   const masteredTerms = Object.keys(termProgress).filter(
@@ -62,6 +69,21 @@ const LandmarkCapture: React.FC = () => {
   const learningTerms = Object.keys(termProgress).filter(
     term => termProgress[term] < 2
   );
+
+  useEffect(() => {
+    if (terms.length > 0 && masteredTerms.length === terms.length) {
+      setShowCompletionModal(true);
+      stopCamera(); // optional: stops video input when done
+    }
+  }, [masteredTerms, terms]);
+
+  const restartSet = () => {
+    setShowCompletionModal(false);
+    setTermProgress({});
+    pickRandomTerm(terms);
+    startCamera();
+  };
+
 
   
   //-----------camera handling--------------
@@ -267,7 +289,10 @@ const LandmarkCapture: React.FC = () => {
             return newProgress;
           });
 
-          // pick a new word
+          // 2 second wait
+          await new Promise(res => setTimeout(res, 2000));
+
+          // pick the next word
           pickRandomTerm(terms);
         }
       } else {
@@ -360,278 +385,323 @@ const LandmarkCapture: React.FC = () => {
       <IonHeader>
         <AppHeader />
       </IonHeader>
-      <IonContent className="ion-padding">
+      <IonContent className="ion-padding-SLRPage">
         <div className="MainContent">
-          <div className="LeftContent">
-            <IonCard className="ionCard">
-              <IonCardContent className="video-container">
-                <video
-                  ref={videoRef}
-                  className="video-preview"
-                  autoPlay
-                  muted
-                  playsInline
-                />
-                {/* Overlay letters */}
-                <div className="video-letter-overlay" style={{ display: "flex", alignItems: "center", gap: 16 }}>
-                  <div style={{ color: '#EBE7DB', fontSize: 40, fontFamily: 'Figtree', fontWeight: '400', letterSpacing: 1.60, wordWrap: 'break-word', whiteSpace: 'pre-line' }}>
-                    Letter<br />signed:
-                  </div>
-                    <div style={{ position: "relative", display: "inline-block", minWidth: 64, minHeight: 64 }}>
-                      <img
-                        src={cirlceIcon}
-                        alt="Circle"
-                        style={{
-                        position: "absolute",
-                        left: "50%",
-                        top: "50%",
-                        transform: "translate(-50%, -50%) scale(1.4)",
-                        height: 76,
-                        width: 76,
-                        zIndex: 1,
-                        pointerEvents: "none",
-                        }}
-                      />
-                      <div className="result-container-text" style={{ position: "relative", zIndex: 2, display: "flex", alignItems: "center", justifyContent: "center", minHeight: 64, minWidth: 64 }}>
-                        {processing ? (
-                        <>
-                          <IonSpinner name="dots" />
-                          <IonText>
-                          <h3>...</h3>
-                          </IonText>
-                        </>
-                        ) : recognizedLetter ? (
-                        <IonText>
-                          <h2 className="letterSigned" style={{ color: '#EBE7DB', fontSize: 64, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 2.56, wordWrap: 'break-word', margin: 0 }}>{recognizedLetter}</h2>
-                        </IonText>
-                        ) : null}
-                      </div>
-                    </div>
-                </div>
-              </IonCardContent>
-            </IonCard>
-          </div>
-
-          <div className="RightContent">
-            <div className="set-picker">
+        <div className="set-picker">
               <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
-                <tbody>
-                  <tr>
-                    <td style={{ textAlign: "right", width: "33%" }}>
-                      <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
-                        Current Course: {selectedCourse && courses.find(c => c.id === selectedCourse)?.title}
-                      </div>
-                    </td>
-                    <td style={{ textAlign: "center", width: "34%" }}>
-                      <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
-                    </td>
-                    <td style={{ textAlign: "left", width: "33%" }}>
-                      <div style={{ flex: 0 }}>
-                        <select
-                          className="dropdown"
-                          value=""
-                          onChange={async (e) => {
-                            const value = e.target.value;
-                            setSelectedCourse(value);
-                            setSelectedSet("");
-                            setTerms([]);
-                            setCurrentPrompt("");
-                            setLetterIndex(0);
-                            setCorrectLetters([]);
-                            setIncorrectLetters([]);
-                            setRecognizedLetter("");
-                            setTermProgress({});
-                            await fetchSets(value);
-                          }}
-                        >
-                          <option value="" disabled>Change</option>
-                          {courses.map(c => (
-                            <option key={c.id} value={c.id}>{c.title}</option>
-                          ))}
-                        </select>
-                      </div>
-                    </td>
-                  </tr>
-                  <br></br>
-                  {sets.length > 0 && (
-                  <tr>
-                    <td style={{ textAlign: "right" }}>
-                      <div style={{ flex: 0, textAlign: 'right', color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: 500, letterSpacing: 0.8, wordWrap: 'break-word', whiteSpace: 'nowrap' }}>
-                        Current Set: {selectedSet && sets.find(s => s.id === selectedSet)?.title}
-                      </div>        
-                    </td>
-                    <td style={{ textAlign: "center" }}>
-                      <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
-                    </td>
-                    <td style={{ textAlign: "left" }}>
-                      <select
-                        className="dropdown"
-                        value={""}
-                        onChange={async (e) => {
-                          const value = e.target.value;
-                          setSelectedSet(value);
-
-                          // reset all word + letter UI
-                          setTerms([]);
-                          setCurrentPrompt("");
-                          setLetterIndex(0);
-                          setCorrectLetters([]);
-                          setIncorrectLetters([]);
-                          setRecognizedLetter("");
-                          setTermProgress({}); 
-
-                          // then load fresh terms
-                          await fetchTerms(value);
-                        }}
-                      >
-                        <option value="" disabled>Change</option>
-                        {sets.map(s => (
-                          <option key={s.id} value={s.id}>{s.title}</option>
-                        ))}
-                      </select>
-
-                    </td>
-                  </tr>
-                  )}
-                </tbody>
+              <tbody className="HeaderSetPicker">
+  <tr>
+    <td style={{ textAlign: "right", width: "33%", verticalAlign: "middle" }}>
+      <div className="current-select-row">
+        <span>Current Course:</span>
+        <select
+          className="dropdown"
+          value={selectedCourse || ""}
+          onChange={async (e) => {
+            const value = e.target.value;
+            setSelectedCourse(value);
+            setSelectedSet("");
+            setTerms([]);
+            setCurrentPrompt("");
+            setLetterIndex(0);
+            setCorrectLetters([]);
+            setIncorrectLetters([]);
+            setRecognizedLetter("");
+            setTermProgress({});
+            await fetchSets(value);
+          }}
+        >
+          {!selectedCourse && <option value="">Select</option>}
+          {courses.map(c => (
+            <option key={c.id} value={c.id}>
+              {c.title}
+            </option>
+          ))}
+        </select>
+      </div>
+    </td>
+    
+    <td style={{ textAlign: "center", width: "34%", verticalAlign: "middle" }}>
+      {selectedCourse && (
+        <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
+      )}
+    </td>
+    
+    <td style={{ textAlign: "center", width: "33%", verticalAlign: "middle" }}>
+      {sets.length > 0 && (
+        <div className="current-select-row">
+          <span>Current Set:</span>
+          <select
+            className="dropdown"
+            value={selectedSet || ""}
+            onChange={async (e) => {
+              const value = e.target.value;
+              setSelectedSet(value);
+              setTerms([]);
+              setCurrentPrompt("");
+              setLetterIndex(0);
+              setCorrectLetters([]);
+              setIncorrectLetters([]);
+              setRecognizedLetter("");
+              setTermProgress({});
+              await fetchTerms(value);
+            }}
+          >
+            {!selectedSet && <option value="">Select</option>}
+            {sets.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+    </td>
+    
+    <td style={{ textAlign: "center", width: "34%", verticalAlign: "middle" }}>
+      {selectedSet && (
+        <div style={{width: '27px', height: '0px', transform: 'rotate(90deg)', outline: '1px black solid', margin: '0 8px'}}></div>
+      )}
+    </td>
+    
+    <td className="hintDiv" style={{ textAlign: "left", width: "33%", verticalAlign: "middle" }}>
+      {selectedSet && (
+        <>
+          <p className="hintText">Hints</p>
+          <IonToggle
+            checked={hintsOn}
+            onIonChange={(e) => setHintsOn(e.detail.checked)}
+            className="feedbackToggle"
+          />
+        </>
+      )}
+    </td>
+  </tr>
+</tbody>
               </table>
             </div>
-            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
-              <tbody>
-                <tr>
-                  <td style={{ width: "100%" }}>
-                    <div style={{ width: "100%", height: "0px", outline: '1px black solid'}} />
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
-                    <div style={{ width: "100%", height: "100%", background: '#343434', borderRadius: 39, paddingTop: 55, paddingBottom: 55, paddingLeft: 83, paddingRight: 83 }}>
-                      <div className="prompt-container">
-                        {selectedSet && currentPrompt && (
-                          <>
-                            <p>Finger Spell:</p>
-                            <div className="letter-progress" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                              {currentPrompt.split("").map((ch, idx) => (
-                                <span
-                                  key={idx}
-                                  className={(() => {
-                                    if (correctLetters[idx]) return "correct-letter";
-                                    if (incorrectLetters[idx]) {
-                                      return idx === letterIndex
-                                        ? "incorrect-letter current-letter"
-                                        : "incorrect-letter";
-                                    }
-                                    if (idx === letterIndex) return "current-letter";
-                                    return "pending-letter";
-                                  })()}
-                                  style={{ textAlign: "center" }}
-                                >
-                                  {ch}
-                                  {idx < currentPrompt.length - 1 && " - "}
-                                </span>
-                              ))}
+          <div className="SLRMainContent">  
+            <div className="LeftContent">
+                <IonCardContent className="video-container">
+                <div className="video-wrapper">
+                  <video
+                    ref={videoRef}
+                    className="video-preview"
+                    autoPlay
+                    muted
+                    playsInline
+                  />
+                </div>
+                  {/* Overlay letters */}
+                </IonCardContent>
+                <div className="video-letter-overlay" style={{ display: "flex", alignItems: "center", gap: 30 }}>
+                        <div className="button-container">
+                          <div className="button-row">
+                            <div className="RecordSignDiv">
+                              <IonButton
+                                disabled={!selectedSet || !currentPrompt}
+                                onClick={captureFrames}
+                                className="ionButton"
+                              >
+                                <img className="playImage" src={play} alt="Start" />
+                              </IonButton>
+                              <h2 className="buttonNameRecord">Record Sign</h2>
                             </div>
-                            <LetterHint 
-                              targetLetter={currentPrompt[letterIndex]}
-                              detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
-                            />
-                          </>
-                        )}
-                      </div>
+                            <div className="RecordSignDiv">
+                            <IonButton
+                              disabled={!selectedSet || !currentPrompt}
+                              onClick={handleSkip}
+                              className="ionButton"
+                            >
+                              <img className="skipImage" src={skip} alt="Skip" />
+                            </IonButton>
+                            <h2 className="buttonName">Skip Letter</h2>
+                            </div>
+                          </div>
                     </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
-                    {selectedSet && (
-                      <div className="remaining-terms">
-                        <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>{learningTerms.length} Terms Remaining!</p>
-                      </div>
-                    )}
-                  </td>
-                </tr>
-                <tr>
-                    <td style={{ textAlign: "center" }}>
-                    {selectedSet && currentPrompt && (
-                      <img
-                      src={highlighter}
-                      alt="Highlight"
-                      style={{
-                        height: 10,
-                        marginRight: 8,
-                        display: "inline-block",
-                        position: "relative",
-                        top: "-18px"
-                      }}
-                      />
-                    )}
-                    </td>
-                </tr>
-                <tr>
-                  <td>
-                    <div style={{ border: "2px solid black", borderRadius: 40, overflow: "hidden",}}>
-                      <table style={{ width: "100%", marginBottom: 16}}>
-                        <tbody>
-                        <tr>
-                          <td style={{ textAlign: "center" }}>
-                          <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Still Learning</p>
-                          </td>
-                          <td style={{ textAlign: "center" }}>
-                            <p style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Mastered</p>
-                          </td>
-                        </tr>
-                        <tr>
-                          <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
-                            <ul style={{ paddingLeft: 0, marginTop: 0 }}>
-                              {learningTerms.map(term => (
-                                  <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
-                              ))}
-                            </ul>
-                          </td>
-                          <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
-                            <ul style={{ paddingLeft: 0, marginTop: 0 }}>
-                              {masteredTerms.map(term => (
-                                <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
-                              ))} 
-                            </ul>
-                          </td>
-                          
-                        </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <div className="button-container">
-              <p>Controls</p>
-              <div className="button-row">
-                <IonButton
-                  disabled={!selectedSet || !currentPrompt}
-                  onClick={captureFrames}
-                >
-                  <img className="playImage" src={play} alt="Start" />
-                </IonButton>
-                <IonButton
-                  color="medium"
-                  fill="outline"
-                  disabled={!selectedSet || !currentPrompt}
-                  onClick={handleSkip}
-                >
-                  Skip Letter
-                </IonButton>
-              </div>
-              {capturing && (
-                <p color="medium">
-                  Processing...
-                </p>
-              )}
+                  </div>
             </div>
-          </div>
+
+
+            {selectedSet && (
+              <div className="RightContent">
+                <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: 16 }}>
+                  <tbody>
+                    <tr>
+                      <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
+                        <div>
+                          <div className="prompt-container">
+                            {currentPrompt && (
+                              <>
+                                <div className="letter-progress" style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
+                                  {currentPrompt.split("").map((ch, idx) => (
+                                    <span
+                                      key={idx}
+                                      className={(() => {
+                                        if (correctLetters[idx]) return "correct-letter";
+                                        if (incorrectLetters[idx]) {
+                                          return idx === letterIndex
+                                            ? "incorrect-letter current-letter"
+                                            : "incorrect-letter";
+                                        }
+                                        if (idx === letterIndex) return "current-letter";
+                                        return "pending-letter";
+                                      })()}
+                                      style={{ textAlign: "center" }}
+                                    >
+                                      {ch}
+                                    </span>
+                                  ))}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style={{ width: "100%", textAlign: "center", paddingTop: 8 }}>
+                        <div className="remaining-terms">
+                          <p className="remainTermsText" style={{color: '#343434', fontSize: 15, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>{learningTerms.length} Terms Remaining! Keep it up!</p>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div className="masteryTable">
+                          <table style={{ width: "100%", marginBottom: 16}}>
+                            <tbody>
+                            <tr>
+                              <td style={{ textAlign: "center" }}>
+                              <p className="tableHeader" style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Still Learning</p>
+                              </td>
+                              <td style={{ textAlign: "center" }}>
+                                <p  className="tableHeader" style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word'}}>Mastered</p>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
+                                <ul style={{ paddingLeft: 0, marginTop: 0 }}>
+                                  {learningTerms.map(term => (
+                                      <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
+                                  ))}
+                                </ul>
+                              </td>
+                              <td style={{ textAlign: "center", verticalAlign: "top", width: "50%" }}>
+                                <ul style={{ paddingLeft: 0, marginTop: 0 }}>
+                                  {masteredTerms.map(term => (
+                                    <li style={{color: '#343434', fontSize: 20, fontFamily: 'Figtree', fontWeight: '500', letterSpacing: 0.80, wordWrap: 'break-word', listStyleType: 'none' }} key={term}>{term}</li>
+                                  ))} 
+                                </ul>
+                              </td>
+                            </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div className="letter-signed-text">
+                  <div className="letter-signed-text-result">
+                    <p>
+                      Letter Signed:
+                      {processing ? (
+                        <>
+                          <IonSpinner name="dots" className="dotLoad"/>
+                        </>
+                      ) : recognizedLetter ? (
+                        <IonText>
+                          <h2 className="letterSigned">{recognizedLetter}</h2>
+                        </IonText>
+                      ) : null}
+                    </p>
+                  </div>
+                </div>
+                <div className={`hint-container ${!hintsOn ? "hint-hidden" : ""}`}>
+                {hintsOn && (
+                  <LetterHint
+                    targetLetter={currentPrompt[letterIndex]}
+                    detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
+                  />
+                )}
+                </div>
+
+              </div>
+            )} 
+          </div>  
         </div>
       </IonContent>
+      <IonModal
+  isOpen={showCompletionModal}
+  onDidDismiss={() => setShowCompletionModal(false)}
+  className="completion-modal"
+>
+  <IonContent className="ion-padding-modal" style={{ textAlign: "center" }}>
+    <div className="mainContentModal">
+
+      <div className="mainContentLeftSideModal">
+        <h2 className="mainContentLeftSideModalLeftSideHeader"><span className="modal-dash-third"></span>Congrats</h2>
+        <p className="mainContentLeftSideModalLeftSideText">You've <span className="underlineMasteryText">mastered</span> this set.</p>
+      </div>
+
+      <div className="mainContentRightSideModal">
+        <div className="mainContentRightSideModalSetSelectionDiv">
+        <h3 className="mainContentRightSideModalSetSelectionDivHeader">Select a new set</h3>
+        <div className="mainContentRightSideModalSetSelectionDivHeaderSelect">
+          <img src={timeIcon}/>
+          <select
+            className="dropdown"
+            value={selectedSet || ""}
+            onChange={async (e) => {
+              const value = e.target.value;
+              setShowCompletionModal(false);      // close modal
+              setSelectedSet(value);
+
+              // reset UI 
+              setTerms([]);
+              setCurrentPrompt("");
+              setLetterIndex(0);
+              setCorrectLetters([]);
+              setIncorrectLetters([]);
+              setRecognizedLetter("");
+              setTermProgress({});
+
+              await fetchTerms(value);     // load terms
+            }}
+          >
+            {!selectedSet && <option value="">Select</option>}
+            {sets.map(s => (
+              <option key={s.id} value={s.id}>
+                {s.title}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
+      
+      <IonButton expand="block" onClick={restartSet} className="modalStartNewSetBtn">
+        Start over with this set
+      </IonButton>
+
+      <button
+        onClick={() => {
+          setShowCompletionModal(false);
+          setSelectedSet("");
+          setTerms([]);
+          setCurrentPrompt("");
+          router.push('/library', 'forward');
+        }}
+        className="modalBackToLibraryBtn"
+      >
+        <u>Return to your library</u>
+      </button>
+      </div>
+    </div>
+  </IonContent>
+</IonModal>
+
+
       <IonFooter>
         <AppFooter/>
       </IonFooter>
@@ -640,3 +710,5 @@ const LandmarkCapture: React.FC = () => {
 };
 
 export default LandmarkCapture;
+
+

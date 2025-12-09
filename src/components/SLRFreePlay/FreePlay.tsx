@@ -169,19 +169,19 @@ const LandmarkCapture: React.FC = () => {
   };
 
   return (
-    <IonPage>
+        <IonPage>
       <IonHeader>
         <AppHeader />
       </IonHeader>
 
       <IonContent className="ion-padding">
-        <div className="MainContent">
-          <div className="LeftContent">
-            <IonCard className="ionCard">
+        <div className="free-play-SLR-MainContent">
+          <div className="free-play-SLR-LeftContent">
+            <IonCard className="free-play-SLR-ionCard">
               <IonCardContent>
                 <video
                   ref={videoRef}
-                  className="video-preview"
+                  className="free-play-SLR-video-preview"
                   autoPlay
                   muted
                   playsInline
@@ -190,13 +190,13 @@ const LandmarkCapture: React.FC = () => {
             </IonCard>
           </div>
 
-          <div className="RightContent">
-            <div className="result-container">
-              <div className="result-container-header">
+          <div className="free-play-SLR-RightContent">
+            <div className="free-play-SLR-result-container">
+              <div className="free-play-SLR-result-container-header">
                 <p>Letter Signed:</p>
               </div>
 
-              <div className="result-container-text">
+              <div className="free-play-SLR-result-container-text">
                 {processing ? (
                   <>
                     <IonSpinner name="dots" />
@@ -206,17 +206,17 @@ const LandmarkCapture: React.FC = () => {
                   </>
                 ) : recognizedLetter ? (
                   <IonText>
-                    <h2 className="letterSigned">{recognizedLetter}</h2>
+                    <h2 className="free-play-SLR-letterSigned">{recognizedLetter}</h2>
                   </IonText>
                 ) : null}
               </div>
             </div>
 
-            <div className="button-container">
+            <div className="free-play-SLR-button-container">
               <p>Start Processing</p>
               {!capturing ? (
                 <IonButton onClick={captureFrames}>
-                  <img className="playImage" src={play} />
+                  <img className="free-play-SLR-playImage" src={play} />
                 </IonButton>
               ) : (
                 <p> Processing... </p>

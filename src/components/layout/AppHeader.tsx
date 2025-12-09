@@ -61,7 +61,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
     };
 
     const navigateHome = () => {
-        history.push('/home');
+        if (currentUser) {
+            history.push('/study');
+        } else {
+            history.push('/welcome');
+        }
     };
 
     const handleSearchKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -129,8 +133,8 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
 
             {/* PORTAL POPUP (floats above everything) */}
             {showProfileCard &&
-                createPortal(
-                    <div ref={popupRef} className="profilePopupCardBlue portalPopup">
+            createPortal(
+                <div ref={popupRef} className="profilePopupCardBlue portalPopup">
 
                         <div className="profilePopupAvatar">
                             <img
@@ -140,33 +144,60 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                             />
                         </div>
 
-                        <p className="profilePopupName">
-                            {currentUser?.displayName || "User"}
-                        </p>
+                    <p className="profilePopupName">
+                        {currentUser?.displayName || "Guest"}
+                    </p>
 
-                        <div className="profilePopupDivider"></div>
+                    <div className="profilePopupDivider"></div>
 
-                        <p
-                            className="profilePopupLink"
-                            onClick={() => {
-                                history.push('/settings');
-                                setShowProfileCard(false);
-                            }}
-                        >
-                            My Account
-                        </p>
+                    {currentUser ? (
+                        <>
+                            <p
+                                className="profilePopupLink"
+                                onClick={() => {
+                                    history.push('/settings');
+                                    setShowProfileCard(false);
+                                }}
+                            >
+                                My Account
+                            </p>
 
-                        <p
-                            className="profilePopupLink"
-                            onClick={handleLogout}
-                        >
-                            Sign Out
-                        </p>
+                            <p
+                                className="profilePopupLink"
+                                onClick={handleLogout}
+                            >
+                                Sign Out
+                            </p>
+                        </>
+                    ) : (
+                        <>
+                            <p
+                                className="profilePopupLink"
+                                onClick={() => {
+                                    history.push('/login');
+                                    setShowProfileCard(false);
+                                }}
+                            >
+                                Sign In
+                            </p>
 
-                    </div>,
-                    document.getElementById("popup-root")!
-                )
+                            <p
+                                className="profilePopupLink"
+                                onClick={() => {
+                                    history.push('/register');
+                                    setShowProfileCard(false);
+                                }}
+                            >
+                                Create Account
+                            </p>
+                        </>
+                    )}
+
+                </div>,
+                document.getElementById("popup-root")!
+            )
             }
+
         </IonHeader>
     );
 };

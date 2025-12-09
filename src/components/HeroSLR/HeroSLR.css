@@ -277,7 +277,6 @@ ion-button {
     text-decoration: underline;
     letter-spacing: 0.8px;
     word-wrap: break-word;
-    text-align: center;
 }
 
 .video-container {
@@ -299,6 +298,7 @@ ion-button {
 }
 
 .HeaderSetPicker{
+    display: flex;
     border-bottom: 2px solid #343434;
 }
 
@@ -417,48 +417,21 @@ ion-button.ionButton:active .skipImage {
     transform: scale(0.9);
 }
 
-.hintDiv{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 5px;
-}
-
-.hintText{
-    color: #343434;
+.nameSLRinput{
     font-size: 20px;
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-    letter-spacing: 0.8px;
-    margin: 0;
-}
-
-.HeaderSetPicker td {
-    vertical-align: middle;
-}
-
-
-.feedbackToggle{
-    color: #343434;
-    font-size: 20px;
-    font-weight: 500;
-    letter-spacing: 0.8px;
-    white-space: nowrap;
-    width: 35px;
-    height: 25px;
-    --handle-width: 15px;
-    --handle-height: 15px;
-    --track-background: #EBE7DB;
-    --track-background-checked: #EBE7DB;
-    --handle-spacing: 1px;
-
-    --handle-background: #F05248;
-    --handle-background-checked: #62AE8A;
-    border: solid 2px #343434;
-    --handle-box-shadow: none;
+    color: #EBE7DB;
+    width: 205px;
+    height: 36px;
     border-radius: 29.5px;
-    padding: 0px 5px;
+    background: #343434;
+    text-align: center;
+    border: none;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+.nameSLRinput:active{
+    border: none;
 }
 
 /* ============================================
@@ -779,186 +752,6 @@ ion-button.ionButton:active .skipImage {
   pointer-events: none;
 }
 
-.completion-modal{
-    --border-radius: 40px !important;
-    --height: 400px !important;
-    --width: 700px !important;
-}
-
-.ion-padding-modal {
-  --background: #343434;
-}
-
-.mainContentModal{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    height: 100%;
-    align-items: center;
-    justify-content: space-around;
-}
-
-.mainContentLeftSideModal{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    color: #EBE7DB;
-}
-
-.mainContentLeftSideModalLeftSideHeader{
-    font-size: 40px;
-    position: relative;
-}
-
-.mainContentLeftSideModalLeftSideText{
-    font-size: 20px;
-}
-
-.mainContentRightSideModalSetSelectionDiv{
-    display: flex;
-    flex-direction: column;
-    width: 310px;
-    height: 110px;
-    border-radius: 55px;
-    background: #EBE7DB;
-    align-items: center;
-    justify-content: center;
-}
-
-.mainContentRightSideModalSetSelectionDivHeader{
-    color: #343434;
-    font-size: 20px;
-}
-
-.mainContentRightSideModal{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 35px;
-}
-
-.mainContentRightSideModalSetSelectionDivHeaderSelect{
-    display: flex;
-    flex-direction: row;
-    width: 146px;
-    height: 36px;
-    background-color: #343434;
-    border-radius: 30px;
-    color: #EBE7DB;
-    align-items: center;
-    justify-content: center;
-}
-
-.mainContentRightSideModalSetSelectionDivHeaderSelect .dropdown{
-    color: #EBE7DB;
-}
-
-.modalStartNewSetBtn{
-    background-color: #EBE7DB;
-    width: 310px;
-    height: 62px;
-    border-radius: 30px;
-    font-size: 20px;
-}
-
-.modalBackToLibraryBtn{
-    font-size: 20px;
-    font-weight: 400;
-    color: #EBE7DB;
-}
-
-.underlineMasteryText{
-    margin: 0;
-    position: relative;
-    display: inline-block;
-}
-
-.underlineMasteryText::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: -5px;
-    width: 100%;
-    height: 3.51px;
-    background: url('/public/assets/thickGreenUnderline.svg') center;
-    background-repeat: no-repeat;
-}
-
-.mainContentLeftSideModalLeftSideHeader::before {
-    content: '';
-    position: absolute;
-    top: -20px;
-    left: -10px;
-    width: 30px;
-    height: 10px;
-    background: url('/public/assets/greenDrawnDashes.svg') no-repeat center;
-    background-size: contain;
-    transform: rotate(70deg);
-}
-
-.mainContentLeftSideModalLeftSideHeader::after {
-    content: '';
-    position: absolute;
-    top: -15px;
-    left: -25px;
-    width: 30px;
-    height: 10px;
-    background: url('/public/assets/greenDrawnDashes.svg') no-repeat center;
-    background-size: contain;
-    transform: rotate(40deg);
-}
-
-.modal-dash-third {
-    position: absolute;
-    top: 0px;
-    left: -35px;
-    width: 30px;
-    height: 10px;
-    background: url('/public/assets/greenDrawnDashes.svg') no-repeat center;
-    background-size: contain;
-    transform: rotate(0deg);
-}
-
-@media screen and (min-width: 1600px) {
-    .video-wrapper {
-        width: 481.25px;  
-        height: 460px;    
-    }
-
-    .video-letter-overlay {
-        padding: 7.5px 12.5px;  
-        font-size: 17.5px;     
-        border-bottom-left-radius: 48.75px;  
-        border-bottom-right-radius: 48.75px;
-    }
-
-    .video-container {
-        border-top-left-radius: 48.75px !important;  
-        border-top-right-radius: 48.75px !important;
-    }
-
-    .video-wrapper {
-        border-top-left-radius: 48.75px !important;
-        border-top-right-radius: 48.75px !important;
-        border-width: 2.5px; 
-    }
-
-    .button-row {
-        gap: 93.75px;  
-    }
-
-    .buttonName, .buttonNameRecord {
-        font-size: 25px;  
-    }
-
-    .buttonNameRecord {
-        margin-top: 8.125px; 
-    }
-
-    .playImage {
-        width: 37px;
-        height: 45px;
-    }
+.completion-modal {
+  --background: #EBE7DB;
 }

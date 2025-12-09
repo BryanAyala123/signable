@@ -1,26 +1,9 @@
 .hint-card {
-    margin-top: 16px;
     padding: 12px 16px;
-    border-radius: 16px;
-    border: 1px solid #d9d4c7;
-    background-color: #f7f4ed;
     color: #343434;
     font-size: 0.95rem;
     line-height: 1.4;
-}
-
-.hint-card.info {
-    border-color: #62ae8a;
-}
-
-.hint-card.success {
-    border-color: #48e395;
-    background-color: #e9fbf2;
-}
-
-.hint-card.error {
-    border-color: #e74c3c;
-    background-color: #fdecea;
+    text-align: center;
 }
 
 .hint-label {
@@ -32,7 +15,9 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #55504a;
+    color: #343434;
+    text-align: center;
+    justify-content: center;
 }
 
 .hint-error-text {
@@ -43,4 +28,8 @@
 
 .hint-message {
     margin: 0;
+}
+
+.lineLoad{
+    color: #343434;
 }

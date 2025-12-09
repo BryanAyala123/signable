@@ -113,15 +113,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                             <span className="tabText"><u>Study</u></span>
                         </IonButton>
 
-                        <IonButton fill="clear" onClick={() => history.push('/settings')}>
-                            <span className="tabText"><u>My Account</u></span>
-                        </IonButton>
-
                         {/* Profile Icon */}
                         <div className="profileWrapper">
                             <IonAvatar className="profileIcon" onClick={toggleProfileCard}>
                                 <img
-                                    src={personCircle}
+                                    src={currentUser?.photoURL || personCircle}
                                     alt="Profile"
                                     className="profilePicture"
                                 />
@@ -137,7 +133,11 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
                     <div ref={popupRef} className="profilePopupCardBlue portalPopup">
 
                         <div className="profilePopupAvatar">
-                            <img src={personCircle} alt="Profile" />
+                            <img
+                                src={currentUser?.photoURL || personCircle}
+                                alt="Profile"
+                                style={!currentUser?.photoURL ? { filter: 'invert(100%)' } : undefined}
+                            />
                         </div>
 
                         <p className="profilePopupName">

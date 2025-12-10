@@ -127,7 +127,7 @@ const Library: React.FC = () => {
                                     fill = "clear"
                                     onClick={e => {
                                         e.stopPropagation();
-                                        if (!window.confirm("Are you sure you want to delete this course?")) return;
+                                        if (!window.confirm("Would like to delete this course?")) return;
                                         handleDeleteCourse(course.id);
                                     }}
                                 >

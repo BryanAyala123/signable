@@ -242,7 +242,7 @@ h1{
 /* Trash Button Courses */
 .delete-course-btn {
     --background: transparent;
-    --color: #000000;
+    --color: #F0524B;
     margin-right: 10px;
 }
 

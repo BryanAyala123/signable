@@ -859,6 +859,7 @@ ion-button.ionButton:active .skipImage {
     height: 62px;
     border-radius: 30px;
     font-size: 20px;
+    color: #343434;
 }
 
 .modalBackToLibraryBtn{

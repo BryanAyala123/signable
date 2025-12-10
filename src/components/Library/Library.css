@@ -1,4 +1,4 @@
-.LibaryContentTop{
+.LibraryContentTop{
     flex: 1;
     align-items: center;
     justify-self: center;
@@ -24,7 +24,7 @@ h1{
     letter-spacing: 1.6px;
 }
 
-.LibaryContentTopHeader{
+.LibraryContentTopHeader{
     position: relative;
     margin: 0;
     color: #353534;
@@ -35,7 +35,7 @@ h1{
     letter-spacing: 1.6px;
 }
 
-.LibaryContentTopHeader::after {
+.LibraryContentTopHeader::after {
     content: '';
     position: absolute;
     left: 50%;
@@ -48,7 +48,7 @@ h1{
     background-size: contain;
 }
 
-.LibaryContentBottom{
+.LibraryContentBottom{
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -60,7 +60,7 @@ h1{
     width: 2px;
 }
 
-.LibaryContentBottomRightSideHeader{
+.LibraryContentBottomRightSideHeader{
     color: #353534;
     font-size: 40px;
     font-style: normal;
@@ -82,7 +82,7 @@ h1{
     text-transform: none;
 }
 
-.LibaryContentBottomLeftSideHeader{
+.LibraryContentBottomLeftSideHeader{
     color: #353534;
     font-size: 40px;
     font-style: normal;
@@ -98,13 +98,13 @@ h1{
     margin-bottom: 16px;
 }
 
-.LibaryContentBottomLeftSideHeaderButton{
+.LibraryContentBottomLeftSideHeaderButton{
     width: 41px;
     height: 41px;
     margin-top: 10px;
 }
 
-.LibaryContentBottomLeftSideCourse{
+.LibraryContentBottomLeftSideCourse{
     width: 736px;
     height: 173px;
     border-radius: 20px;
@@ -122,13 +122,13 @@ h1{
     height: 173px;
 }
 
-.LibaryContentBottomLeftSideCourseName{
+.LibraryContentBottomLeftSideCourseName{
     flex: 1;
     align-items: center;
     justify-content: center;
 }
 
-.LibaryContentBottomLeftSideCourseDesc{
+.LibraryContentBottomLeftSideCourseDesc{
     flex: 2;
 }
 
@@ -137,14 +137,14 @@ h1{
     height: 40px;
 }
 
-.LibaryContentBottomLeftSideCourseNameHeader{
+.LibraryContentBottomLeftSideCourseNameHeader{
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: center;
 }
 
-.LibaryContentBottomLeftSideCourseDesc{
+.LibraryContentBottomLeftSideCourseDesc{
     color: #343434;
     font-size: 20px;
     font-style: normal;
@@ -178,7 +178,6 @@ h1{
     gap: 12px;
 }
 
-
 .modalInput {
     --background: #EBE7DB;
     --border-color: #353534;
@@ -187,7 +186,7 @@ h1{
     --padding-start: 20px;
     --padding-end: 20px;
     --padding-top: 16px;
-    --padding-bottom: 16px;
+    --padding-bottom: 2px;
     --highlight-color-focused: #343434;
     --highlight-color-valid: #343434;
     --highlight-color-invalid: #343434;
@@ -232,9 +231,29 @@ h1{
     font-size: 16px;
     letter-spacing: 0.8px;
     margin-top: 45px;
+    margin-right: 200px;
 }
 
 .custom-modal{
     --border-radius: 40px;
 }
 
+
+/* Trash Button Courses */
+.delete-course-btn {
+    --background: transparent;
+    --color: #F0524B;
+    margin-right: 10px;
+}
+
+.delete-course-btn ion-icon {
+    font-size: 24px;
+}
+
+.delete-course-btn {
+  transition: transform 140ms ease;
+}
+
+.delete-course-btn:hover {
+  transform: scale(1.2);
+}

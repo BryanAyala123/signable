@@ -91,42 +91,43 @@ const Library: React.FC = () => {
         <IonPage>
     <AppHeader />
     <IonContent className="ion-padding">
-        <div className='LibaryContent'>
-            <div className='LibaryContentTop'>
-                <h1 className='LibaryContentTopHeader'>My Library</h1>
+        <div className='LibraryContent'>
+            <div className='LibraryContentTop'>
+                <h1 className='LibraryContentTopHeader'>My Library</h1>
             </div>
 
-            <div className='LibaryContentBottom'>
-                <div className='LibaryContentBottomRightSide'>
-                    <h1 className='LibaryContentBottomRightSideHeader'>Recents</h1>
+            <div className='LibraryContentBottom'>
+                <div className='LibraryContentBottomRightSide'>
+                    <h1 className='LibraryContentBottomRightSideHeader'>Recents</h1>
                 </div>
                 <div className='VerticalDivider'></div>
-                <div className='LibaryContentBottomLeftSide'>
+                <div className='LibraryContentBottomLeftSide'>
                 <div className='headerRow'>
-                <h1 className='LibaryContentBottomLeftSideHeader'>Courses</h1>
+                <h1 className='LibraryContentBottomLeftSideHeader'>Courses</h1>
                     <IonButton onClick={() => setShowModal(true)} className='triggerButton'>
-                        <img src={appIcon} className='LibaryContentBottomLeftSideHeaderButton'/>
+                        <img src={appIcon} className='LibraryContentBottomLeftSideHeaderButton'/>
                     </IonButton>
                 </div>
 
                     <IonList>
                         {courses.map(course => (
-                            <IonItem key={course.id} button onClick={() => handleCourseClick(course.id)} className='LibaryContentBottomLeftSideCourse'>
-                                <div className='LibaryContentBottomLeftSideCourseName'>
-                                    <div className='LibaryContentBottomLeftSideCourseNameHeader'>
+                            <IonItem key={course.id} button onClick={() => handleCourseClick(course.id)} className='LibraryContentBottomLeftSideCourse'>
+                                <div className='LibraryContentBottomLeftSideCourseName'>
+                                    <div className='LibraryContentBottomLeftSideCourseNameHeader'>
                                         <h1><u className='coursetitle'>{course.title}</u><img src={pencil} className='pencilSvg'/></h1>
                                     </div>
                                 </div>
                                 <div className='HorizontalDivider'></div>
-                                <div className='LibaryContentBottomLeftSideCourseDesc'>
+                                <div className='LibraryContentBottomLeftSideCourseDesc'>
                                     <p>{course.content}</p>
                                 </div>
                                 <IonButton
+                                    className="delete-course-btn"
                                     slot="end"
-                                    color="danger"
-                                    fill="clear"
+                                    fill = "clear"
                                     onClick={e => {
                                         e.stopPropagation();
+                                        if (!window.confirm("Would like to delete this course?")) return;
                                         handleDeleteCourse(course.id);
                                     }}
                                 >

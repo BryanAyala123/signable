@@ -188,7 +188,7 @@ return (
         <AppHeader />
         <IonContent className="MainLandingContent">
             <br />
-            <div style={{ width: '66.666%', margin: '0 auto' }}>
+            <div style={{ width: '66.666%', margin: '0 auto'}} className='settingMainContentDiv'>
                 <IonList>
                     <IonItem style={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                         {TLeft && <img src={TLeft} alt="Top Left Decoration" style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-170px, -110px)' }} />}
@@ -306,7 +306,7 @@ return (
                     </IonItem>
                     <br /><br /><br />
                     <IonItem>
-                        <div className='MainHeaderText' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
+                        <div className='MainHeaderText' style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' , gap: '10px'}}>
                             <div className='settingsTextRegular'>
                                 Password: *********
                             </div>

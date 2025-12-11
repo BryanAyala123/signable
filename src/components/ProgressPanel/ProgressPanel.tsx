@@ -30,12 +30,6 @@ const ProgressPanel: React.FC<ProgressPanelProps> = ({ isOpen, onClose, mastered
         
         <div className="progressPanelOverlay" onClick={onClose}>
             <div className="progressPanel" onClick={(e) => e.stopPropagation()}>
-                <div className="panelHeader">
-                    <p>ASL 102 | Unit 1</p>
-                    <div className="panelHeaderClassType">
-                        <p>Alphabet</p>
-                    </div>
-                </div>
                 <div className="panelContent">
                     <div className='progressPanelContent'>
                         <p className='progressPanelContentHeader'>Progress Tracker</p>

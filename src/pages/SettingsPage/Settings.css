@@ -27,7 +27,6 @@
     font-weight: 400;
     line-height: normal;
     letter-spacing: 1.92px;
-    margin: 0;
     text-decoration: underline;
 }
 
@@ -36,4 +35,8 @@
     align-items: center;
     justify-content: center;
     flex-direction: column;
+}
+
+.MainHeaderText{
+    margin: 20px 0px;
 }

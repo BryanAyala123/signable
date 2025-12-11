@@ -230,13 +230,6 @@ const Flashcards: React.FC = () => {
     <IonPage>
       <AppHeader />
       <IonContent fullscreen className='fullscreenBody'>
-      <SetPanel
-              isOpen={showUserSet}
-              onClose={() => setUserSet(false)}
-            />
-        <button className={`mySetToggleButton ${showUserSet ? 'open' : ''}`} onClick={toggleSetsPanel}>
-          {showUserSet ? <img src={prev}/> : <img src={next}/> }
-        </button>
         <div className={`mainContentWrapper ${showUserSet ? 'leftOpen' : ''} ${showProgress ? 'rightOpen' : ''}`}>
           <div className='outerFlashcard'>
             <div className='innerFlashcard'>

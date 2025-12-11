@@ -42,6 +42,7 @@
 .FirstBlockLeftSide{
     flex: 1;
     max-width: 600px;
+    margin-left: 100px;
 }
 
 .FirstBlockLeftSideHeader{
@@ -406,6 +407,7 @@
 
 .thirdDivText{
     color: #E8E4D8;
+    text-align: center;
 }
 
 .ThirdBlockDivContent{
@@ -548,6 +550,7 @@
     .FirstBlockLeftSide{
         max-width: 100%;
         text-align: center;
+        margin-left: 0px;
     }
 
     .FirstBlockLeftSideHeader{

@@ -175,7 +175,6 @@ const Course: React.FC = () => {
                             <div>
                                 <div className='main-content-top'>
                                     <h1 className='main-content-header'>{course.title}</h1>
-                                    <img src={pencil} className='pencilSvg'/>
                                 </div>
                                 <h1 className='main-content-desc'>Description: {course.content}</h1>
                             </div>

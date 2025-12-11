@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import AppHeader from '../../components/layout/AppHeader';
 import AppFooter from '../../components/layout/AppFooter';
-import landingImage from '/public/assets/singaldo.png';
+import landingImage from '/public/assets/signaldo.gif';
 import landingImage2 from '/public/assets/landingPageImage2.png';
 import landingImage3 from '/public/assets/landingPageImage3.png';
 import UsbIcon from '/public/assets/usbIcon.png';

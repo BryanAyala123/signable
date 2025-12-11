@@ -16,7 +16,7 @@ def load_model_if_needed():
     """Loads the pickled model into memory if not already loaded."""
     global MODEL
     if MODEL is None:
-        model_path = os.path.join(os.path.dirname(__file__), "model.p")
+        model_path = os.path.join(os.path.dirname(__file__), "model-V2.p")
         with open(model_path, "rb") as f:
             model_dict = pickle.load(f)
         MODEL = model_dict["model"]

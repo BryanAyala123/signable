@@ -12,7 +12,7 @@ import {
   IonModal,
   useIonRouter,
 } from "@ionic/react";
-
+import { useLocation } from "react-router-dom";
 import axios from "axios";
 import { HandLandmarker, FilesetResolver } from "@mediapipe/tasks-vision";
 import AppHeader from '../layout/AppHeader';
@@ -44,6 +44,7 @@ const LandmarkCapture: React.FC = () => {
   const router = useIonRouter();
 
   // vocab terms and progress
+  const location = useLocation();
   const [currentPrompt, setCurrentPrompt] = useState<string>("");
   const [letterIndex, setLetterIndex] = useState<number>(0);
   const [correctLetters, setCorrectLetters] = useState<boolean[]>([]);
@@ -54,6 +55,14 @@ const LandmarkCapture: React.FC = () => {
   const initialName = query.get("name") ?? "";
 
   const [name, setName] = useState(initialName);
+
+
+  useEffect(() => {
+    const q = new URLSearchParams(location.search);
+    const updatedName = q.get("name") ?? "";
+
+    setName(updatedName); // <-- updates whenever the URL changes
+  }, [location.search]);
 
 
   const restartSet = () => {

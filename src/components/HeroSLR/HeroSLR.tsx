@@ -20,6 +20,7 @@ import AppFooter from '../layout/AppFooter';
 import LetterHint from '../LetterHint/letterHint';
 import play from '/public/assets/RecordSign.svg';
 import skip from '/public/assets/skipSign.svg';
+import { set } from "firebase/database";
 import './HeroSLR.css';
 
 // backend model apiendpoint and frame count per capture
@@ -38,6 +39,7 @@ const LandmarkCapture: React.FC = () => {
   const [capturing, setCapturing] = useState(false);
   const [processing, setProcessing] = useState(false);
   const [recognizedLetter, setRecognizedLetter] = useState<string>("");
+  const [recognizedAtIndex, setRecognizedAtIndex] = useState<number | null>(null);
   const [presentToast] = useIonToast();
   const router = useIonRouter();
 
@@ -84,6 +86,14 @@ const LandmarkCapture: React.FC = () => {
   }, [name]);
 
 
+   // Clear stale detections whenever we advance to a new letter
+  useEffect(() => {
+    setRecognizedLetter("");
+    setRecognizedAtIndex(null);
+  }, [letterIndex]);
+
+
+
   //-----------camera handling--------------
   // Start camera automatically when component mounts
   const startCamera = async () => {
@@ -97,6 +107,7 @@ const LandmarkCapture: React.FC = () => {
         await videoRef.current.play();
       }
       setRecognizedLetter("");
+      setRecognizedAtIndex(null);
     } catch (err) {
       console.error("Camera error:", err);
       // presentToast({ message: "Unable to access camera.", duration: 3000 });
@@ -143,9 +154,11 @@ const LandmarkCapture: React.FC = () => {
 
   //-------------Actual model interraction-------------
   // Function to send landmarks
-  const sendLandmarksToServer = async (frames: number[][]) => {
+  // Tag each capture with the letter index + prompt so late responses don't apply to a new letter
+  const sendLandmarksToServer = async (frames: number[][], captureIndex: number, promptAtCapture: string) => {
     setProcessing(true);
     setRecognizedLetter("Processing...");
+    setRecognizedAtIndex(captureIndex);
     try {
       console.log("[DEBUG] Sending to server:", {
         url: FUNCTION_URL,
@@ -163,8 +176,14 @@ const LandmarkCapture: React.FC = () => {
       const letter = res.data?.result ?? "?"; // predicted letter
       setRecognizedLetter(letter);
 
-      const expected = currentPrompt[letterIndex];  // target letter
+      const expected = promptAtCapture[captureIndex];  // target letter at capture time
       if (!expected) {
+        return;
+      }
+
+      // If the user navigated to a different letter/word while we were processing, ignore this result
+      const staleAttempt = currentPrompt !== promptAtCapture || letterIndex !== captureIndex;
+      if (staleAttempt) {
         return;
       }
 
@@ -172,19 +191,19 @@ const LandmarkCapture: React.FC = () => {
         // mark this letter green
         setCorrectLetters(prev => {
           const newArr = [...prev];
-          newArr[letterIndex] = true;
+          newArr[captureIndex] = true;
           return newArr;
         });
 
         setIncorrectLetters(prev => {
           const newArr = [...prev];
-          newArr[letterIndex] = false;
+          newArr[captureIndex] = false;
           return newArr;
         });
 
         // if not done, move to next letter
-        if (letterIndex < currentPrompt.length - 1) {
-          setLetterIndex(letterIndex + 1);
+        if (captureIndex < currentPrompt.length - 1) {
+          setLetterIndex(captureIndex + 1);
         } else {
           // word completed, show success
           
@@ -198,7 +217,7 @@ const LandmarkCapture: React.FC = () => {
       } else {
         setIncorrectLetters(prev => {
           const newArr = [...prev];
-          newArr[letterIndex] = true;
+          newArr[captureIndex] = true;
           return newArr;
         });
       }
@@ -236,7 +255,6 @@ const LandmarkCapture: React.FC = () => {
     if (letterIndex < currentPrompt.length - 1) {
       setLetterIndex(letterIndex + 1);
     }
-    setRecognizedLetter("");
   };
 
 
@@ -246,8 +264,11 @@ const LandmarkCapture: React.FC = () => {
     if (!videoRef.current || !handLandmarkerRef.current) return;
     setCapturing(true);
     setRecognizedLetter("");
+    setRecognizedAtIndex(null);
     const handLandmarker = handLandmarkerRef.current;
     const frames: number[][] = [];
+    const captureIndex = letterIndex;
+    const promptAtCapture = currentPrompt;
 
     for (let i = 0; i < FRAMES_TO_CAPTURE; i++) {
       const now = performance.now();
@@ -268,7 +289,7 @@ const LandmarkCapture: React.FC = () => {
 
     // send even if only 1 frame was captured 
     if (frames.length > 0) {
-      await sendLandmarksToServer(frames);
+      await sendLandmarksToServer(frames, captureIndex, promptAtCapture);
     } else {
       presentToast({
         message: "No landmarks detected during capture.",
@@ -369,7 +390,7 @@ const LandmarkCapture: React.FC = () => {
                         <>
                           <IonSpinner name="dots" className="dotLoad"/>
                         </>
-                      ) : recognizedLetter ? (
+                      ) : recognizedLetter && recognizedAtIndex === letterIndex ? (
                         <IonText>
                           <h2 className="letterSigned">{recognizedLetter}</h2>
                         </IonText>
@@ -380,8 +401,13 @@ const LandmarkCapture: React.FC = () => {
                 <div className={`hint-container ${!hintsOn ? "hint-hidden" : ""}`}>
                 {hintsOn && (
                   <LetterHint
+                    key={`${currentPrompt}-${letterIndex}`}
                     targetLetter={currentPrompt[letterIndex]}
-                    detectedLetter={recognizedLetter !== "Processing..." ? recognizedLetter : undefined}
+                    detectedLetter={
+                      recognizedAtIndex === letterIndex && recognizedLetter !== "" && recognizedLetter !== "Processing..."
+                        ? recognizedLetter
+                        : undefined
+                    }
                   />
                 )}
                 </div>

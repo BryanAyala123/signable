@@ -43,6 +43,17 @@
     width: 400px;
     height: 30px;
     color:#EBE7DB;
+    border-color: transparent;
+}
+
+.headerSearch:active{
+    border-color: transparent;
+}
+
+.headerSearch:focus{
+    outline: none;
+    border-color: transparent;
+    box-shadow: 0 0 0 2px #FFFFFF;
 }
 
 .tabsContainer {
@@ -79,11 +90,37 @@
 
 .logoImage {
     cursor: pointer;
+    transition: transform 0.15s ease;
 }
 
-.logoImage:focus {
-    outline: 2px solid #4A7669;
-    border-radius: 8px;
+.logoImage:hover {
+    transform: scale(0.95);
+}
+
+.logoImage:active {
+    transform: scale(0.85);
+}
+
+.headerButtons {
+    background-color: none;
+    transition: transform 0.15s ease;
+}
+
+.headerButtons:hover {
+    transform: scale(0.95);
+}
+
+.headerButtons:active {
+    transform: scale(0.85);
+}
+
+ion-button {
+    --ripple-color: transparent;
+    --background-activated: transparent;
+    --background-focused: transparent;
+    --background-hover: transparent;
+    --color-activated: inherit;
+    --color-focused: inherit;
 }
 
 ion-header {

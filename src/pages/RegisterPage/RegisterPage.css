@@ -76,6 +76,21 @@
     margin-bottom: 25px;
 }
 
+.RightSideDivEmailInput:focus,
+.RightSideDivPasswordInput:focus,
+.RightSideDivInputField:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+.RightSideDivEmailInput:-webkit-autofill,
+.RightSideDivPasswordInput:-webkit-autofill,
+.RightSideDivInputField:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0px 1000px #E8E4D8 inset;
+    -webkit-text-fill-color: #343434;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 .RightSideDivEmailInput, .RightSideDivPasswordInput{
     width: 470px;
     height: 62px;
@@ -256,6 +271,11 @@
     background: url('/public/assets/drawnDashes.svg') no-repeat center;
     background-size: contain;
     transform: rotate(0deg);
+}
+
+.RightSideDivBottomInfoCheck {
+    accent-color: #E8E4D8;
+    cursor: pointer;
 }
 
 .googleSignIn{

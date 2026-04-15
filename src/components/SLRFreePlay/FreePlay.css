@@ -41,13 +41,23 @@ ion-button {
     border-radius: 39px;
 }
 
+.free-play-SLR-RightContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
 .free-play-SLR-result-container {
     display: flex;
     flex-direction: column;
-    width: 342px;
-    height: 359px;
+    align-items: center;
+    width: fit-content;
+    min-width: 342px;
+    height: auto;
+    min-height: 280px;
     border-radius: 39px;
     margin-top: 20px;
+    padding: 0 40px 32px;
     text-align: center;
     background-color: #343434;
     color: #EBE7DB;
@@ -68,17 +78,17 @@ ion-button {
     margin-top: 0;
     text-align: center;
     font-family: Figtree;
-    font-size: 200px;
     font-style: normal;
     font-weight: 500;
     line-height: normal;
-    letter-spacing: 8px;
+    white-space: nowrap;
 }
 
 .free-play-SLR-letterSigned {
     padding: 0;
     font-size: 150px;
     color: #EBE7DB;
+    white-space: nowrap;
 }
 
 .free-play-SLR-playImage {
@@ -269,9 +279,7 @@ ion-button {
     background: #2a2a2a;
     border-radius: 24px;
     padding: 4px;
-    margin-bottom: 16px;
     width: fit-content;
-    align-self: center;
 }
 
 .free-play-SLR-mode-btn {
@@ -374,9 +382,10 @@ ion-button {
 
 /* ── Words mode result ────────────────────────────────────────────────────── */
 .free-play-SLR-motion-sign {
-    font-size: 80px !important;
+    font-size: 60px !important;
     text-transform: capitalize;
-    line-height: 1.1;
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 .free-play-SLR-confidence {

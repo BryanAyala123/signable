@@ -117,15 +117,15 @@ const AppHeader: React.FC<AppHeaderProps> = ({ onSearch }) => {
 
                     {/* Tabs */}
                     <div className="tabsContainer">
-                        <IonButton fill="clear" onClick={() => guardRoute('/asl-lex')}>
+                        <IonButton className='headerButtons' fill="clear" onClick={() => guardRoute('/asl-lex')}>
                             <span className="tabText"><u>ASL-Lex</u></span>
                         </IonButton>
 
-                        <IonButton fill="clear" onClick={() => guardRoute('/library')}>
+                        <IonButton className='headerButtons' fill="clear" onClick={() => guardRoute('/library')}>
                             <span className="tabText"><u>Library</u></span>
                         </IonButton>
 
-                        <IonButton fill="clear" onClick={() => guardRoute('/study')}>
+                        <IonButton className='headerButtons' fill="clear" onClick={() => guardRoute('/study')}>
                             <span className="tabText"><u>Study</u></span>
                         </IonButton>
 

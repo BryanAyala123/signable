@@ -33,7 +33,7 @@ MOTION_LABEL_MAP: dict[str, str] = {
     "0": "goodbye",
     "1": "hello",
     "2": "please",
-    "3": "thank_you",
+    "3": "thank you",
 }
 
 

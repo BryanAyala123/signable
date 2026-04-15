@@ -385,9 +385,11 @@ const LandmarkCapture: React.FC = () => {
                           {motionSign}
                         </h2>
                       </IonText>
+                    {/*
                       <p className="free-play-SLR-confidence">
                         {Math.round(motionConfidence * 100)}% confidence
                       </p>
+                    */}
                     </>
                   ) : (
                     <p className="free-play-SLR-words-hint">{wordsHint}</p>

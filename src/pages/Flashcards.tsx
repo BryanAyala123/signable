@@ -438,7 +438,7 @@ const Flashcards: React.FC = () => {
             currentDeckTitle={currentDeckTitle}
           />
           <button className={`mySetToggleButton ${showSidebar ? 'open' : ''}`} onClick={toggleSidebar}>
-            {showSidebar ? <img src={next} /> : <img src={prev} />}
+            {showSidebar ? <img src={prev} /> : <img src={next} />}
           </button>
           <ProgressPanel
               isOpen={showProgress}

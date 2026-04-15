@@ -86,11 +86,6 @@ const LandmarkCapture: React.FC = () => {
     startCamera();
   };
 
-  // Clear stale detections whenever we advance to a new letter
-  useEffect(() => {
-    setRecognizedLetter("");
-    setRecognizedAtIndex(null);
-  }, [letterIndex]);
 
 
   //-----------camera handling--------------
@@ -348,6 +343,8 @@ const LandmarkCapture: React.FC = () => {
   const handleSkip = () => {
     if (!currentPrompt) return;
     finalizeLetterAsIncorrect();
+    setRecognizedLetter("");
+    setRecognizedAtIndex(null);
 
     if (letterIndex < currentPrompt.length - 1) {
       setLetterIndex(letterIndex + 1);
@@ -633,7 +630,7 @@ const LandmarkCapture: React.FC = () => {
                         <>
                           <IonSpinner name="dots" className="dotLoad"/>
                         </>
-                      ) : recognizedLetter && recognizedAtIndex === letterIndex ? (
+                      ) : recognizedLetter ? (
                         <IonText>
                           <h2 className="letterSigned">{recognizedLetter}</h2>
                         </IonText>

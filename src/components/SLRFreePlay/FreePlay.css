@@ -261,3 +261,144 @@ ion-button {
     border-radius: 30px;
     font-size: 14px;
 }
+
+/* ── Mode toggle ──────────────────────────────────────────────────────────── */
+.free-play-SLR-mode-toggle {
+    display: flex;
+    gap: 4px;
+    background: #2a2a2a;
+    border-radius: 24px;
+    padding: 4px;
+    margin-bottom: 16px;
+    width: fit-content;
+    align-self: center;
+}
+
+.free-play-SLR-mode-btn {
+    flex: 1;
+    padding: 8px 24px;
+    border: none;
+    border-radius: 20px;
+    background: transparent;
+    color: #EBE7DB;
+    font-family: Figtree;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.free-play-SLR-mode-btn.active {
+    background: #62AE8A;
+    color: #1a1a1a;
+}
+
+/* ── Recording indicator ──────────────────────────────────────────────────── */
+.free-play-SLR-video-preview.recording {
+    border-color: #E74C3C;
+    animation: pulse-recording 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse-recording {
+    0%   { box-shadow: 0 0 0 0   rgba(231, 76, 60, 0.55); }
+    70%  { box-shadow: 0 0 0 12px rgba(231, 76, 60, 0);   }
+    100% { box-shadow: 0 0 0 0   rgba(231, 76, 60, 0);    }
+}
+
+.free-play-SLR-recording-badge {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(231, 76, 60, 0.85);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+    font-family: Figtree;
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+}
+
+.free-play-SLR-recording-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+    flex-shrink: 0;
+    animation: blink-dot 1s step-start infinite;
+}
+
+@keyframes blink-dot {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+/* ── Words mode: progress bar ────────────────────────────────────────────── */
+.free-play-SLR-progress-bar-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: rgba(30, 30, 30, 0.75);
+    border-radius: 0 0 39px 39px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.free-play-SLR-progress-bar-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #62AE8A;
+    transition: width 0.05s linear;
+}
+
+.free-play-SLR-progress-label {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    text-align: center;
+    font-family: Figtree;
+    font-size: 13px;
+    font-weight: 500;
+    color: white;
+}
+
+/* ── Words mode result ────────────────────────────────────────────────────── */
+.free-play-SLR-motion-sign {
+    font-size: 80px !important;
+    text-transform: capitalize;
+    line-height: 1.1;
+}
+
+.free-play-SLR-confidence {
+    color: #62AE8A;
+    font-size: 16px;
+    font-family: Figtree;
+    font-weight: 500;
+    margin: 0;
+}
+
+.free-play-SLR-words-hint {
+    color: #8a8a8a;
+    font-size: 16px;
+    font-family: Figtree;
+    padding: 20px;
+    margin: 0;
+}
+
+.free-play-SLR-words-auto-hint {
+    margin-top: 12px;
+    text-align: center;
+    color: #8a8a8a;
+    font-size: 14px;
+    font-family: Figtree;
+}

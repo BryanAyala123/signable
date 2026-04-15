@@ -82,6 +82,7 @@ return (
         <AppHeader />
             <IonContent className="MainLandingContent">
                     <div className='MainLandingDiv'>
+                        <div className='landingSection'>
                         <div className='FirstBlockDiv'>
                             <div className='FirstBlockDivInner'>
                                 <div className='FirstBlockLeftSide'>
@@ -105,6 +106,7 @@ return (
                                     <img src={landingImage} className='FirstBlockRightSideImage'/>
                                 </div>
                             </div>
+                        </div>
                         </div>
 
                         <div className='learnToSignNameBlockDiv'>
